@@ -31,6 +31,11 @@
         {# Main page content #}
         {% block content %}{% endblock content %}
 
+        {# Footer #}
+        {% block footer %}
+            {{ include('_footer.html.twig') }}
+        {% endblock footer %}
+
         {# App Scripts #}
         {% block javascripts %}
             {{ encore_entry_script_tags('app') }}
