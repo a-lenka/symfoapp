@@ -76,6 +76,18 @@ Encore
     // Uncomment if you use API Platform Admin (`composer req api-admin`)
     //.enableReactPreset()
     //.addEntry('admin', './assets/js/admin.js')
+
+    /**
+     * Copy and rename static files into your final output directory.
+     * Hash for file names will be used only in Production environment
+     * @see https://symfony.com/doc/current/frontend/encore/copy-files.html
+     */
+    .copyFiles({
+        from: './assets/images',
+        to: Encore.isProduction()
+            ? 'images/[path][name].[hash:8].[ext]'
+            : 'images/[path][name].[ext]'
+    })
 ;
 
 module.exports = Encore.getWebpackConfig();
