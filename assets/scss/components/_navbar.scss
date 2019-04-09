@@ -49,7 +49,8 @@ nav {
         position: relative;
         z-index: 1;
         height: $navbar-height-mobile;
-        margin: 0 18px;
+        // To have the same indent as the Logo has
+        margin: 0;
 
         i {
             height: $navbar-height-mobile;

@@ -7,6 +7,13 @@
             <a href="{{ path('home_index') }}" class="brand-logo">Logo</a>
         </div>
 
+        {# SideNav trigger #}
+        <div>
+            <a href="#" data-target="sidenav-content" class="sidenav-trigger">
+                <i class="material-icons">menu</i>
+            </a>
+        </div>
+
         {# Top Menu content #}
         <div>
             {# Hide on small screens #}
@@ -19,3 +26,18 @@
     </div>
 </nav>
 {# End Top Menu #}
+
+{# Top Menu content #}
+
+{# Start SideNav content #}
+<div>
+    <ul id="sidenav-content" class="sidenav">
+        <li>
+            <a href="{{ path('home_index') }}" class="waves-effect">
+                <i class="material-icons">home</i>
+                {{ 'Home'|trans }}
+            </a>
+        </li>
+    </ul>
+</div>
+{# End SideNav content #}

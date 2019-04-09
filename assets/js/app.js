@@ -18,4 +18,10 @@ require('../../node_modules/materialize-css/dist/js/materialize.min.js');
 // then uncomment to require it.
 // const $ = require('jquery');
 
-console.log('Hello Webpack Encore! Edit me in `assets/js/app.js`');
+// Modules
+let Materializer = require('../js/modules/Materializer.js');
+
+// Events
+document.addEventListener('DOMContentLoaded', function() {
+    Materializer.initComponents();
+});
