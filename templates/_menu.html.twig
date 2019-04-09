@@ -1,0 +1,21 @@
+{# Start Top Menu #}
+<nav>
+    {# Top Menu #}
+    <div class="nav-wrapper z-depth-2">
+        {# Logo #}
+        <div>
+            <a href="{{ path('home_index') }}" class="brand-logo">Logo</a>
+        </div>
+
+        {# Top Menu content #}
+        <div>
+            {# Hide on small screens #}
+            <ul class="right hide-on-med-and-down">
+                <li>
+                    <a href="{{ path('home_index') }}">{{ 'Home'|trans }}</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+{# End Top Menu #}

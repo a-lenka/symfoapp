@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock title %}</title>
+        <title>{% block title %}{{ "Welcome"|trans }}!{% endblock title %}</title>
 
         {# Favicons #}
         <link rel="icon" type="image/x-icon"
@@ -10,21 +10,29 @@
         <link rel="shortcut icon" type="image/x-icon"
               href="{{ asset('build/images/favicon.ico') }}">
 
-        {% block stylesheets %}
-            {# Materialize CSS icons #}
+        {# Materialize CSS icons #}
+        {% block icons %}
             <link rel="stylesheet"
                   href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        {% endblock icons %}
 
-            {# App Styles #}
+        {# App Styles #}
+        {% block stylesheets %}
             {{ encore_entry_link_tags('app') }}
         {% endblock stylesheets %}
     </head>
 
     <body>
-        {% block body %}{% endblock body %}
+        {# Materialize CSS Top navigation #}
+        {% block menu %}
+            {{ include('_menu.html.twig') }}
+        {% endblock menu %}
 
+        {# Main page content #}
+        {% block content %}{% endblock content %}
+
+        {# App Scripts #}
         {% block javascripts %}
-            {# App Scripts #}
             {{ encore_entry_script_tags('app') }}
         {% endblock javascripts %}
     </body>
