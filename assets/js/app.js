@@ -2,12 +2,16 @@
  * Welcome to your app's main JavaScript file!
  *
  * We recommend including the built version of this JavaScript file
- * (and its CSS file) in your base layout (`base.html.twig`).
+ * (and its CSS / SCSS file) in your base layout (`base.html.twig`).
  */
 
-// Any CSS you require will output
-// into a single css file (`app.css` in this case)
-require('../css/app.css');
+// CSS imports
+// Any SCSS you require will output
+// into a single scss file (`app.scss` in this case)
+require('../scss/app.scss');
+
+// JS imports
+require('../../node_modules/materialize-css/dist/js/materialize.min.js');
 
 // Need jQuery?
 // Install it with `yarn add jquery`,
