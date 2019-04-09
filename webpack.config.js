@@ -1,6 +1,16 @@
 let Encore = require('@symfony/webpack-encore');
 
 Encore
+
+    /**
+     * Fix Webpack with PHPStorm compatibility
+     * @see https://github.com/symfony/webpack-encore/pull/115
+     */
+    .configureRuntimeEnvironment('dev-server', {
+        keepPublicPath: true,
+        https: true,
+    })
+
     // Directory where compiled assets will be stored
     .setOutputPath('public/build/')
     // Public path used by the web server to access the output path
