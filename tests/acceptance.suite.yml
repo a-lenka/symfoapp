@@ -8,6 +8,8 @@ actor: AcceptanceTester
 
 modules:
     enabled:
-        - PhpBrowser:
-            url: http://localhost:8000
+        - WebDriver:
+            url: 'http://symfoapp'
+            browser: chrome
+
         - \App\Tests\Helper\Acceptance
