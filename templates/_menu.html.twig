@@ -14,6 +14,24 @@
             </a>
         </div>
 
+        {# Locale Switcher must be here to not hide on small screens #}
+        {% set route        = app.request.attributes.get('_route') %}
+        {% set route_params = app.request.attributes.get('_route_params') %}
+        {% set params       = route_params|merge(app.request.query.all) %}
+
+        <div>
+            <ul class="right">
+                {% for locale in locales() if locale.code != app.request.locale %}
+                    <li>
+                        <a href="{{ path(route, params|merge({_locale: locale.code})) }}">
+                            <img src="{{ asset('build/images/lang/' ~ locale.code ~ '.png') }}"
+                                 alt="{{ locale.code }}">
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+
         {# Top Menu content #}
         <div>
             {# Hide on small screens #}
