@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Tests\Controller;
+namespace App\Tests\Functional\Controller;
 
 use App\Tests\FunctionalTester;
 use App\Tests\Page\Home;
 
 /**
  * Class HomeControllerCest
- * @package App\Tests\Controller
+ * @package App\Tests\Functional\Controller
  */
 class HomeControllerCest
 {
