@@ -14,22 +14,11 @@
             </a>
         </div>
 
-        {# Locale Switcher must be here to not hide on small screens #}
-        {% set route        = app.request.attributes.get('_route') %}
-        {% set route_params = app.request.attributes.get('_route_params') %}
-        {% set params       = route_params|merge(app.request.query.all) %}
-
-        <div>
-            <ul class="right">
-                {% for locale in locales() if locale.code != app.request.locale %}
-                    <li>
-                        <a href="{{ path(route, params|merge({_locale: locale.code})) }}">
-                            <img src="{{ asset('build/images/lang/' ~ locale.code ~ '.png') }}"
-                                 alt="{{ locale.code }}">
-                        </a>
-                    </li>
-                {% endfor %}
-            </ul>
+        {# Locale Switcher trigger must be here to not hide on small screens #}
+        <div class="right">
+            <a href="" class="dropdown-trigger" data-target="dropdown-locales">
+                <i class="material-icons">language</i>
+            </a>
         </div>
 
         {# Top Menu content #}
@@ -46,6 +35,23 @@
 {# End Top Menu #}
 
 {# Top Menu content #}
+
+{# Start Locale Switcher content #}
+{% set route        = app.request.attributes.get('_route') %}
+{% set route_params = app.request.attributes.get('_route_params') %}
+{% set params       = route_params|merge(app.request.query.all) %}
+
+<ul id="dropdown-locales" class="dropdown-content">
+    {% for locale in locales() %}
+        <li>
+            <a href="{{ path(route, params|merge({ _locale: locale.code })) }}">
+                {{ locale.name|capitalize }}
+            </a>
+        </li>
+    {% endfor %}
+</ul>
+{# End Locale Switcher content #}
+
 
 {# Start SideNav content #}
 <div>
