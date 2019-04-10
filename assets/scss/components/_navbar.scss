@@ -35,8 +35,9 @@ nav {
     .nav-wrapper {
         position: relative;
         height: 100%;
-        // Shift nav content from the edge of the screen
+        // Shift nav content from the edges of the screen
         padding-left: 25px;
+        padding-right: 25px;
     }
 
     @media #{$large-and-up} {

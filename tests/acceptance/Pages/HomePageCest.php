@@ -1,42 +1,29 @@
 <?php
 
-namespace App\Tests\Functional\Controller;
+namespace App\Tests\Acceptance\Pages;
 
-use App\Tests\FunctionalTester;
+use App\Tests\AcceptanceTester;
 use App\Tests\Page\Components\LocaleSwitcher;
 use App\Tests\Page\Home;
 
 /**
- * Class HomeControllerCest
- * @package App\Tests\Functional\Controller
+ * Class HomePageCest
+ * @package App\Tests\Acceptance\Pages
  */
-class HomeControllerCest
+class HomePageCest
 {
     /**
-     * @param FunctionalTester $I
+     * @param AcceptanceTester $I
      */
-    public function testHomePageContent(FunctionalTester $I): void
+    public function testSwitchLocaleToRussian(AcceptanceTester $I): void
     {
         $vars = self::getVars();
         $I->amOnPage($vars['url']);
-
-        $I->amGoingTo('see Home page content');
-        $I->seeResponseCodeIsSuccessful();
         $I->see($vars['header_text'], $vars['header_tag']);
-    }
-
-
-    /**
-     * @param FunctionalTester $I
-     */
-    public function testSwitchLocaleToRussian(FunctionalTester $I): void
-    {
-        $vars = self::getVars();
-        $I->amOnPage($vars['url']);
 
         $I->amGoingTo('click Russian link and check the Response');
-        $I->click($vars['ru_link']);
-        $I->seeResponseCodeIsSuccessful();
+        $I->click($vars['locale_trigger']);
+        $I->click($vars['ru_link'], $vars['locales_box_id']);
 
         $I->amGoingTo('see Russian content');
         $I->seeCurrentUrlEquals($vars['ru_url']);
@@ -45,16 +32,17 @@ class HomeControllerCest
 
 
     /**
-     * @param FunctionalTester $I
+     * @param AcceptanceTester $I
      */
-    public function testSwitchLocaleToEnglish(FunctionalTester $I): void
+    public function testSwitchLocaleToEnglish(AcceptanceTester $I): void
     {
         $vars = self::getVars();
         $I->amOnPage($vars['url']);
+        $I->see($vars['header_text'], $vars['header_tag']);
 
         $I->amGoingTo('click English link and check the Response');
-        $I->click($vars['en_link']);
-        $I->seeResponseCodeIsSuccessful();
+        $I->click($vars['locale_trigger']);
+        $I->click($vars['en_link'], $vars['locales_box_id']);
 
         $I->amGoingTo('see English content');
         $I->seeCurrentUrlEquals($vars['url']);
@@ -63,13 +51,6 @@ class HomeControllerCest
 
 
     /**
-     * NOTE: 1. I have not used `get_class_vars()` because PHPStorm do not hint it values.
-     *       2. `getVars()` is here, because if I do not want to wrestle
-     *              with how to paste in tests an additional portion of data
-     *              saving some readability.
-     *       3. All the possible changes are only here.
-     *       4. Symfony translator is cheerful guy :)
-     *
      * @return array
      */
     private static function getVars(): array
@@ -80,6 +61,8 @@ class HomeControllerCest
             'header_text'    => Home::$header['text'],
             'ru_header_text' => Home::$header['ru_text'],
             'header_tag'     => Home::$header['tag'],
+            'locale_trigger' => LocaleSwitcher::$trigger['text'],
+            'locales_box_id' => LocaleSwitcher::$links['container_id'],
             'ru_link'        => LocaleSwitcher::$links['ru_text'],
             'en_link'        => LocaleSwitcher::$links['en_text'],
         ];
