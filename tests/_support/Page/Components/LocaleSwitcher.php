@@ -15,7 +15,8 @@ class LocaleSwitcher
 
     /** @var array $links - Locale links */
     public static $links = [
-        'ru_text' => 'Русский',
-        'en_text' => 'English',
+        'container_id' => '#dropdown-locales',
+        'ru_text'      => 'Русский',
+        'en_text'      => 'English',
     ];
 }
