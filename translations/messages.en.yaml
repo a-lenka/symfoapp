@@ -7,6 +7,7 @@
 'Invalid CSRF token.': 'The entered data is not verified. Try again please'
 'Login': 'Login'
 'Password': 'Password'
+'Remember me': 'Remember me'
 'Something wrong': 'Something wrong'
 'This email you will use to log in and recover your password': 'This email you will use to log in and recover your password'
 'Use a strong password to improve the protection of your personal data': 'Use a strong password to improve the protection of your personal data'

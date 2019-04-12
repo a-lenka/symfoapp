@@ -52,9 +52,19 @@
             </div>
         </div>
 
-        {# Submit #}
+        {# Form footer #}
         <div class="row">
-            <div class="input-field col s12">
+            {# Remember me #}
+            <div class="input-field col s8">
+                <label for="remember_me">
+                    <input type="checkbox" id="remember_me" name="_remember_me"
+                           checked="checked">
+                    <span>{{ 'Remember me'|trans }}</span>
+                </label>
+            </div>
+
+            {# Submit #}
+            <div class="input-field right-align">
                 <button type="submit" class="btn waves-effect waves-light">
                     <i class="material-icons right">send</i>
                     {{ 'Login'|trans }}
