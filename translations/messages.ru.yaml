@@ -7,4 +7,7 @@
 'Invalid CSRF token.': 'Введенные данные не прошли проверку. Попробуйте еще раз, пожалуйста'
 'Login': 'Вход'
 'Password': 'Пароль'
+'Something wrong': 'Что-то не так'
+'This email you will use to log in and recover your password': 'Этот почтовый адрес будет использоваться для входа в систему и восстановления пароля'
+'Use a strong password to improve the protection of your personal data': 'Сложный пароль повышает безопасность ваших персональных данных'
 'Welcome': 'Добро пожаловать'

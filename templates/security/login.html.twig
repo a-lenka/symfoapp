@@ -6,22 +6,64 @@
     <h4>{{ "Login"|trans }}</h4>
 
     <form method="post">
-        {% if error %}
-            <div>
-                {{ error.messageKey|trans(error.messageData) }}
+        {# Email #}
+        <div class="row">
+            <div class="input-field col s12">
+                <i class="material-icons prefix">email</i>
+
+                <input type="email" id="email" name="email" required autofocus
+                       class="validate" value="{{ last_username }}">
+                <label for="email">{{ 'Email'|trans }}</label>
+
+                {% if error %}
+                    <span class="helper-text red-text text-darken-2">
+                        {{ error.messageKey|trans(error.messageData) }}
+                    </span>
+                {% else %}
+                    <span class="helper-text"
+                          data-success="Ok"
+                          data-error="{{ "Something wrong"|trans }}">
+                        {{ 'This email you will use to log in and recover your password'|trans }}
+                    </span>
+                {% endif %}
             </div>
-        {% endif %}
+        </div>
 
-        <label for="email">{{ "Email"|trans }}</label>
-        <input type="email" name="email" id="email"
-               value="{{ last_username }}" required autofocus>
+        {# Password #}
+        <div class="row">
+            <div class="input-field col s12">
+                <i class="material-icons prefix">security</i>
 
-        <label for="password">{{ "Password"|trans }}</label>
-        <input type="password" name="password" id="password" required>
+                <input type="password" id="password" name="password" required
+                       class="validate">
+                <label for="password">{{ 'Password'|trans }}</label>
 
+                {% if error %}
+                    <span class="helper-text red-text text-darken-2">
+                        {{ error.messageKey|trans(error.messageData) }}
+                    </span>
+                {% else %}
+                    <span class="helper-text"
+                          data-success="Ok"
+                          data-error="{{ "Something wrong"|trans }}">
+                        {{ 'Use a strong password to improve the protection of your personal data'|trans }}
+                    </span>
+                {% endif %}
+            </div>
+        </div>
+
+        {# Submit #}
+        <div class="row">
+            <div class="input-field col s12">
+                <button type="submit" class="btn waves-effect waves-light">
+                    <i class="material-icons right">send</i>
+                    {{ 'Login'|trans }}
+                </button>
+            </div>
+        </div>
+
+        {# Token #}
         <input type="hidden" name="_csrf_token"
                value="{{ csrf_token('authenticate') }}">
-
-        <button type="submit">{{ "Login"|trans }}</button>
     </form>
 {% endblock content %}
