@@ -19,9 +19,11 @@ require('../../node_modules/materialize-css/dist/js/materialize.min.js');
 // const $ = require('jquery');
 
 // Modules
-let Materializer = require('../js/modules/Materializer.js');
+import Materializer from '../js/modules/Materializer.js';
+import ModalWidget  from '../js/modules/ModalWidget.js';
 
 // Events
 document.addEventListener('DOMContentLoaded', function() {
     Materializer.initComponents();
+    ModalWidget.listenCallFormEvent();
 });

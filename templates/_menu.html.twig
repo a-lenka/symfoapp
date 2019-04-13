@@ -1,5 +1,5 @@
 {# Start Top Menu #}
-<nav>
+<nav class="modal-listeners">
     {# Top Menu #}
     <div class="nav-wrapper z-depth-2">
         {# Logo #}
@@ -26,7 +26,10 @@
             {# Hide on small screens #}
             <ul class="right hide-on-med-and-down">
                 <li>
-                    <a href="{{ path('login') }}">{{ 'Login'|trans }}</a>
+                    <a href="{{ path('login') }}" class="modal-trigger"
+                       data-target="materialize-modal">
+                        {{ 'Login'|trans }}
+                    </a>
                 </li>
 
                 <li>
@@ -69,3 +72,5 @@
     </ul>
 </div>
 {# End SideNav content #}
+
+<div id="materialize-modal" class="modal"></div>

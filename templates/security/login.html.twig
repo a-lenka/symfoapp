@@ -1,79 +1,73 @@
-{% extends 'base.html.twig' %}
+<h4>{{ "Login"|trans }}</h4>
 
-{% block title %}{{ "Login"|trans }}{% endblock title %}
+<form method="post">
+    {# Email #}
+    <div class="row">
+        <div class="input-field col s12">
+            <i class="material-icons prefix">email</i>
 
-{% block content %}
-    <h4>{{ "Login"|trans }}</h4>
+            <input type="email" id="email" name="email" required autofocus
+                   class="validate" value="{{ last_username }}">
+            <label for="email">{{ 'Email'|trans }}</label>
 
-    <form method="post">
-        {# Email #}
-        <div class="row">
-            <div class="input-field col s12">
-                <i class="material-icons prefix">email</i>
+            {% if error %}
+                <span class="helper-text red-text text-darken-2">
+                    {{ error.messageKey|trans(error.messageData) }}
+                </span>
+            {% else %}
+                <span class="helper-text"
+                      data-success="Ok"
+                      data-error="{{ "Something wrong"|trans }}">
+                    {{ 'This email you will use to log in and recover your password'|trans }}
+                </span>
+            {% endif %}
+        </div>
+    </div>
 
-                <input type="email" id="email" name="email" required autofocus
-                       class="validate" value="{{ last_username }}">
-                <label for="email">{{ 'Email'|trans }}</label>
+    {# Password #}
+    <div class="row">
+        <div class="input-field col s12">
+            <i class="material-icons prefix">security</i>
 
-                {% if error %}
-                    <span class="helper-text red-text text-darken-2">
-                        {{ error.messageKey|trans(error.messageData) }}
-                    </span>
-                {% else %}
-                    <span class="helper-text"
-                          data-success="Ok"
-                          data-error="{{ "Something wrong"|trans }}">
-                        {{ 'This email you will use to log in and recover your password'|trans }}
-                    </span>
-                {% endif %}
-            </div>
+            <input type="password" id="password" name="password" required
+                   class="validate">
+            <label for="password">{{ 'Password'|trans }}</label>
+
+            {% if error %}
+                <span class="helper-text red-text text-darken-2">
+                    {{ error.messageKey|trans(error.messageData) }}
+                </span>
+            {% else %}
+                <span class="helper-text"
+                      data-success="Ok"
+                      data-error="{{ "Something wrong"|trans }}">
+                    {{ 'Use a strong password to improve the protection of your personal data'|trans }}
+                </span>
+            {% endif %}
+        </div>
+    </div>
+
+    {# Form footer #}
+    <div class="modal-footer row">
+        {# Remember me #}
+        <div class="input-field col s6">
+            <label for="remember_me">
+                <input type="checkbox" id="remember_me" name="_remember_me"
+                       checked="checked">
+                <span>{{ 'Remember me'|trans }}</span>
+            </label>
         </div>
 
-        {# Password #}
-        <div class="row">
-            <div class="input-field col s12">
-                <i class="material-icons prefix">security</i>
-
-                <input type="password" id="password" name="password" required
-                       class="validate">
-                <label for="password">{{ 'Password'|trans }}</label>
-
-                {% if error %}
-                    <span class="helper-text red-text text-darken-2">
-                        {{ error.messageKey|trans(error.messageData) }}
-                    </span>
-                {% else %}
-                    <span class="helper-text"
-                          data-success="Ok"
-                          data-error="{{ "Something wrong"|trans }}">
-                        {{ 'Use a strong password to improve the protection of your personal data'|trans }}
-                    </span>
-                {% endif %}
-            </div>
+        {# Submit #}
+        <div class="input-field col s6">
+            <button type="submit" class="btn waves-effect waves-light">
+                <i class="material-icons right">send</i>
+                {{ 'Login'|trans }}
+            </button>
         </div>
+    </div>
 
-        {# Form footer #}
-        <div class="row">
-            {# Remember me #}
-            <div class="input-field col s8">
-                <label for="remember_me">
-                    <input type="checkbox" id="remember_me" name="_remember_me"
-                           checked="checked">
-                    <span>{{ 'Remember me'|trans }}</span>
-                </label>
-            </div>
-
-            {# Submit #}
-            <div class="input-field right-align">
-                <button type="submit" class="btn waves-effect waves-light">
-                    <i class="material-icons right">send</i>
-                    {{ 'Login'|trans }}
-                </button>
-            </div>
-        </div>
-
-        {# Token #}
-        <input type="hidden" name="_csrf_token"
-               value="{{ csrf_token('authenticate') }}">
-    </form>
-{% endblock content %}
+    {# Token #}
+    <input type="hidden" name="_csrf_token"
+           value="{{ csrf_token('authenticate') }}">
+</form>

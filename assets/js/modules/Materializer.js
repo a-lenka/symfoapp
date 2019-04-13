@@ -20,4 +20,4 @@ let Materializer = function() {
 }();
 
 
-module.exports = Materializer;
+export default Materializer;
