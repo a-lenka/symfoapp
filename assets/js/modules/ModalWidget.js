@@ -27,7 +27,12 @@ let ModalWidget = function() {
 
             // Since form is available on the page
             listener.setSubmitListener();
+            listener.setCancelSubmitListener();
         },
+
+        clear: function() {
+            modal.instance.innerHTML = '';
+        }
     };
 
     // Modal Container into which content will be inserted
@@ -88,6 +93,14 @@ let ModalWidget = function() {
             let formData = new FormData(form.instance);
             AjaxSender.sendPost(form.actionAttr, form.submitForm, formData);
         },
+
+        listenCancelSubmit: function() {
+            modal.clear();
+        },
+
+        setCancelSubmitListener: function() {
+            overlay.instance.addEventListener('click', listener.listenCancelSubmit);
+        }
     };
 
     // Modal form
@@ -107,6 +120,7 @@ let ModalWidget = function() {
         },
 
         callForm: function(xhr) {
+            modal.clear();
             modal.appendXhrContent(xhr);
         },
 
@@ -114,6 +128,7 @@ let ModalWidget = function() {
             if(listener.confirmRedirectOnSuccess(xhr)) {
                 window.location.reload(true);
             } else {
+                modal.clear();
                 modal.appendXhrContent(xhr);
             }
         },
@@ -126,7 +141,6 @@ let ModalWidget = function() {
         get instance() {
             return document.getElementsByClassName(overlay.class)[0];
         },
-
     };
 
     // Fire Modal events
