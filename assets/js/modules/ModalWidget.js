@@ -59,6 +59,10 @@ let ModalWidget = function() {
             return event.target.getAttribute(trigger.attrName) === trigger.attrValue;
         },
 
+        confirmRedirectOnSuccess: function(xhr) {
+            return xhr.responseText.match("^<!DOCTYPE html>");
+        },
+
         setCallFormListener: function() {
             listener.getLocation.addEventListener('click', listener.listenCallFormEvent);
         },
@@ -107,7 +111,11 @@ let ModalWidget = function() {
         },
 
         submitForm: function(xhr) {
-            modal.appendXhrContent(xhr);
+            if(listener.confirmRedirectOnSuccess(xhr)) {
+                window.location.reload(true);
+            } else {
+                modal.appendXhrContent(xhr);
+            }
         },
     };
 
