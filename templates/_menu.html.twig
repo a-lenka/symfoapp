@@ -21,17 +21,21 @@
             </a>
         </div>
 
+        {# Security Actions trigger #}
+        <div class="right">
+            <a href="#" class="dropdown-trigger" data-target="dropdown-security">
+                {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+                    <i class="material-icons">person</i>
+                {% else %}
+                    <i class="material-icons">person_outline</i>
+                {% endif %}
+            </a>
+        </div>
+
         {# Top Menu content #}
         <div>
             {# Hide on small screens #}
             <ul class="right hide-on-med-and-down">
-                <li>
-                    <a href="{{ path('login') }}" class="modal-trigger"
-                       data-target="materialize-modal">
-                        {{ 'Login'|trans }}
-                    </a>
-                </li>
-
                 <li>
                     <a href="{{ path('home_index') }}">{{ 'Home'|trans }}</a>
                 </li>
@@ -59,6 +63,18 @@
 </ul>
 {# End Locale Switcher content #}
 
+{# Start Dropdown Security content #}
+<ul id="dropdown-security" class="dropdown-content">
+    <li>
+        {% if not is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+            <a href="{{ path('login') }}" class="modal-trigger"
+               data-target="materialize-modal">
+                {{ 'Login'|trans }}
+            </a>
+        {% endif %}
+    </li>
+</ul>
+{# End Dropdown Security content #}
 
 {# Start SideNav content #}
 <div>
