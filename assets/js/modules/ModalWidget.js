@@ -1,5 +1,4 @@
 // Imports
-import Logger     from '../../js/modules/Logger';
 import AjaxSender from '../../js/modules/AjaxSender';
 
 /**
@@ -20,11 +19,15 @@ let ModalWidget = function() {
             return document.getElementById(modal.id);
         },
 
-        init: function(xhr) {
+        appendXhrContent: function(xhr) {
             let elem = container.instance;
+
             elem.innerHTML = xhr.responseText;
             modal.instance.append(elem);
-        }
+
+            // Since form is available on the page
+            listener.setSubmitListener();
+        },
     };
 
     // Modal Container into which content will be inserted
@@ -44,25 +47,78 @@ let ModalWidget = function() {
         class: 'modal-listeners',
         tag  : 'nav',
 
-        get location() {
+        get getLocation() {
             return document.getElementsByClassName(listener.class)[0];
         },
 
-        confirmEvent: function(event) {
+        get postLocation() {
+            return form.instance;
+        },
+
+        confirmCallFormEvent: function(event) {
             return event.target.getAttribute(trigger.attrName) === trigger.attrValue;
+        },
+
+        setCallFormListener: function() {
+            listener.getLocation.addEventListener('click', listener.listenCallFormEvent);
         },
 
         listenCallFormEvent: function(event) {
 
-            if(event && listener.confirmEvent(event)) {
+            if(event && listener.confirmCallFormEvent(event)) {
                 event.preventDefault();
 
+                // To have path for any form, not only login
                 let path = event.target.pathname.trim();
-                AjaxSender.sendGet(path, modal.init);
+                AjaxSender.sendGet(path, form.callForm);
             }
-
-            listener.location.addEventListener('click', listener.listenCallFormEvent);
         },
+
+        setSubmitListener: function() {
+            listener.postLocation.addEventListener('submit', listener.listenSubmitFormEvent);
+        },
+
+        listenSubmitFormEvent: function(event) {
+            event.preventDefault();
+
+            let formData = new FormData(form.instance);
+            AjaxSender.sendPost(form.actionAttr, form.submitForm, formData);
+        },
+    };
+
+    // Modal form
+    let form = {
+        get instance() {
+            if(document.forms) {
+                return document.forms[0];
+            }
+        },
+
+        get actionAttr() {
+            return form.instance.getAttribute('action');
+        },
+
+        get submitButton() {
+            return document.querySelectorAll('button[type="submit"]')[0];
+        },
+
+        callForm: function(xhr) {
+            modal.appendXhrContent(xhr);
+        },
+
+        submitForm: function(xhr) {
+            modal.appendXhrContent(xhr);
+        },
+    };
+
+    // Modal overlay
+    let overlay = {
+        class: 'modal-overlay',
+
+        get instance() {
+            return document.getElementsByClassName(overlay.class)[0];
+        },
+
     };
 
     // Fire Modal events
@@ -73,7 +129,7 @@ let ModalWidget = function() {
 
 
     return {
-        listenCallFormEvent: listener.listenCallFormEvent,
+        listenCallFormEvent: listener.setCallFormListener,
     };
 }();
 
