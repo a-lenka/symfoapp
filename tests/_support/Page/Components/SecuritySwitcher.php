@@ -20,6 +20,10 @@ class SecuritySwitcher
         'id' => '#dropdown-security',
     ];
 
+    public static $form = [
+        'submit_button' => 'button[type="submit"]',
+    ];
+
     /** @var array $loginForm - Login form data */
     public static $loginForm = [
         'email_field_text'    => 'Email',
