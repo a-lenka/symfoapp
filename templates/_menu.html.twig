@@ -1,5 +1,5 @@
 {# Start Top Menu #}
-<nav>
+<nav class="modal-listeners">
     {# Top Menu #}
     <div class="nav-wrapper z-depth-2">
         {# Logo #}
@@ -18,6 +18,17 @@
         <div class="right">
             <a href="" class="dropdown-trigger" data-target="dropdown-locales">
                 <i class="material-icons">language</i>
+            </a>
+        </div>
+
+        {# Security Actions trigger #}
+        <div class="right">
+            <a href="#" class="dropdown-trigger" data-target="dropdown-security">
+                {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+                    <i class="material-icons">person</i>
+                {% else %}
+                    <i class="material-icons">person_outline</i>
+                {% endif %}
             </a>
         </div>
 
@@ -52,6 +63,22 @@
 </ul>
 {# End Locale Switcher content #}
 
+{# Start Dropdown Security content #}
+<ul id="dropdown-security" class="dropdown-content">
+    <li>
+        {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+            <a href="{{ path('logout') }}">
+                {{ 'Logout'|trans }}
+            </a>
+        {% else %}
+            <a href="{{ path('login') }}" class="modal-trigger"
+               data-target="materialize-modal">
+                {{ 'Login'|trans }}
+            </a>
+        {% endif %}
+    </li>
+</ul>
+{# End Dropdown Security content #}
 
 {# Start SideNav content #}
 <div>
@@ -65,3 +92,5 @@
     </ul>
 </div>
 {# End SideNav content #}
+
+<div id="materialize-modal" class="modal"></div>

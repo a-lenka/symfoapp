@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="{{ app.request.attributes.get('_locale') }}">
     <head>
         <meta charset="UTF-8">
         <title>{% block title %}{{ "Welcome"|trans }}!{% endblock title %}</title>
@@ -29,7 +29,9 @@
         {% endblock menu %}
 
         {# Main page content #}
-        <main>{% block content %}{% endblock content %}</main>
+        <main class="container">
+            {% block content %}{% endblock content %}
+        </main>
 
         {# Footer #}
         {% block footer %}
