@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
@@ -22,11 +23,12 @@ class SecurityController extends AbstractController
      *     requirements={"_locale": "%app_locales%"},
      * )
      *
+     * @param Request $request
      * @param AuthenticationUtils $authenticationUtils
      *
      * @return Response
      */
-    public function login(AuthenticationUtils $authenticationUtils): Response
+    public function login(Request $request, AuthenticationUtils $authenticationUtils): Response
     {
         // Get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
@@ -34,7 +36,11 @@ class SecurityController extends AbstractController
         // Last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
 
-        return $this->render('security/login.html.twig', [
+        $template = $request->isXmlHttpRequest()
+            ? 'security/_login_form.html.twig'
+            : 'security/login.html.twig';
+
+        return $this->render($template, [
             'last_username' => $lastUsername,
             'error'         => $error,
         ]);

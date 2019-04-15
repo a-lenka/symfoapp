@@ -25,6 +25,8 @@ let AjaxSender = function() {
         xhr.open(method, path);
         // To pass `xhr.responseText`  into `modal.init(xhr)`
         xhr.runCallback = success;
+        // To `isXmlHttpRequest()` works correctly
+        xhr.setRequestHeader("X-Requested-With","XMLHttpRequest");
         xhr.send(data);
 
         xhr.onreadystatechange = function() {
