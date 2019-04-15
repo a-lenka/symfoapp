@@ -65,18 +65,22 @@
 
 {# Start Dropdown Security content #}
 <ul id="dropdown-security" class="dropdown-content">
-    <li>
-        {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
-            <a href="{{ path('logout') }}">
-                {{ 'Logout'|trans }}
-            </a>
-        {% else %}
+    {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+        <li>
+            <a href="{{ path('account') }}">{{ 'Account'|trans }}</a>
+        </li>
+
+        <li>
+            <a href="{{ path('logout') }}">{{ 'Logout'|trans }}</a>
+        </li>
+    {% else %}
+        <li>
             <a href="{{ path('login') }}" class="modal-trigger"
                data-target="materialize-modal">
                 {{ 'Login'|trans }}
             </a>
-        {% endif %}
-    </li>
+        </li>
+    {% endif %}
 </ul>
 {# End Dropdown Security content #}
 
