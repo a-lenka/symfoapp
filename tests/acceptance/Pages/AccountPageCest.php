@@ -24,6 +24,8 @@ class AccountPageCest
         $I->see($vars['header_text'], $vars['header_tag']);
     }
 
+    /** TODO: Write tests for Account page when WebDriver will be work again */
+
 
     /**
      * @return array
