@@ -67,7 +67,10 @@
 <ul id="dropdown-security" class="dropdown-content">
     {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
         <li>
-            <a href="{{ path('account') }}">{{ 'Account'|trans }}</a>
+            <a href="{{ path('account') }}" class="modal-trigger"
+               data-target="materialize-modal">
+                {{ 'Account'|trans }}
+            </a>
         </li>
 
         <li>

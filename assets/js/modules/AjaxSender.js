@@ -27,12 +27,16 @@ let AjaxSender = function() {
         xhr.runCallback = success;
         // To `isXmlHttpRequest()` works correctly
         xhr.setRequestHeader("X-Requested-With","XMLHttpRequest");
+        // Without this, if the root click `Account` he see it in the Modal
+        xhr.url = path;
         xhr.send(data);
 
         xhr.onreadystatechange = function() {
             if(xhr.readyState !== 4) {return;}
 
-            if(xhr.readyState === 4 && xhr.status === 200) {
+            if(xhr.readyState === 4
+                && xhr.status === 200
+                || xhr.status === 403) {
                 Logger.logXhrData(xhr);
 
                 xhr.runCallback(xhr);

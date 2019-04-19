@@ -26,8 +26,10 @@ let ModalWidget = function() {
             modal.instance.append(elem);
 
             // Since form is available on the page
-            listener.setSubmitListener();
-            listener.setCancelSubmitListener();
+            if(form.instance) {
+                listener.setSubmitListener();
+                listener.setCancelSubmitListener();
+            }
         },
 
         clear: function() {
@@ -64,7 +66,7 @@ let ModalWidget = function() {
             return event.target.getAttribute(trigger.attrName) === trigger.attrValue;
         },
 
-        confirmRedirectOnSuccess: function(xhr) {
+        confirmFullPageInResponse: function(xhr) {
             return xhr.responseText.match("^<!DOCTYPE html>");
         },
 
@@ -120,12 +122,16 @@ let ModalWidget = function() {
         },
 
         callForm: function(xhr) {
-            modal.clear();
-            modal.appendXhrContent(xhr);
+            if(listener.confirmFullPageInResponse(xhr)) {
+                window.location.href = xhr.url;
+            } else {
+                modal.clear();
+                modal.appendXhrContent(xhr);
+            }
         },
 
         submitForm: function(xhr) {
-            if(listener.confirmRedirectOnSuccess(xhr)) {
+            if(listener.confirmFullPageInResponse(xhr)) {
                 window.location.reload(true);
             } else {
                 modal.clear();

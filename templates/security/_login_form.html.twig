@@ -1,5 +1,13 @@
 <h4>{{ "Login"|trans }}</h4>
 
+{% if forbidden_message is defined %}
+    <p>
+        <span class="helper-text red-text text-darken-2">
+            {{ forbidden_message|trans }}
+        </span>
+    </p>
+{% endif %}
+
 <form method="post" action="{{ path("login") }}">
     {# Email #}
     <div class="row">
