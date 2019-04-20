@@ -100,6 +100,7 @@ let ModalWidget = function() {
 
         listenCancelSubmit: function() {
             modal.clear();
+            window.history.back();
         },
 
         setCancelSubmitListener: function() {
