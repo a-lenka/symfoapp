@@ -23,6 +23,7 @@ let ModalWidget = function() {
             let elem = container.instance;
 
             elem.innerHTML = xhr.responseText;
+            modal.clear();
             modal.instance.append(elem);
 
             // Since form is available on the page
@@ -81,7 +82,7 @@ let ModalWidget = function() {
 
                 // To have path for any form, not only login
                 let path = event.target.pathname.trim();
-                AjaxSender.sendGet(path, form.callForm);
+                AjaxSender.sendGet(path, modal.appendXhrContent);
             }
         },
 
@@ -93,7 +94,8 @@ let ModalWidget = function() {
             event.preventDefault();
 
             let formData = new FormData(form.instance);
-            AjaxSender.sendPost(form.actionAttr, form.submitForm, formData);
+            let path = form.actionAttr;
+            AjaxSender.sendPost(path, modal.appendXhrContent, formData);
         },
 
         listenCancelSubmit: function() {
@@ -119,24 +121,6 @@ let ModalWidget = function() {
 
         get submitButton() {
             return document.querySelectorAll('button[type="submit"]')[0];
-        },
-
-        callForm: function(xhr) {
-            if(listener.confirmFullPageInResponse(xhr)) {
-                window.location.href = xhr.url;
-            } else {
-                modal.clear();
-                modal.appendXhrContent(xhr);
-            }
-        },
-
-        submitForm: function(xhr) {
-            if(listener.confirmFullPageInResponse(xhr)) {
-                window.location.reload(true);
-            } else {
-                modal.clear();
-                modal.appendXhrContent(xhr);
-            }
         },
     };
 

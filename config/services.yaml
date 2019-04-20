@@ -32,3 +32,9 @@ services:
 
     # Add more service definitions when explicit configuration is needed.
     # Please note that last definitions always *replace* previous ones
+
+    # Add Request path to Response header
+    app.kernel.response_metadata_populator:
+        class: App\EventListener\ResponseMetadataPopulator
+        tags:
+            - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
