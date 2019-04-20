@@ -1,8 +1,8 @@
 <h4>{{ "Login"|trans }}</h4>
 
 {% if forbidden_message is defined %}
-    <p>
-        <span class="helper-text red-text text-darken-2">
+    <p class="message-box error">
+        <span class="helper-text red-text text-darken-2 message-box error">
             {{ forbidden_message|trans }}
         </span>
     </p>
