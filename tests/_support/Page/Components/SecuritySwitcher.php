@@ -21,18 +21,22 @@ class SecuritySwitcher
     ];
 
     public static $form = [
+        'form_tag'      => 'form',
         'submit_button' => 'button[type="submit"]',
     ];
 
     /** @var array $loginForm - Login form data */
     public static $loginForm = [
+        'header_text'         => 'Login',
+        'header_tag'          => 'h4',
         'email_field_text'    => 'Email',
         'wrong_email_message' => 'Email could not be found',
         'password_field_text' => 'Password',
         'wrong_pswd_message'  => 'Invalid credentials',
         'remember_me_cb_text' => 'Remember me',
         'submit_button_text'  => 'Login',
-        'submit_button_tag'   => 'button'
+        'submit_button_tag'   => 'button',
+        'forbidden_error_msg' => 'We are sorry, but you do not have access to this page. Please, login',
     ];
 
 
@@ -47,5 +51,9 @@ class SecuritySwitcher
     public static $logout = [
         'url' => '/en/logout',
         'list_item_text' => 'Logout',
+    ];
+
+    public static $account = [
+        'link_text' => 'Account',
     ];
 }

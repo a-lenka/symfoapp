@@ -14,7 +14,7 @@ let AjaxSender = function() {
      *
      * @param {string}   method          - Request method
      * @param {string}   path            - Request path
-     * @param {callback} success         - Success callback
+     * @param {Function} success         - Success callback
      * @param {(FormData|Object)} [data] - Request data
      */
     let sendRequest = function(method, path, success, data) {
@@ -23,17 +23,27 @@ let AjaxSender = function() {
 
         let xhr = new XMLHttpRequest();
         xhr.open(method, path);
-        // To pass `xhr.responseText`  into `modal.init(xhr)`
-        xhr.runCallback = success;
+        // To `isXmlHttpRequest()` works correctly
+        xhr.setRequestHeader('X-Requested-With','XMLHttpRequest');
         xhr.send(data);
 
         xhr.onreadystatechange = function() {
             if(xhr.readyState !== 4) {return;}
 
-            if(xhr.readyState === 4 && xhr.status === 200) {
+            if(xhr.readyState === 4
+                && xhr.status === 200
+                || xhr.status === 403) {
+
                 Logger.logXhrData(xhr);
 
-                xhr.runCallback(xhr);
+                let path = xhr.getResponseHeader('X-Target-URL');
+                window.history.pushState({route: path}, 'Ajax Request', path);
+
+                if(xhr.responseText.match('^<!DOCTYPE html>')) {
+                    window.location.reload(true);
+                } else {
+                    success(xhr);
+                }
             }
 
             if(xhr.status !== 200) {

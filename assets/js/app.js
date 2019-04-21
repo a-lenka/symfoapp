@@ -27,3 +27,8 @@ document.addEventListener('DOMContentLoaded', function() {
     Materializer.initComponents();
     ModalWidget.listenCallFormEvent();
 });
+
+// Allow using history navigation in browser
+window.onpopstate = function(event) {
+    window.location.reload(true);
+};

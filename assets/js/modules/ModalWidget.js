@@ -23,11 +23,14 @@ let ModalWidget = function() {
             let elem = container.instance;
 
             elem.innerHTML = xhr.responseText;
+            modal.clear();
             modal.instance.append(elem);
 
             // Since form is available on the page
-            listener.setSubmitListener();
-            listener.setCancelSubmitListener();
+            if(form.instance) {
+                listener.setSubmitListener();
+                listener.setCancelSubmitListener();
+            }
         },
 
         clear: function() {
@@ -64,7 +67,7 @@ let ModalWidget = function() {
             return event.target.getAttribute(trigger.attrName) === trigger.attrValue;
         },
 
-        confirmRedirectOnSuccess: function(xhr) {
+        confirmFullPageInResponse: function(xhr) {
             return xhr.responseText.match("^<!DOCTYPE html>");
         },
 
@@ -79,7 +82,7 @@ let ModalWidget = function() {
 
                 // To have path for any form, not only login
                 let path = event.target.pathname.trim();
-                AjaxSender.sendGet(path, form.callForm);
+                AjaxSender.sendGet(path, modal.appendXhrContent);
             }
         },
 
@@ -91,11 +94,13 @@ let ModalWidget = function() {
             event.preventDefault();
 
             let formData = new FormData(form.instance);
-            AjaxSender.sendPost(form.actionAttr, form.submitForm, formData);
+            let path = form.actionAttr;
+            AjaxSender.sendPost(path, modal.appendXhrContent, formData);
         },
 
         listenCancelSubmit: function() {
             modal.clear();
+            window.history.back();
         },
 
         setCancelSubmitListener: function() {
@@ -117,20 +122,6 @@ let ModalWidget = function() {
 
         get submitButton() {
             return document.querySelectorAll('button[type="submit"]')[0];
-        },
-
-        callForm: function(xhr) {
-            modal.clear();
-            modal.appendXhrContent(xhr);
-        },
-
-        submitForm: function(xhr) {
-            if(listener.confirmRedirectOnSuccess(xhr)) {
-                window.location.reload(true);
-            } else {
-                modal.clear();
-                modal.appendXhrContent(xhr);
-            }
         },
     };
 
