@@ -1,9 +1,24 @@
+{# TODO: Create separate template for Login action and Login after 403 exception #}
+
 <h4>{{ "Login"|trans }}</h4>
 
+{# see CustomExceptionController #}
 {% if forbidden_message is defined %}
     <p class="message-box error">
         <span class="helper-text red-text text-darken-2 message-box error">
             {{ forbidden_message|trans }}
+        </span>
+    </p>
+{% elseif error is empty %}
+    <p class="message-box success">
+        <span class="helper-text">
+            {{ "Welcome to your app"|trans }}
+        </span>
+    </p>
+{% else %}
+    <p class="message-box error">
+        <span class="helper-text red-text text-darken-2 message-box error">
+            {{ "Try again, please"|trans }}
         </span>
     </p>
 {% endif %}
