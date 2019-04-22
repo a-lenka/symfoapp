@@ -4,12 +4,14 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\RegistrationType;
+use App\Security\LoginFormAuthenticator;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Guard\GuardAuthenticatorHandler;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 /**
@@ -96,12 +98,16 @@ class SecurityController extends AbstractController
      *     requirements={"_locale": "%app_locales%"}
      * )
      *
+     * @param GuardAuthenticatorHandler    $guardHandler
+     * @param LoginFormAuthenticator       $authenticator
      * @param Request                      $request
      * @param UserPasswordEncoderInterface $passwordEncoder
      *
      * @return Response
      */
     public function register(
+        LoginFormAuthenticator $authenticator,
+        GuardAuthenticatorHandler $guardHandler,
         Request $request,
         UserPasswordEncoderInterface $passwordEncoder
     ): Response {
@@ -118,7 +124,12 @@ class SecurityController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
 
-            return $this->redirectToRoute('home_index');
+            return $guardHandler->authenticateUserAndHandleSuccess(
+                $user,
+                $request,
+                $authenticator,
+                'main'
+            );
         }
 
         $formPart = 'security/_form-register.html.twig';
