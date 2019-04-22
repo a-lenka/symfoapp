@@ -1,0 +1,14 @@
+<h4>{{ 'Registration'|trans }}</h4>
+
+{{ form_start(form, {'action': path('register')}) }}
+    {{ form_row(form.email) }}
+
+    {{ form_row(form.password.first) }}
+    {{ form_row(form.password.second) }}
+
+    <div class="modal-footer">
+        {{ form_row(form.termsAccepted) }}
+
+        {{ form_row(form.submit) }}
+    </div>
+{{ form_end(form) }}

@@ -11,6 +11,9 @@ let Materializer = function() {
      */
     let initComponents = function() {
         M.AutoInit();
+
+        let dropdowns = document.querySelectorAll('.dropdown-trigger');
+        M.Dropdown.init(dropdowns, {constrainWidth: false});
     };
 
 

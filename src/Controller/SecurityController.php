@@ -2,12 +2,14 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
+use App\Form\RegistrationType;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 /**
@@ -62,6 +64,47 @@ class SecurityController extends AbstractController
     {
         throw new Exception(
             'Don\'t forget to activate logout in security.yaml'
+        );
+    }
+
+
+    /**
+     * Controller is used to manage registration of new Users
+     *
+     * @Route("/{_locale}/register",
+     *     name="register",
+     *     methods="GET|POST",
+     *     requirements={"_locale": "%app_locales%"}
+     * )
+     *
+     * @param Request                      $request
+     * @param UserPasswordEncoderInterface $passwordEncoder
+     *
+     * @return Response
+     */
+    public function register(
+        Request $request,
+        UserPasswordEncoderInterface $passwordEncoder
+    ): Response {
+        $user = new User();
+        $form = $this->createForm(RegistrationType::class, $user);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $password = $passwordEncoder->encodePassword($user, $user->getPassword());
+            $user->setPassword($password);
+
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($user);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('home_index');
+        }
+
+        return $this->render(
+            'security/_form-register.html.twig',
+            ['form' => $form->createView()]
         );
     }
 }
