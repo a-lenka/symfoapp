@@ -43,7 +43,7 @@ class CustomExceptionController extends ExceptionController
         $code = $exception->getStatusCode();
 
         if($code === 403 && $request->isXmlHttpRequest()) {
-            $template = 'security/_login_form.html.twig';
+            $template = 'security/_form-login.html.twig';
 
             return new Response($this->twig->render($template, [
                 'forbidden_message' => 'We are sorry, but you do not have access to this page. Please, login',

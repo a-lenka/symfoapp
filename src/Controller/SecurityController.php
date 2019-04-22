@@ -19,6 +19,25 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 class SecurityController extends AbstractController
 {
     /**
+     * Returns only part of a template with a form
+     * to be inserted into a modal window (for Ajax Requests),
+     * or an entire page with a form inside
+     * to redirect or navigate through browser history
+     *
+     * @param Request   $request
+     * @param $formPart $string
+     *
+     * @return string
+     */
+    private function chooseTemplate($request, $formPart): string
+    {
+        return $request->isXmlHttpRequest()
+            ? $formPart
+            : 'security/form-page.html.twig';
+    }
+
+
+    /**
      * @Route("/{_locale}/login",
      *     name="login",
      *     methods="GET|POST",
@@ -39,11 +58,11 @@ class SecurityController extends AbstractController
         // Last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
 
-        $template = $request->isXmlHttpRequest()
-            ? 'security/_login_form.html.twig'
-            : 'security/login.html.twig';
+        $formPart = 'security/_form-login.html.twig';
+        $template = $this->chooseTemplate($request, $formPart);
 
         return $this->render($template, [
+            'form_part'     => $formPart,
             'last_username' => $lastUsername,
             'error'         => $error,
         ]);
@@ -102,9 +121,12 @@ class SecurityController extends AbstractController
             return $this->redirectToRoute('home_index');
         }
 
-        return $this->render(
-            'security/_form-register.html.twig',
-            ['form' => $form->createView()]
-        );
+        $formPart = 'security/_form-register.html.twig';
+        $template = $this->chooseTemplate($request, $formPart);
+
+        return $this->render($template, [
+            'form_part' => $formPart,
+            'form'      => $form->createView(),
+        ]);
     }
 }
