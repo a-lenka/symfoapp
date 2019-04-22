@@ -3,4 +3,4 @@ twig:
     debug: '%kernel.debug%'
     strict_variables: '%kernel.debug%'
     # Render Login form after `Access Denied` Exception
-    exception_controller: App\Controller\SecurityController::forbidden
+    exception_controller: App\Controller\CustomExceptionController::showAction

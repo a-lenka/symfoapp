@@ -15,12 +15,13 @@
             <i class="material-icons prefix">email</i>
 
             <input type="email" id="email" name="email" required autofocus
-                   class="validate" value="{{ last_username }}">
+                   class="validate"
+                   value="{% if last_username is defined %}{{ last_username }}{% endif %}">
             <label for="email">{{ 'Email'|trans }}</label>
 
-            {% if error %}
+            {% if error is defined %}
                 <span class="helper-text red-text text-darken-2">
-                    {{ error.messageKey|trans(error.messageData) }}
+                    {% if error %}{{ error.messageKey|trans(error.messageData) }}{% endif %}
                 </span>
             {% else %}
                 <span class="helper-text"
@@ -41,9 +42,9 @@
                    class="validate">
             <label for="password">{{ 'Password'|trans }}</label>
 
-            {% if error %}
+            {% if error is defined %}
                 <span class="helper-text red-text text-darken-2">
-                    {{ error.messageKey|trans(error.messageData) }}
+                    {% if error %}{{ error.messageKey|trans(error.messageData) }}{% endif %}
                 </span>
             {% else %}
                 <span class="helper-text"

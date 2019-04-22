@@ -38,3 +38,8 @@ services:
         class: App\EventListener\ResponseMetadataPopulator
         tags:
             - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
+
+    App\Controller\CustomExceptionController:
+        public: true
+        arguments:
+            $debug: '%kernel.debug%'
