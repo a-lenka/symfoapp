@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\RegistrationType;
+use App\Form\ResetPasswordType;
 use App\Security\LoginFormAuthenticator;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -133,6 +134,55 @@ class SecurityController extends AbstractController
         }
 
         $formPart = 'security/_form-register.html.twig';
+        $template = $this->chooseTemplate($request, $formPart);
+
+        return $this->render($template, [
+            'form_part' => $formPart,
+            'form'      => $form->createView(),
+        ]);
+    }
+
+
+    /**
+     * Controller is used to change User's password
+     *
+     * @Route("/{_locale}/reset",
+     *     name="reset",
+     *     methods="GET|POST",
+     *     requirements={"_locale": "%app_locales%"}
+     * )
+     * @param Request                      $request
+     * @param UserPasswordEncoderInterface $encoder
+     *
+     * @return Response
+     * @throws \Twig_Error_Loader
+     * @throws \Twig_Error_Runtime
+     * @throws \Twig_Error_Syntax
+     */
+    public function resetPassword(
+        Request $request,
+        UserPasswordEncoderInterface $encoder
+    ): Response {
+        $user = $this->getUser();
+
+        $form = $this->createForm(ResetPasswordType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $user->setPassword(
+                $encoder->encodePassword(
+                    $user,
+                    $form->get('newPassword')->getData()
+                )
+            );
+
+            $this->getDoctrine()->getManager()->flush();
+
+            return $this->redirectToRoute('logout');
+        }
+
+        $formPart = 'security/_form-reset.html.twig';
         $template = $this->chooseTemplate($request, $formPart);
 
         return $this->render($template, [

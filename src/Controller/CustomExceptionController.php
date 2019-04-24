@@ -45,21 +45,21 @@ class CustomExceptionController extends ExceptionController
         if($code === 403 && $request->isXmlHttpRequest()) {
             $template = 'security/_form-login.html.twig';
 
-            return new Response($this->twig->render($template, [
+            $response = new Response($this->twig->render($template, [
                 'forbidden_message' => 'We are sorry, but you do not have access to this page. Please, login',
             ]), 200, ['Content-Type' => $request->getMimeType($request->getRequestFormat()) ?: 'text/html']);
+        } else {
+            $response = new Response($this->twig->render(
+                (string) $this->findTemplate($request, $request->getRequestFormat(), $code, $showException),
+                [
+                    'status_code' => $code,
+                    'status_text' => isset(Response::$statusTexts[$code]) ? Response::$statusTexts[$code] : '',
+                    'exception'   => $exception,
+                    'logger'      => $logger,
+                    'currentContent' => $currentContent,
+                ]
+            ), 200, ['Content-Type' => $request->getMimeType($request->getRequestFormat()) ?: 'text/html']);
         }
-
-        $response = new Response($this->twig->render(
-            (string) $this->findTemplate($request, $request->getRequestFormat(), $code, $showException),
-            [
-                'status_code' => $code,
-                'status_text' => isset(Response::$statusTexts[$code]) ? Response::$statusTexts[$code] : '',
-                'exception'   => $exception,
-                'logger'      => $logger,
-                'currentContent' => $currentContent,
-            ]
-        ), 200, ['Content-Type' => $request->getMimeType($request->getRequestFormat()) ?: 'text/html']);
 
         $response->headers->set('X-Target-URL', $request->getRequestUri());
 

@@ -76,6 +76,13 @@
         <li>
             <a href="{{ path('logout') }}">{{ 'Logout'|trans }}</a>
         </li>
+
+        <li>
+            <a href="{{ path('reset') }}" class="modal-trigger"
+               data-target="materialize-modal">
+                {{ 'Reset password'|trans }}
+            </a>
+        </li>
     {% else %}
         <li>
             <a href="{{ path('login') }}" class="modal-trigger"

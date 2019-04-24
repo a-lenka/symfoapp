@@ -52,6 +52,19 @@ class SecuritySwitcher
         'submit_button_tag'   => 'button',
     ];
 
+    /** @var array $resetForm - Reset password form data */
+    public static $resetForm = [
+        'header_text'         => 'Reset password',
+        'header_tag'          => 'h4',
+        'current_password_text' => 'Current password',
+        'new_password_text'     => 'New password',
+        'confirm_password_text' => 'Confirm new password',
+        'submit_button_text'  => 'Reset password',
+        'submit_button_tag'   => 'button',
+        'wrong_curr_pswd_msg' => "This value should be the user's current password",
+        'mismatch_pswd_msg'   => 'This value is not valid.'
+    ];
+
 
     /** @var array $login - Login data */
     public static $login = [
@@ -73,5 +86,11 @@ class SecuritySwitcher
 
     public static $account = [
         'link_text' => 'Account',
+    ];
+
+    /** @var array $reset - Reset data */
+    public static $reset = [
+        'url' => '/en/reset',
+        'list_item_text' => 'Reset password'
     ];
 }
