@@ -8,10 +8,10 @@ use App\Tests\Page\Home;
 use App\Tests\Page\Userlist;
 
 /**
- * Class UserCest
+ * Class UserShowListCest
  * @package App\Tests\Functional\Controller
  */
-class UserCest
+class UserShowListCest
 {
     /**
      * @param FunctionalTester $I

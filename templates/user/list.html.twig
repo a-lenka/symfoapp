@@ -9,6 +9,8 @@
         <thead>
             <tr>
                 {{ include('user/_table-headers.html.twig') }}
+
+                <th scope="col">{{ 'Actions'|trans }}</th>
             </tr>
         </thead>
 
@@ -16,6 +18,14 @@
             {% for user in users %}
                 <tr>
                     {{ include('user/_table-row.html.twig') }}
+
+                    {# User actions field #}
+                    <td class="center-align">
+                        <a href="{{ path('user_details', {'id': user.id }) }}" class="modal-trigger"
+                           data-target="materialize-modal">
+                            <i class="material-icons">info_outline</i>
+                        </a>
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>

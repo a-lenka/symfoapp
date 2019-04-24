@@ -25,10 +25,11 @@ import ModalWidget  from '../js/modules/ModalWidget.js';
 // Events
 document.addEventListener('DOMContentLoaded', function() {
     Materializer.initComponents();
-    ModalWidget.listenCallFormEvent();
+    ModalWidget.listenCallModalEvent();
 });
 
 // Allow using history navigation in browser
 window.onpopstate = function(event) {
-    window.location.reload(true);
+    console.log(event);
+    //window.location.reload(true);
 };
