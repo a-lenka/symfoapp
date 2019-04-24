@@ -26,10 +26,14 @@ let ModalWidget = function() {
             modal.clear();
             modal.instance.append(elem);
 
-            // Since form is available on the page
-            if(form.instance) {
-                listener.setSubmitListener();
-                listener.setCancelSubmitListener();
+            // Delete modal content after overlay click
+            if(overlay.instance) {
+                listener.setCancelModalListener();
+
+                // Since form is available on the page
+                if(form.instance) {
+                    listener.setSubmitListener();
+                }
             }
         },
 
@@ -53,7 +57,7 @@ let ModalWidget = function() {
     // Listens Modal Events
     let listener = {
         class: 'modal-listeners',
-        tag  : 'nav',
+        tag  : 'body',
 
         get getLocation() {
             return document.getElementsByClassName(listener.class)[0];
@@ -63,7 +67,8 @@ let ModalWidget = function() {
             return form.instance;
         },
 
-        confirmCallFormEvent: function(event) {
+        confirmCallModalEvent: function(event) {
+            console.log(event);
             return event.target.getAttribute(trigger.attrName) === trigger.attrValue;
         },
 
@@ -77,10 +82,10 @@ let ModalWidget = function() {
 
         listenCallModalEvent: function(event) {
 
-            if(event && listener.confirmCallFormEvent(event)) {
+            if(event && listener.confirmCallModalEvent(event)) {
                 event.preventDefault();
 
-                // To have path for any form, not only login
+                // To have path for any modals
                 let path = event.target.pathname.trim();
                 AjaxSender.sendGet(path, modal.appendXhrContent);
             }
@@ -98,14 +103,14 @@ let ModalWidget = function() {
             AjaxSender.sendPost(path, modal.appendXhrContent, formData);
         },
 
-        listenCancelSubmit: function() {
+        listenCancelModal: function() {
             modal.clear();
             window.history.back();
         },
 
-        setCancelSubmitListener: function() {
-            overlay.instance.addEventListener('click', listener.listenCancelSubmit);
-        }
+        setCancelModalListener: function() {
+            overlay.instance.addEventListener('click', listener.listenCancelModal);
+        },
     };
 
     // Modal form

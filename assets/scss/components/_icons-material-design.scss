@@ -1,0 +1,7 @@
+/* This is needed for some mobile phones to display the Google Icon font properly */
+.material-icons {
+    text-rendering: optimizeLegibility;
+    font-feature-settings: 'liga';
+    // Click Event from the icon does not have path for Ajax Requests
+    pointer-events: none;
+}

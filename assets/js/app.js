@@ -30,5 +30,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Allow using history navigation in browser
 window.onpopstate = function(event) {
-    window.location.reload(true);
+    console.log(event);
+    //window.location.reload(true);
 };
