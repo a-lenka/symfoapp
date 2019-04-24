@@ -27,6 +27,7 @@
 'Terms accepted': 'Условия приняты'
 'This email you will use to log in and recover your password': 'Этот почтовый адрес будет использоваться для входа в систему и восстановления пароля'
 'This value is not valid.': 'Это значение недопустимо'
+"This value should be the user's current password.": 'Это значение должно быть текущим паролем пользователя'
 'Try again, please': 'Попробуйте еще раз, пожалуйста'
 'Use a strong password to improve the protection of your personal data': 'Сложный пароль повышает безопасность ваших персональных данных'
 'We are sorry, but you do not have access to this page. Please, login': 'Простите, но у Вас нет прав для просмотра этой страницы'
