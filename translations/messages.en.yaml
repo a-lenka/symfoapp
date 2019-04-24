@@ -10,6 +10,7 @@
 'Enter your password, please': 'Enter your password, please'
 'Home': 'Home'
 'Home page': 'Home page'
+'ID': 'ID'
 'Invalid credentials.': 'Invalid credentials'
 'Invalid CSRF token.': 'The entered data is not verified. Try again please'
 'Login': 'Login'
@@ -23,6 +24,7 @@
 'Repeat password': 'Repeat password'
 'Repeat your password, please': 'Repeat your password, please'
 'Reset password': 'Reset password'
+'Roles': 'Roles'
 'Something wrong': 'Something wrong'
 'Terms accepted': 'Terms accepted'
 'This email you will use to log in and recover your password': 'This email you will use to log in and recover your password'
@@ -30,6 +32,7 @@
 "This value should be the user's current password.": "This value should be the user's current password"
 'Try again, please': 'Try again, please'
 'Use a strong password to improve the protection of your personal data': 'Use a strong password to improve the protection of your personal data'
+'Users': 'Users'
 'We are sorry, but you do not have access to this page. Please, login': 'We are sorry, but you do not have access to this page. Please, login'
 'Welcome': 'Welcome'
 'Welcome to your app': 'Welcome to your app'
