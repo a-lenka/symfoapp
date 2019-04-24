@@ -42,6 +42,7 @@ $primary-color-dark: darken($primary-color, 15%) !default;
 
 $secondary-color: color("teal", "lighten-1") !default;
 $success-color: color("green", "base") !default;
+$success-bg-color: color("green", "lighten-5") !default;
 $error-color: color("red", "base") !default;
 $error-bg-color: color("materialize-red", "lighten-5") !default;
 $link-color: color("light-blue", "darken-1") !default;

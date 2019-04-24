@@ -1,26 +1,43 @@
+{# TODO: Create separate template for Login action and Login after 403 exception #}
+
 <h4>{{ "Login"|trans }}</h4>
 
+{# see CustomExceptionController #}
 {% if forbidden_message is defined %}
     <p class="message-box error">
         <span class="helper-text red-text text-darken-2 message-box error">
             {{ forbidden_message|trans }}
         </span>
     </p>
+{% elseif error is empty %}
+    <p class="message-box success">
+        <span class="helper-text">
+            {{ "Welcome to your app"|trans }}
+        </span>
+    </p>
+{% else %}
+    <p class="message-box error">
+        <span class="helper-text red-text text-darken-2 message-box error">
+            {{ "Try again, please"|trans }}
+        </span>
+    </p>
 {% endif %}
 
-<form method="post" action="{{ path("login") }}">
+<form method="post" action="{{ path("login") }}"
+      class="col s12">
     {# Email #}
     <div class="row">
         <div class="input-field col s12">
             <i class="material-icons prefix">email</i>
 
             <input type="email" id="email" name="email" required autofocus
-                   class="validate" value="{{ last_username }}">
+                   class="validate"
+                   value="{% if last_username is defined %}{{ last_username }}{% endif %}">
             <label for="email">{{ 'Email'|trans }}</label>
 
-            {% if error %}
+            {% if error is defined %}
                 <span class="helper-text red-text text-darken-2">
-                    {{ error.messageKey|trans(error.messageData) }}
+                    {% if error %}{{ error.messageKey|trans(error.messageData) }}{% endif %}
                 </span>
             {% else %}
                 <span class="helper-text"
@@ -41,9 +58,9 @@
                    class="validate">
             <label for="password">{{ 'Password'|trans }}</label>
 
-            {% if error %}
+            {% if error is defined %}
                 <span class="helper-text red-text text-darken-2">
-                    {{ error.messageKey|trans(error.messageData) }}
+                    {% if error %}{{ error.messageKey|trans(error.messageData) }}{% endif %}
                 </span>
             {% else %}
                 <span class="helper-text"

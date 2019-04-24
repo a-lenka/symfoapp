@@ -1,0 +1,244 @@
+{# see https://github.com/symfony/symfony/blob/master/src/Symfony/Bridge/Twig/Resources/views/Form/form_div_layout.html.twig #}
+{# {{ dump(_context|keys) }} - shows available vars #}
+
+{# Simple #}
+{%- block form_widget_simple -%}
+    {%- set type = type|default('text') -%}
+
+    {# Add class validate #}
+    {%- set custom_class = (attr.class|default('') ~ ' validate')|trim -%}
+    {%- set custom_attr  = { class: custom_class } -%}
+    {%- set attr         = attr|merge(custom_attr) -%}
+
+    {%- if type == 'range' or type == 'color' -%}
+        {# Attribute 'required' is not supported #}
+        {%- set required = false -%}
+    {%- endif -%}
+
+    <input type="{{ type }}" {{ block('widget_attributes') }}
+        {%- if value is not empty -%} value="{{ value }}"{%- endif -%}
+    >
+{%- endblock form_widget_simple -%}
+
+
+{# Email #}
+{%- block email_widget -%}
+    {%- set type = type|default('email') -%}
+    {# Add autofocus #}
+    {%- set attr = { 'autofocus': true } -%}
+
+    <i class="material-icons prefix">email</i>
+    {{ block('form_widget_simple') }}
+{%- endblock email_widget -%}
+
+
+{# Password #}
+{%- block password_widget -%}
+    {%- set type = type|default('password') -%}
+
+    <i class="material-icons prefix">security</i>
+    {{ block('form_widget_simple') }}
+{%- endblock password_widget -%}
+
+
+{# Checkbox #}
+{%- block checkbox_widget -%}
+    {%- if not compound -%}
+        {%- set label_attr = label_attr|merge({'for': id}) -%}
+    {%- endif -%}
+
+    {# Wrap checkbox into label and div with grid params #}
+    {% filter spaceless %}
+        <div class="input-field col s6">
+            <label for="{{ id }}">
+                <input type="checkbox" {{ block('widget_attributes') }}
+                    {%- if value is defined -%} value="{{ value }}"{%- endif -%}
+                    {%- if checked -%} checked="checked"{%- endif -%}
+                >
+
+                <span>{{- label|trans -}}</span>
+            </label>
+        </div>
+    {% endfilter %}
+{%- endblock checkbox_widget -%}
+
+
+{# Button #}
+{%- block button_widget -%}
+    {%- if label is empty -%}
+        {%- if label_format is not empty -%}
+            {% set label = label_format|replace({
+                '%name%': name,
+                '%id%': id,
+            }) %}
+        {%- elseif label is same as(false) -%}
+            {% set translation_domain = false %}
+        {%- else -%}
+            {%- set label = name|humanize -%}
+        {%- endif -%}
+    {%- endif -%}
+
+    {%- set custom_class = 'btn waves-effect waves-light' -%}
+    {%- set attr = { 'class': custom_class } -%}
+
+    <button type="{{- type|default('button') -}}" {{ block('button_attributes') }}>
+        {{- translation_domain is same as(false) ? label : label|trans({}, translation_domain) -}}
+
+        {% if type == 'submit' %}
+            <i class="material-icons right">send</i>
+        {% endif %}
+    </button>
+{%- endblock button_widget -%}
+
+
+{# Button row (for Submit button too) #}
+{%- block button_row -%}
+    {# Add grid classes #}
+    {%- set custom_class = (attr.class|default('') ~ ' input-field col s6')|trim -%}
+    {%- set custom_attr  = { class: custom_class } -%}
+    {%- set attr = row_attr|default({})|merge(custom_attr) -%}
+
+    <div {% with attr %}{{ block('attributes') }}{% endwith %}>
+        {{- form_widget(form) -}}
+    </div>
+{%- endblock button_row -%}
+
+
+{# Label #}
+{%- block form_label -%}
+    {%- if label is not same as(false) -%}
+        {%- if not compound -%}
+            {%- set label_attr = label_attr|merge({'for': id}) -%}
+        {%- endif -%}
+
+        {%- if required -%}
+            {%- set label_attr = label_attr|merge({'class': (label_attr.class|default('') ~ ' required')|trim}) -%}
+        {%- endif -%}
+
+        {%- if label is empty -%}
+            {%- if label_format is not empty -%}
+                {%- set label = label_format|replace({
+                    '%name%': name,
+                    '%id%': id,
+                }) -%}
+            {%- else -%}
+                {%- set label = name|humanize -%}
+            {%- endif -%}
+        {%- endif -%}
+
+        {%- set field_type   = form.vars.block_prefixes[1] -%}
+        {%- set noInputTypes = ['checkbox', 'radio', 'submit', 'hidden'] %}
+
+        {# Label for checkbox will be rendered in checkbox widget block #}
+        {%- if field_type != 'checkbox' -%}
+            <{{ element|default('label') }}
+                {%- if label_attr -%}{%- with { attr: label_attr } -%}{{ block('attributes') }}{%- endwith -%}{%- endif -%}
+            >
+                {%- if translation_domain is same as(false) -%}
+                    {{- label|trans -}}
+                {%- else -%}
+                    {{- label|trans({}, translation_domain)|raw -}}
+                {%- endif -%}
+            </{{ element|default('label') }}>
+        {%- endif -%}
+    {%- endif -%}
+{%- endblock form_label -%}
+
+
+{# Rows #}
+{%- block form_row -%}
+    {%- set widget_attr  = {} -%}
+
+    {%- set custom_class = (attr.class|default('') ~ ' row')|trim -%}
+    {%- set custom_attr  = { class: custom_class } -%}
+    {%- set attr = row_attr|default({})|merge(custom_attr) -%}
+
+    {%- if help is not empty -%}
+        {%- set widget_attr = {attr: {'aria-describedby': id ~"_help"}} -%}
+    {%- endif -%}
+
+    {%- set field_type   = form.vars.block_prefixes[1] -%}
+    {%- set noInputTypes = ['checkbox', 'radio', 'submit', 'hidden'] -%}
+
+    {# Checkboxes, radio and buttons should not have class `col s12` #}
+    {%- if field_type not in noInputTypes -%}
+        <div {%- with attr -%}{{ block('attributes') }}{%- endwith -%}>
+            <div class="input-field col s12">
+    {%- endif -%}
+                {{- form_widget(form, widget_attr) -}}
+                {{- form_label(form) -}}
+
+                {% if form_errors(form) is not empty %}
+                    {{ form_errors(form) }}
+                {% elseif help is defined %}
+                    {{ form_help(form) }}
+                {% endif %}
+    {%- if field_type not in noInputTypes -%}
+            </div>
+        </div>
+    {%- endif -%}
+{%- endblock form_row -%}
+
+{# Errors #}
+{%- block form_errors -%}
+    {# Add custom attributes for Help messages #}
+    {%- if errors|length > 0 -%}
+        {%- for error in errors -%}
+            <span class="helper-text red-text text-darken-2">
+                {{- error.message -}}
+            </span>
+        {%- endfor -%}
+    {%- endif -%}
+{%- endblock form_errors -%}
+
+
+{# Help #}
+{%- block form_help -%}
+    {# Add custom attributes for Help messages #}
+    {%- set custom_class = (help_attr.class|default('') ~ ' helper-text')|trim -%}
+    {%- set custom_attr  = {
+        class         : custom_class,
+        'data-success': 'Ok'|trans,
+        'data-error'  : 'Something wrong'|trans
+    } -%}
+
+    {%- if help is not empty -%}
+        {%- set help_attr = help_attr|merge(custom_attr) -%}
+
+        <span id="{{ id }}_help"{%- with { attr: help_attr } -%}{{ block('attributes') }}{%- endwith -%}>
+            {%- if translation_domain is same as(false) -%}
+                {{- help|trans -}}
+            {%- else -%}
+                {{- help|trans({}, translation_domain)|raw -}}
+            {%- endif -%}
+        </span>
+    {%- endif -%}
+{%- endblock form_help -%}
+
+
+{# Form Start #}
+{%- block form_start -%}
+    {%- do form.setMethodRendered() -%}
+    {% set method = method|upper %}
+    {%- if method in ["GET", "POST"] -%}
+        {% set form_method = method %}
+    {%- else -%}
+        {% set form_method = "POST" %}
+    {%- endif -%}
+
+    {# Add class to form #}
+    {%- set attr = attr|merge({
+        class: (attr.class|default('') ~ ' col s12')|trim
+    }) -%}
+
+    {# Render the form #}
+    <form{% if name != '' %} name="{{ name }}"{% endif %} method="{{ form_method|lower }}"
+            {% if action != '' %} action="{{ action }}"{% endif %}{{ block('attributes') }}
+            {% if multipart %} enctype="multipart/form-data"{% endif %}
+    >
+
+    {%- if form_method != method -%}
+        <input type="hidden" name="_method" value="{{ method }}" />
+    {%- endif -%}
+{%- endblock form_start -%}
+

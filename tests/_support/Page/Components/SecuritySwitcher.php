@@ -39,6 +39,18 @@ class SecuritySwitcher
         'forbidden_error_msg' => 'We are sorry, but you do not have access to this page. Please, login',
     ];
 
+    /** @var array $registerForm - Register form data */
+    public static $registerForm = [
+        'header_text'         => 'Registration',
+        'header_tag'          => 'h4',
+        'email_field_text'    => 'Email',
+        'first_password_text' => 'Password',
+        'second_password_text'=> 'Repeat password',
+        'wrong_pswd_message'  => 'This value is not valid.',
+        'terms_checkbox_text' => 'Remember me',
+        'submit_button_text'  => 'Register',
+        'submit_button_tag'   => 'button',
+    ];
 
 
     /** @var array $login - Login data */
@@ -51,6 +63,12 @@ class SecuritySwitcher
     public static $logout = [
         'url' => '/en/logout',
         'list_item_text' => 'Logout',
+    ];
+
+    /** @var array $register - Register data */
+    public static $register = [
+        'url' => '/en/register',
+        'list_item_text' => 'Register'
     ];
 
     public static $account = [

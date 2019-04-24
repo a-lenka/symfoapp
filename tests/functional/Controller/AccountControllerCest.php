@@ -77,7 +77,7 @@ class AccountControllerCest
         $I->amGoingTo('see Account page');
         $I->click($vars['account_link']);
         $I->seeCurrentUrlEquals($vars['account_url']);
-        $I->see($vars['forbidden_msg']);
+        $I->see($vars['403_exception']);
     }
 
 
@@ -122,7 +122,7 @@ class AccountControllerCest
         $I->amGoingTo('see Account page');
         $I->click($vars['account_link']);
         $I->seeCurrentUrlEquals($vars['account_url']);
-        $I->see($vars['forbidden_msg']);
+        $I->see($vars['403_exception']);
     }
 
 
@@ -167,7 +167,7 @@ class AccountControllerCest
         $I->amGoingTo('see Account page');
         $I->click($vars['account_link']);
         $I->seeCurrentUrlEquals($vars['account_url']);
-        $I->dontSee($vars['forbidden_msg']);
+        $I->dontSee($vars['403_exception']);
         $I->see($vars['account_header_text'], $vars['account_header_tag']);
     }
 
@@ -250,6 +250,7 @@ class AccountControllerCest
             'submit_button'  => SecuritySwitcher::$loginForm['submit_button_text'],
             'submit_context' => SecuritySwitcher::$loginForm['submit_button_tag'],
             'forbidden_msg'  => SecuritySwitcher::$loginForm['forbidden_error_msg'],
+            '403_exception'  => 'Access Denied by controller annotation @IsGranted("ROLE_ROOT") (403 Forbidden)',
         ];
     }
 }
