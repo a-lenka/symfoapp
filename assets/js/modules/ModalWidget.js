@@ -6,7 +6,7 @@ import AjaxSender from '../../js/modules/AjaxSender';
  *
  * @module ../../js/modules/ModalWidget
  * @type {{
- *  listenCallFormEvent: (listener.listenCallFormEvent|listenCallFormEvent)
+ *  listenCallModalEvent: (listener.listenCallModalEvent|listenCallModalEvent)
  * }}
  */
 let ModalWidget = function() {
@@ -72,10 +72,10 @@ let ModalWidget = function() {
         },
 
         setCallFormListener: function() {
-            listener.getLocation.addEventListener('click', listener.listenCallFormEvent);
+            listener.getLocation.addEventListener('click', listener.listenCallModalEvent);
         },
 
-        listenCallFormEvent: function(event) {
+        listenCallModalEvent: function(event) {
 
             if(event && listener.confirmCallFormEvent(event)) {
                 event.preventDefault();
@@ -142,7 +142,7 @@ let ModalWidget = function() {
 
 
     return {
-        listenCallFormEvent: listener.setCallFormListener,
+        listenCallModalEvent: listener.setCallFormListener,
     };
 }();
 
