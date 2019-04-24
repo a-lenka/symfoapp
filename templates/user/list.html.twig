@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'Users'|trans }}{% endblock title %}
+
+{% block content %}
+    <h1>{{ 'Users'|trans }}</h1>
+
+    <table class="responsive-table highlight">
+        <thead>
+            <tr>
+                {{ include('user/_table-headers.html.twig') }}
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for user in users %}
+                <tr>
+                    {{ include('user/_table-row.html.twig') }}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock content %}
