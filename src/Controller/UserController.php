@@ -197,4 +197,59 @@ class UserController extends AbstractController
             'title' => 'Create user'
         ]);
     }
+
+
+    /**
+     * Confirm deleting User Entity
+     *
+     * @Route("/{_locale}/user/{id}/delete/confirm",
+     *     name="user_delete_confirm",
+     *     methods="GET",
+     *     defaults={"_locale"="%default_locale%"},
+     *     requirements={"_locale": "%app_locales%"},
+     * )
+     *
+     * @param Request $request
+     * @param integer $id
+     *
+     * @return Response
+     */
+    public function confirmDeleteUser(Request $request, $id): Response
+    {
+        $user     = $this->getUserRepository()->find($id);
+        $template = $request->isXmlHttpRequest()
+            ? 'user/_confirm-delete.html.twig'
+            : 'confirm.html.twig';
+
+        return $this->render($template, [
+            'user' => $user,
+            'confirm_part' => 'user/_confirm-delete.html.twig',
+        ]);
+    }
+
+
+    /**
+     * Delete User Entity permanently
+     *
+     * @Route("/{_locale}/user/{id}/delete",
+     *     name="user_delete",
+     *     methods="GET",
+     *     defaults={"_locale"="%default_locale%"},
+     *     requirements={"_locale": "%app_locales%"},
+     * )
+     *
+     * @param integer $id
+     *
+     * @return Response
+     */
+    public function deleteUser($id): Response
+    {
+        $user = $this->getUserRepository()->find($id);
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->remove($user);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('user_list_all');
+    }
 }

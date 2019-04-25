@@ -6,6 +6,7 @@
 'Confirm new password': 'Подтвердите пароль'
 'Create user': 'Создать пользователя'
 'Current password': 'Текущий пароль'
+'Delete permanently': 'Удалить навсегда'
 'Email': 'Почта'
 'Email could not be found': 'Пользователь с таким почтовым адресом не найден'
 'Enter your current password, please': 'Введите ваш пароль, пожалуйста'
@@ -47,3 +48,4 @@
 'We are sorry, but you do not have access to this page. Please, login': 'Простите, но у Вас нет прав для просмотра этой страницы'
 'Welcome': 'Добро пожаловать'
 'Welcome to your app': 'Добро пожаловать в ваше приложение'
+'will be deleted permanently': 'будет удален навсегда'

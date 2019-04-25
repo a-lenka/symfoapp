@@ -35,6 +35,13 @@
                            data-target="materialize-modal">
                             <i class="material-icons">refresh</i>
                         </a>
+
+
+                        <a href="{{ path('user_delete_confirm', {'id': user.id }) }}"
+                           class="modal-trigger" data-target="materialize-modal">
+                            <i class="material-icons">remove_circle_outline</i>
+                        </a>
+
                     </td>
                 </tr>
             {% endfor %}
