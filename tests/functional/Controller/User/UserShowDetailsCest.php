@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Functional\Controller;
+namespace App\Tests\Functional\Controller\User;
 
 use App\Entity\User;
 use App\Tests\FunctionalTester;
@@ -8,7 +8,7 @@ use App\Tests\Page\Userlist;
 
 /**
  * Class UserShowDetailsCest
- * @package App\Tests\Functional\Controller
+ * @package App\Tests\Functional\Controller\User
  */
 class UserShowDetailsCest
 {

@@ -6,6 +6,7 @@
 'Confirm your new password': 'Confirm your new password'
 'Create user': 'Create user'
 'Current password': 'Current password'
+'Delete permanently': 'Delete permanently'
 'Email': 'Email'
 'Email could not be found': 'Email could not be found'
 'Enter your current password, please': 'Enter your current password, please'
@@ -47,3 +48,4 @@
 'We are sorry, but you do not have access to this page. Please, login': 'We are sorry, but you do not have access to this page. Please, login'
 'Welcome': 'Welcome'
 'Welcome to your app': 'Welcome to your app'
+'will be deleted permanently': 'will be deleted permanently'

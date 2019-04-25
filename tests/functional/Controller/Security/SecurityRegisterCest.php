@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Functional\Controller;
+namespace App\Tests\Functional\Controller\Security;
 
 use App\Entity\User;
 use App\Tests\FunctionalTester;
@@ -9,7 +9,7 @@ use App\Tests\Page\Home;
 
 /**
  * Class SecurityRegisterCest
- * @package App\Tests\Functional\Controller
+ * @package App\Tests\Functional\Controller\Security
  */
 class SecurityRegisterCest
 {
