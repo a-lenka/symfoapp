@@ -25,6 +25,11 @@
                            data-target="materialize-modal">
                             <i class="material-icons">info_outline</i>
                         </a>
+
+                        <a href="{{ path('user_update', {'id': user.id }) }}" class="modal-trigger"
+                           data-target="materialize-modal">
+                            <i class="material-icons">refresh</i>
+                        </a>
                     </td>
                 </tr>
             {% endfor %}
