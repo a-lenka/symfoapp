@@ -105,7 +105,10 @@ class UserController extends AbstractController
     ): Response {
 
         $user = $this->getUserRepository()->find($id);
-        $form = $this->createForm(UserType::class, $user);
+
+        $form = $this->createForm(UserType::class, $user, [
+            'action' => $this->generateUrl('user_update', ['id' => $id]),
+        ]);
         $form->handleRequest($request);
 
         if ($request->isMethod('POST')
@@ -134,6 +137,64 @@ class UserController extends AbstractController
             'user' => $user,
             'form' => $form->createView(),
             'form_part' => $formPart,
+            'title' => 'Update user',
+        ]);
+    }
+
+
+    /**
+     * Create User Entity
+     *
+     * @Route("/{_locale}/user/create",
+     *     name="user_create",
+     *     methods="GET|POST",
+     *     defaults={"_locale"="%default_locale%"},
+     *     requirements={"_locale": "%app_locales%"},
+     * )
+     *
+     * @param Request $request
+     * @param UserPasswordEncoderInterface $passwordEncoder
+     *
+     * @return Response
+     */
+    public function createUser(
+        Request $request,
+        UserPasswordEncoderInterface $passwordEncoder
+    ): Response {
+
+        $user = new User();
+
+        $form = $this->createForm(UserType::class, $user, [
+            'action' => $this->generateUrl('user_create'),
+        ]);
+        $form->handleRequest($request);
+
+        if ($request->isMethod('POST')
+            && $form->isSubmitted()
+            && $form->isValid()
+        ) {
+            $password = $passwordEncoder->encodePassword(
+                $user, $user->getPassword()
+            );
+            $user->setPassword($password);
+
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($user);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('user_list_all');
+        }
+
+        $formPart = 'user/_form.html.twig';
+        $template = $request->isXmlHttpRequest()
+            ? $formPart
+            : 'form.html.twig';
+
+        return $this->render($template, [
+            'user' => $user,
+            'form' => $form->createView(),
+            'form_part' => $formPart,
+            'title' => 'Create user'
         ]);
     }
 }
