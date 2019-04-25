@@ -72,6 +72,48 @@ class SecurityRegisterCest
 
 
     /**
+     * The EntityManager is closed.
+     * @param FunctionalTester $I
+
+    public function testRegisterWithExistingEmail(FunctionalTester $I): void
+    {
+        $vars = self::getVars();
+
+        $I->amGoingTo('get needed services');
+        $encoder = $I->grabService('security.password_encoder');
+
+        $I->amOnPage($vars['url']);
+
+        $I->amGoingTo('save new User to the Database');
+        $user = new User();
+        $I->persistEntity($user, [
+            'email'    => 'existing_email@mail.ru',
+            'password' => $encoder->encodePassword($user, 'kitten'),
+            'roles'    => ['ROLE_USER']
+        ]);
+        $I->seeInRepository(User::class, ['email' => 'existing_email@mail.ru']);
+
+        $I->am('Guest');
+        $I->amGoingTo('perform registration action');
+        $I->click($vars['guest_trigger']);
+        $I->click($vars['register_link']);
+        $I->seeCurrentUrlEquals($vars['register_url']);
+
+        $I->amGoingTo('fill Register form');
+        $I->fillField($vars['email_field'], 'existing_email@mail.ru');
+        $I->fillField($vars['first_pswd_field'], 'kitten');
+        $I->fillField($vars['second_pswd_field'], 'kitten');
+        $I->checkOption('Terms accepted');
+        $I->click($vars['submit_button']);
+
+        $I->amGoingTo('check if the Register was failed');
+        $I->seeCurrentUrlEquals($vars['register_url']);
+        $I->dontSee($vars['guest_trigger'], $vars['trigger_context']);
+        $I->see($vars['sql_exception']);
+    }*/
+
+
+    /**
      * NOTE: 1. I have not used `get_class_vars()` because PHPStorm do not hint it values.
      *       2. `getVars()` is here, because if I do not want to wrestle
      *              with how to paste in tests an additional portion of data
@@ -96,6 +138,7 @@ class SecurityRegisterCest
             'second_pswd_field' => SecuritySwitcher::$registerForm['second_password_text'],
             'wrong_pswd_msg' => SecuritySwitcher::$registerForm['wrong_pswd_message'],
             'submit_button'  => SecuritySwitcher::$registerForm['submit_button_tag'],
+            'sql_exception'  => 'Integrity constraint violation'
         ];
     }
 }

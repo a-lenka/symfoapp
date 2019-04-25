@@ -38,4 +38,9 @@ class Userlist
         'user_option'         => 'User',
         'select_tag'          => 'select',
     ];
+
+    public static $create = [
+        'create_url' => '/en/user/create',
+        'create_btn_icon_text'=> 'add',
+    ];
 }
