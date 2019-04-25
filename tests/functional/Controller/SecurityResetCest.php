@@ -39,10 +39,10 @@ class SecurityResetCest
         $I->amGoingTo('fill Login form');
         $I->fillField($vars['email_field'], 'reset_password@mail.ru');
         $I->fillField($vars['password_field'], 'kitten');
-        $I->click($vars['submit_login_button'], $vars['submit_context']);
+        $I->click($vars['submit_login_button']);
 
         $I->amGoingTo('check if the Login was successful');
-        $I->dontSee($vars['guest_trigger'], $vars['trigger_context']);
+        $I->dontSee($vars['guest_trigger']);
         $I->dontSee($vars['wrong_login_email']);
         $I->dontSee($vars['wrong_login_pswd']);
 
@@ -55,7 +55,7 @@ class SecurityResetCest
         $I->fillField($vars['current_pswd_field'], 'kitten');
         $I->fillField($vars['new_pswd_field'], 'new_password');
         $I->fillField($vars['confirm_pswd_field'], 'new_password');
-        $I->click($vars['submit_button'], $vars['submit_context']);
+        $I->click($vars['submit_button']);
 
         $I->amGoingTo('check if the Reset password was successful');
         $I->seeResponseCodeIsSuccessful();
@@ -70,10 +70,10 @@ class SecurityResetCest
         $I->amGoingTo('fill Login form');
         $I->fillField($vars['email_field'], 'reset_password@mail.ru');
         $I->fillField($vars['password_field'], 'new_password');
-        $I->click($vars['submit_login_button'], $vars['submit_context']);
+        $I->click($vars['submit_login_button']);
 
         $I->amGoingTo('check if the Login was successful');
-        $I->dontSee($vars['guest_trigger'], $vars['trigger_context']);
+        $I->dontSee($vars['guest_trigger']);
         $I->dontSee($vars['wrong_login_email']);
         $I->dontSee($vars['wrong_login_pswd']);
     }
@@ -105,10 +105,10 @@ class SecurityResetCest
         $I->amGoingTo('fill Login form');
         $I->fillField($vars['email_field'], 'reset_password@mail.ru');
         $I->fillField($vars['password_field'], 'kitten');
-        $I->click($vars['submit_login_button'], $vars['submit_context']);
+        $I->click($vars['submit_login_button']);
 
         $I->amGoingTo('check if the Login was successful');
-        $I->dontSee($vars['guest_trigger'], $vars['trigger_context']);
+        $I->dontSee($vars['guest_trigger']);
         $I->dontSee($vars['wrong_login_email']);
         $I->dontSee($vars['wrong_login_pswd']);
 
@@ -121,7 +121,7 @@ class SecurityResetCest
         $I->fillField($vars['current_pswd_field'], 'wrong_password');
         $I->fillField($vars['new_pswd_field'], 'new_password');
         $I->fillField($vars['confirm_pswd_field'], 'new_password');
-        $I->click($vars['submit_button'], $vars['submit_context']);
+        $I->click($vars['submit_button']);
 
         $I->amGoingTo('check if the Reset password was failed');
         $I->seeResponseCodeIsSuccessful();
@@ -157,10 +157,10 @@ class SecurityResetCest
         $I->amGoingTo('fill Login form');
         $I->fillField($vars['email_field'], 'reset_password@mail.ru');
         $I->fillField($vars['password_field'], 'kitten');
-        $I->click($vars['submit_login_button'], $vars['submit_context']);
+        $I->click($vars['submit_login_button']);
 
         $I->amGoingTo('check if the Login was successful');
-        $I->dontSee($vars['guest_trigger'], $vars['trigger_context']);
+        $I->dontSee($vars['guest_trigger']);
         $I->dontSee($vars['wrong_login_email']);
         $I->dontSee($vars['wrong_login_pswd']);
 
@@ -173,7 +173,7 @@ class SecurityResetCest
         $I->fillField($vars['current_pswd_field'], 'kitten');
         $I->fillField($vars['new_pswd_field'], 'new_password');
         $I->fillField($vars['confirm_pswd_field'], 'another_password');
-        $I->click($vars['submit_button'], $vars['submit_context']);
+        $I->click($vars['submit_button']);
 
         $I->amGoingTo('check if the Reset password was failed');
         $I->seeResponseCodeIsSuccessful();
@@ -210,15 +210,14 @@ class SecurityResetCest
             'confirm_pswd_field' => SecuritySwitcher::$resetForm['confirm_password_text'],
             'wrong_curr_pswd_msg'=> SecuritySwitcher::$resetForm['wrong_curr_pswd_msg'],
             'mismatch_pswd_msg'  => SecuritySwitcher::$resetForm['mismatch_pswd_msg'],
-            'submit_button'  => SecuritySwitcher::$resetForm['submit_button_text'],
-            'submit_context' => SecuritySwitcher::$resetForm['submit_button_tag'],
+            'submit_button'      => SecuritySwitcher::$resetForm['submit_button_tag'],
             'wrong_login_email' => SecuritySwitcher::$loginForm['wrong_email_message'],
             'wrong_login_pswd'  => SecuritySwitcher::$loginForm['wrong_pswd_message'],
             'email_field'    => SecuritySwitcher::$loginForm['email_field_text'],
             'wrong_email_msg'=> SecuritySwitcher::$loginForm['wrong_email_message'],
             'password_field' => SecuritySwitcher::$loginForm['password_field_text'],
             'wrong_pswd_msg' => SecuritySwitcher::$loginForm['wrong_pswd_message'],
-            'submit_login_button'  => SecuritySwitcher::$loginForm['submit_button_text'],
+            'submit_login_button' => SecuritySwitcher::$loginForm['submit_button_tag'],
         ];
     }
 }

@@ -1,5 +1,6 @@
 // Imports
-import AjaxSender from '../../js/modules/AjaxSender';
+import AjaxSender   from '../../js/modules/AjaxSender';
+import Materializer from '../../js/modules/Materializer';
 
 /**
  * Handle Materialize CSS Modal events
@@ -78,6 +79,7 @@ let ModalWidget = function() {
 
         setCallFormListener: function() {
             listener.getLocation.addEventListener('click', listener.listenCallModalEvent);
+            listener.getLocation.addEventListener('animationstart', listener.listenReInitComponentsEvent);
         },
 
         listenCallModalEvent: function(event) {
@@ -110,6 +112,13 @@ let ModalWidget = function() {
 
         setCancelModalListener: function() {
             overlay.instance.addEventListener('click', listener.listenCancelModal);
+        },
+
+        listenReInitComponentsEvent: function(event) {
+            console.log(event);
+            if(event.animationName === 'selectWasInserted') {
+                Materializer.reInitSelects();
+            }
         },
     };
 

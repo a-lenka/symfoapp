@@ -48,8 +48,7 @@ class SecuritySwitcher
         'second_password_text'=> 'Repeat password',
         'wrong_pswd_message'  => 'This value is not valid.',
         'terms_checkbox_text' => 'Remember me',
-        'submit_button_text'  => 'Register',
-        'submit_button_tag'   => 'button',
+        'submit_button_tag'   => 'button[type="submit"]',
     ];
 
     /** @var array $resetForm - Reset password form data */
@@ -59,8 +58,7 @@ class SecuritySwitcher
         'current_password_text' => 'Current password',
         'new_password_text'     => 'New password',
         'confirm_password_text' => 'Confirm new password',
-        'submit_button_text'  => 'Reset password',
-        'submit_button_tag'   => 'button',
+        'submit_button_tag'   => 'button[type="submit"]',
         'wrong_curr_pswd_msg' => "This value should be the user's current password",
         'mismatch_pswd_msg'   => 'This value is not valid.'
     ];

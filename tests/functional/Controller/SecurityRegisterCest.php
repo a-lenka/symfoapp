@@ -33,7 +33,7 @@ class SecurityRegisterCest
         $I->fillField($vars['first_pswd_field'], 'kitten');
         $I->fillField($vars['second_pswd_field'], 'kitten');
         $I->checkOption('Terms accepted');
-        $I->click($vars['submit_button'], $vars['submit_context']);
+        $I->click($vars['submit_button']);
 
         $I->amGoingTo('check if the Login was successful');
         $I->dontSee($vars['wrong_pswd_msg']);
@@ -62,7 +62,7 @@ class SecurityRegisterCest
         $I->fillField($vars['first_pswd_field'], 'kitten');
         $I->fillField($vars['second_pswd_field'], 'wrong');
         $I->checkOption('Terms accepted');
-        $I->click($vars['submit_button'], $vars['submit_context']);
+        $I->click($vars['submit_button']);
 
         $I->amGoingTo('check if the Register was failed');
         $I->seeCurrentUrlEquals($vars['register_url']);
@@ -95,8 +95,7 @@ class SecurityRegisterCest
             'first_pswd_field'  => SecuritySwitcher::$registerForm['first_password_text'],
             'second_pswd_field' => SecuritySwitcher::$registerForm['second_password_text'],
             'wrong_pswd_msg' => SecuritySwitcher::$registerForm['wrong_pswd_message'],
-            'submit_button'  => SecuritySwitcher::$registerForm['submit_button_text'],
-            'submit_context' => SecuritySwitcher::$registerForm['submit_button_tag'],
+            'submit_button'  => SecuritySwitcher::$registerForm['submit_button_tag'],
         ];
     }
 }

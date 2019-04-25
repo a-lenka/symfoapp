@@ -36,7 +36,7 @@ class SecurityController extends AbstractController
     {
         return $request->isXmlHttpRequest()
             ? $formPart
-            : 'security/form-page.html.twig';
+            : 'form.html.twig';
     }
 
 
