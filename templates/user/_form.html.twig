@@ -1,8 +1,8 @@
 {% form_theme form 'themes/materialize-fields.html.twig' %}
 
-<h4>{{ 'Update'|trans }} {{ user.email }}</h4>
+<h4>{{ title|trans }}</h4>
 
-{{ form_start(form, {'action': path('user_update', {'id': user.id })}) }}
+{{ form_start(form) }}
     {{ form_errors(form) }}
 
     {{ form_row(form.email) }}

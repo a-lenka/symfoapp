@@ -4,6 +4,7 @@
 'Admin': 'Admin'
 'All rights reserved': 'All rights reserved'
 'Confirm your new password': 'Confirm your new password'
+'Create user': 'Create user'
 'Current password': 'Current password'
 'Email': 'Email'
 'Email could not be found': 'Email could not be found'
@@ -36,6 +37,7 @@
 "This value should be the user's current password.": "This value should be the user's current password"
 'Try again, please': 'Try again, please'
 'Update': 'Update'
+'Update user': 'Update user'
 'Use a strong password to improve the protection of your personal data': 'Use a strong password to improve the protection of your personal data'
 'User': 'User'
 'User email': 'User email'
