@@ -49,14 +49,9 @@ class UserController extends AbstractController
     {
         $users = $this->getUserRepository()->findAll();
 
-        $listPart = 'user/_list.html.twig';
-        $template = $request->isXmlHttpRequest()
-            ? $listPart
-            : 'list.html.twig';
-
-        return $this->render($template, [
+        return $this->render('list.html.twig', [
             'users'     => $users,
-            'list_part' => $listPart,
+            'list_part' => 'user/_list.html.twig',
             'sort_property' => 'default',
             'sort_order'    => 'default',
         ]);
@@ -163,8 +158,16 @@ class UserController extends AbstractController
             $password = $passwordEncoder->encodePassword(
                 $user, $user->getPassword()
             );
-
             $user->setPassword($password);
+
+            $uploadedFile = $form['avatar']->getData();
+            if ($uploadedFile) {
+                // TODO: $newFilename = Urlizer::urlize($originalFilename).'-'.uniqid(mt_rand().'.'.$uploadedFile->guessExtension();
+                $newFileName = uniqid().'.'.$uploadedFile->guessExtension();
+                $destination = $this->getParameter('kernel.project_dir').'/public/uploads/avatars';
+                $uploadedFile->move($destination, $newFileName);
+                $user->setAvatar($newFileName);
+            }
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
