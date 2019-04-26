@@ -43,6 +43,13 @@ class User implements UserInterface
      */
     private $password;
 
+    /**
+     * @var string|null $avatar - User avatar
+     *
+     * @ORM\Column(type="string", length=255)
+     */
+    private $avatar;
+
 
     /**
      * @return int|null - User unique ID in the Database
@@ -153,4 +160,27 @@ class User implements UserInterface
         // clear it here.
         // $this->plainPassword = null;
     }
+
+
+    /**
+     * @param string $avatar
+     *
+     * @return User
+     */
+    public function setAvatar(string $avatar): self
+    {
+        $this->avatar = $avatar;
+
+        return $this;
+    }
+
+
+    /**
+     * @return string|null
+     */
+    public function getAvatar(): ?string
+    {
+        return $this->avatar;
+    }
+
 }
