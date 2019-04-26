@@ -27,6 +27,15 @@ class Userlist
         'topmenu_link_text' => 'Users'
     ];
 
+
+    /** @var array $sort - Links to sort Users */
+    public static $sort = [
+        'email_asc'  => '/en/user/list/all/sorted/email/asc',
+        'email_desc' => '/en/user/list/all/sorted/email/desc',
+        'roles_asc'  => '/en/user/list/all/sorted/roles/asc',
+        'roles_desc' => '/en/user/list/all/sorted/roles/desc',
+    ];
+
     /** @var array $form - Form data */
     public static $form = [
         'email_field_text'    => 'User email',

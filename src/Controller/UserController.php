@@ -41,16 +41,61 @@ class UserController extends AbstractController
      *     requirements={"_locale": "%app_locales%"},
      * )
      *
+     * @param Request $request
+     *
      * @return Response
      */
-    public function showAll(): Response
+    public function showAll(Request $request): Response
     {
         $users = $this->getUserRepository()->findAll();
 
-        return $this->render('user/list.html.twig', [
-                'users' => $users,
-            ]
+        $listPart = 'user/_list.html.twig';
+        $template = $request->isXmlHttpRequest()
+            ? $listPart
+            : 'list.html.twig';
+
+        return $this->render($template, [
+            'users'     => $users,
+            'list_part' => $listPart,
+            'sort_property' => 'default',
+            'sort_order'    => 'default',
+        ]);
+    }
+
+
+    /**
+     * Show sorted User entities
+     *
+     * @Route("/{_locale}/user/list/all/sorted/{sort_property}/{sort_order}",
+     *     name="user_list_sorted",
+     *     methods="GET",
+     *     defaults={"_locale"="%default_locale%"},
+     *     requirements={"_locale": "%app_locales%", "sort_property"="id|email|roles", "sort_order"="asc|desc|default"},
+     * )
+     *
+     * @param Request $request
+     * @param int     $sort_property - Property to sort related tasks
+     * @param int     $sort_order    - Sorting order
+     *
+     * @return Response
+     */
+    public function showSorted(Request $request, $sort_property, $sort_order): Response
+    {
+        $allUsers = $this->getUserRepository()->sortByProperty(
+            $sort_property, $sort_order
         );
+
+        $listPart = 'user/_list.html.twig';
+        $template = $request->isXmlHttpRequest()
+            ? $listPart
+            : 'list.html.twig';
+
+        return $this->render($template, [
+            'users'     => $allUsers,
+            'list_part' => $listPart,
+            'sort_property' => $sort_property,
+            'sort_order'    => $sort_order,
+        ]);
     }
 
 
