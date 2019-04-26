@@ -27,6 +27,7 @@ class SecurityResetCest
         $user = new User();
         $I->persistEntity($user, [
             'email'    => 'reset_password@mail.ru',
+            'avatar'   => 'anonymous.png',
             'password' => $encoder->encodePassword($user, 'kitten'),
             'roles'    => ['ROLE_USER']
         ]);
@@ -93,6 +94,7 @@ class SecurityResetCest
         $user = new User();
         $I->persistEntity($user, [
             'email'    => 'reset_password@mail.ru',
+            'avatar'   => 'anonymous.png',
             'password' => $encoder->encodePassword($user, 'kitten'),
             'roles'    => ['ROLE_USER']
         ]);
@@ -145,6 +147,7 @@ class SecurityResetCest
         $user = new User();
         $I->persistEntity($user, [
             'email'    => 'reset_password@mail.ru',
+            'avatar'   => 'anonymous.png',
             'password' => $encoder->encodePassword($user, 'kitten'),
             'roles'    => ['ROLE_USER']
         ]);

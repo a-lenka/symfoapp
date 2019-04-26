@@ -24,6 +24,7 @@ class UserUpdateCest
         $user = new User();
         $I->persistEntity($user, [
             'email'    => 'old_email@mail.ru',
+            'avatar'   => 'anonymous.png',
             'password' => 'bla-bla-bla',
             'roles'    => ['ROLE_TEST']
         ]);
@@ -60,6 +61,7 @@ class UserUpdateCest
         $user = new User();
         $I->persistEntity($user, [
             'email'    => 'user_email@mail.ru',
+            'avatar'   => 'anonymous.png',
             'password' => 'bla-bla-bla',
             'roles'    => ['ROLE_TEST']
         ]);
@@ -101,6 +103,7 @@ class UserUpdateCest
         $user = new User();
         $I->persistEntity($user, [
             'email'    => 'user_email@mail.ru',
+            'avatar'   => 'anonymous.png',
             'password' => 'bla-bla-bla',
             'roles'    => ['ROLE_TEST']
         ]);

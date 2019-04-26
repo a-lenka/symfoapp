@@ -27,6 +27,7 @@ class SecurityLoginCest
         $user = new User();
         $I->persistEntity($user, [
             'email'    => 'new_email@mail.ru',
+            'avatar'   => 'anonymous.png',
             'password' => $encoder->encodePassword($user, 'kitten'),
             'roles'    => ['ROLE_TEST']
         ]);
@@ -96,6 +97,7 @@ class SecurityLoginCest
         $user = new User();
         $I->persistEntity($user, [
             'email'    => 'correct_email@mail.ru',
+            'avatar'   => 'anonymous.png',
             'password' => $encoder->encodePassword($user, 'kitten'),
             'roles'    => ['ROLE_TEST']
         ]);
