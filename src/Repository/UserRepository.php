@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
@@ -22,6 +23,26 @@ class UserRepository extends ServiceEntityRepository
     public function __construct(RegistryInterface $registry)
     {
         parent::__construct($registry, User::class);
+    }
+
+
+    /**
+     * Find all Users and sort them by the given property
+     *
+     * @param string $property - Property to sort
+     * @param string $order    - ASC or DESC
+     *
+     * @return array - Returns collection of User objects
+     */
+    public function sortByProperty($property, $order): array
+    {
+        if($order === 'default') {$order = 'asc';}
+
+        return $this->createQueryBuilder('u')
+            ->addOrderBy("u.$property", $order)
+            ->getQuery()
+            ->getResult()
+            ;
     }
 
 
