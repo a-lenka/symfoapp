@@ -30,6 +30,7 @@
  *  23. Collections
  *  24. Progress Bar
  *  25. Messages
+ *  26. Scrollbar
  */
 
 /**
@@ -383,3 +384,10 @@ $progress-bar-color: $secondary-color !default;
  * ========================================================================== */
 
 $message-box-radius: 2px !default;
+
+
+/**
+ * 26. Scrollbar
+ * ========================================================================== */
+
+$scroll-bar-bg-color: $secondary-color !default;
