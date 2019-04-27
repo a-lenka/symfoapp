@@ -1,8 +1,8 @@
 {%- if user is defined -%}
-    <th scope="col">{{ 'ID'|trans }}</th>
-    <th scope="col">{{ 'Avatar'|trans }}</th>
-    <th scope="col">{{ 'Email'|trans }}</th>
-    <th scope="col">{{ 'Roles'|trans }}</th>
+    <th scope="col">{{- 'ID'|trans -}}</th>
+    <th scope="col">{{- 'Avatar'|trans -}}</th>
+    <th scope="col">{{- 'Email'|trans -}}</th>
+    <th scope="col">{{- 'Roles'|trans -}}</th>
 {%- elseif users is defined and sort_property is defined and sort_order is defined -%}
     <th scope="col">
         {%- if sort_property == 'id' and sort_order == 'asc' -%}
@@ -20,6 +20,7 @@
                 <i class="material-icons">arrow_drop_down</i>
             </a>
         {%- endif -%}
+
         {{- 'ID'|trans -}}
     </th>
 
@@ -41,6 +42,7 @@
                 <i class="material-icons">arrow_drop_down</i>
             </a>
         {%- endif -%}
+
         {{- 'Email'|trans -}}
     </th>
 
@@ -60,6 +62,7 @@
                 <i class="material-icons">arrow_drop_down</i>
             </a>
         {%- endif -%}
+
         {{- 'Roles'|trans -}}
     </th>
 {%- endif -%}

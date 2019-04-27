@@ -98,12 +98,12 @@ class UserShowListCest
         $I->see('aaa@mail.ru');
         $I->see('zzz@mail.ru');
 
-        $I->amGoingTo('sort Users with asc order');
-        $I->click("a[href=\"".$vars['email_desc']."\"]");
+        $I->amGoingTo('sort Users with desc order');
+        $I->click('a[href="'.$vars['email_desc'].'"]');
         $I->see('zzz@mail.ru', 'table tbody tr:first-child');
 
         $I->amGoingTo('sort Users with asc order');
-        $I->click("a[href=\"".$vars['email_asc']."\"]");
+        $I->click('a[href="'.$vars['email_asc'].'"]');
         $I->see('aaa@mail.ru', 'table tbody tr:first-child');
     }
 
