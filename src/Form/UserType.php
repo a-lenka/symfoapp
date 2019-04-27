@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Image;
 
 /**
  * Defines the form used to create and manipulate User Entities
@@ -31,6 +32,9 @@ class UserType extends AbstractType
                 'help'  => 'User avatar',
                 'label' => 'User avatar',
                 'mapped'=> false,
+                'constraints' => [
+                    new Image()
+                ]
             ])
             ->add('email', EmailType::class, [
                 'help'  => 'User email',

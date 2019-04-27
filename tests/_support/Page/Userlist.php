@@ -39,13 +39,16 @@ class Userlist
     /** @var array $form - Form data */
     public static $form = [
         'email_field_text'    => 'User email',
+        'file_field_tag'      => 'input[type="file"]',
         'roles_field_text'    => 'User roles',
         'password_field_text' => 'User password',
-        'submit_button_tag'   => 'button',
+        'submit_button_tag'   => 'button[type="submit"]',
         'admin_option'        => 'Admin',
         'root_option'         => 'Root',
         'user_option'         => 'User',
         'select_tag'          => 'select',
+        'empty_file_msg'      => 'An empty file is not allowed.',
+        'no_image_msg'        => 'This file is not a valid image.',
     ];
 
     /** @var array $create */
