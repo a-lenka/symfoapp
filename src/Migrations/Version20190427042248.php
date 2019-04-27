@@ -11,17 +11,17 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  *
- * Class Version20190426100156
+ * Class Version20190427042248
  * @package DoctrineMigrations
  */
-final class Version20190426100156 extends AbstractMigration
+final class Version20190427042248 extends AbstractMigration
 {
     /**
      * @return string
      */
     public function getDescription(): string
     {
-        return 'Add `Avatar` field to User Entity';
+        return 'Generated Task Entity';
     }
 
 
@@ -38,7 +38,7 @@ final class Version20190426100156 extends AbstractMigration
             'Migration can only be executed safely on \'mysql\'.'
         );
 
-        $this->addSql('ALTER TABLE user ADD avatar VARCHAR(255) NOT NULL');
+        $this->addSql('CREATE TABLE task (id INT AUTO_INCREMENT NOT NULL, title VARCHAR(255) NOT NULL, date_deadline DATETIME NOT NULL, state VARCHAR(50) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB');
     }
 
 
@@ -47,14 +47,13 @@ final class Version20190426100156 extends AbstractMigration
      *
      * @throws DBALException
      */
-    public function down(Schema $schema): void
+    public function down(Schema $schema) : void
     {
         // This down() migration is auto-generated, please modify it to your needs
-        $this->abortIf(
-            $this->connection->getDatabasePlatform()->getName() !== 'mysql',
+        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql',
             'Migration can only be executed safely on \'mysql\'.'
         );
 
-        $this->addSql('ALTER TABLE user DROP avatar');
+        $this->addSql('DROP TABLE task');
     }
 }

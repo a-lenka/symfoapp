@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace DoctrineMigrations;
 
+use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 
@@ -30,7 +31,7 @@ final class Version20190410172012 extends AbstractMigration
      *
      * @param Schema $schema
      *
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException
      */
     public function up(Schema $schema): void
     {
@@ -46,11 +47,13 @@ final class Version20190410172012 extends AbstractMigration
      *
      * @param Schema $schema
      *
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException
      */
     public function down(Schema $schema): void
     {
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
+        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql',
+            'Migration can only be executed safely on \'mysql\'.'
+        );
 
         $this->addSql('DROP TABLE user');
     }
