@@ -38,6 +38,49 @@ class TaskController extends AbstractController
             'tasks'     => $tasks,
             'title'     => 'Tasks',
             'list_part' => 'task/_list.html.twig',
+            'sort_property' => 'default',
+            'sort_order'    => 'default',
+        ]);
+    }
+
+
+    /**
+     * Show sorted Task entities
+     *
+     * @Route("/{_locale}/task/list/all/sorted/{sort_property}/{sort_order}",
+     *     name="task_list_sorted",
+     *     methods="GET",
+     *     defaults={"_locale"="%default_locale%"},
+     *     requirements={
+     *          "_locale": "%app_locales%",
+     *          "sort_property"="id|title|dateDeadline|state",
+     *          "sort_order"="asc|desc|default"
+     *      },
+     * )
+     *
+     * @param Request $request
+     * @param string  $sort_property - Property to sort
+     * @param string  $sort_order    - Sorting order
+     *
+     * @return Response
+     */
+    public function showSorted(Request $request, string $sort_property, string $sort_order): Response
+    {
+        $allTasks = $this->getDoctrine()->getRepository(Task::class)->sortByProperty(
+            $sort_property, $sort_order
+        );
+
+        $listPart = 'task/_list.html.twig';
+        $template = $request->isXmlHttpRequest()
+            ? $listPart
+            : 'list.html.twig';
+
+        return $this->render($template, [
+            'tasks'     => $allTasks,
+            'title'     => 'Tasks',
+            'list_part' => $listPart,
+            'sort_property' => $sort_property,
+            'sort_order'    => $sort_order,
         ]);
     }
 }

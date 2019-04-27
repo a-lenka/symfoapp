@@ -27,6 +27,26 @@ class TaskRepository extends ServiceEntityRepository
         parent::__construct($registry, Task::class);
     }
 
+
+    /**
+     * Find all Tasks and sort them by the given property
+     *
+     * @param string $property - Property to sort
+     * @param string $order    - ASC or DESC
+     *
+     * @return array - Returns collection of Task objects
+     */
+    public function sortByProperty(string $property, string $order): array
+    {
+        if($order === 'default') {$order = 'asc';}
+
+        return $this->createQueryBuilder('t')
+            ->addOrderBy("t.$property", $order)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     // /**
     //  * @return Task[] Returns an array of Task objects
     //  */

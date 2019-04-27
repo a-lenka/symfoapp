@@ -60,7 +60,7 @@ class UserController extends AbstractController
      * )
      *
      * @param Request $request
-     * @param string  $sort_property - Property to sort related tasks
+     * @param string  $sort_property - Property to sort
      * @param string  $sort_order    - Sorting order
      *
      * @return Response
