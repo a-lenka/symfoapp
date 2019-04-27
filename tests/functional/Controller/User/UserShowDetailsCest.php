@@ -23,6 +23,7 @@ class UserShowDetailsCest
         $user = new User();
         $I->persistEntity($user, [
             'email'    => 'test_user@mail.ru',
+            'avatar'   => 'anonymous.png',
             'password' => 'bla-bla-bla',
             'roles'    => ['ROLE_TEST']
         ]);

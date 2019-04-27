@@ -23,6 +23,7 @@ class UserDeleteCest
         $user = new User();
         $I->persistEntity($user, [
             'email'    => 'bad_user@mail.ru',
+            'avatar'   => 'anonymous.png',
             'password' => 'bla-bla-bla',
             'roles'    => ['ROLE_TEST']
         ]);

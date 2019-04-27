@@ -51,6 +51,7 @@ class AccountControllerCest
         $user = new User();
         $I->persistEntity($user, [
             'email'    => 'new_email@mail.ru',
+            'avatar'   => 'anonymous.png',
             'password' => $encoder->encodePassword($user, 'kitten'),
             'roles'    => ['ROLE_USER']
         ]);
@@ -96,6 +97,7 @@ class AccountControllerCest
         $user = new User();
         $I->persistEntity($user, [
             'email'    => 'new_email@mail.ru',
+            'avatar'   => 'anonymous.png',
             'password' => $encoder->encodePassword($user, 'kitten'),
             'roles'    => ['ROLE_ADMIN']
         ]);
@@ -141,6 +143,7 @@ class AccountControllerCest
         $user = new User();
         $I->persistEntity($user, [
             'email'    => 'new_email@mail.ru',
+            'avatar'   => 'anonymous.png',
             'password' => $encoder->encodePassword($user, 'kitten'),
             'roles'    => ['ROLE_ROOT']
         ]);
@@ -187,6 +190,7 @@ class AccountControllerCest
         $user = new User();
         $I->persistEntity($user, [
             'email'    => 'new_email@mail.ru',
+            'avatar'   => 'anonymous.png',
             'password' => $encoder->encodePassword($user, 'kitten'),
             'roles'    => ['ROLE_ROOT']
         ]);

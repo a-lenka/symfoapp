@@ -24,6 +24,7 @@ class UserUpdateCest
         $user = new User();
         $I->persistEntity($user, [
             'email'    => 'old_email@mail.ru',
+            'avatar'   => 'anonymous.png',
             'password' => 'bla-bla-bla',
             'roles'    => ['ROLE_TEST']
         ]);
@@ -40,6 +41,7 @@ class UserUpdateCest
         $I->amGoingTo('update User email');
         $I->fillField($vars['email_field_text'], 'new_email@mail.ru');
         $I->fillField($vars['pswd_field_text'], 'kitten');
+        $I->attachFile($vars['file_field_tag'],'anonymous.png');
         $I->selectOption('select', 'Admin');
         $I->click($vars['submit_button']);
 
@@ -60,6 +62,7 @@ class UserUpdateCest
         $user = new User();
         $I->persistEntity($user, [
             'email'    => 'user_email@mail.ru',
+            'avatar'   => 'anonymous.png',
             'password' => 'bla-bla-bla',
             'roles'    => ['ROLE_TEST']
         ]);
@@ -101,6 +104,7 @@ class UserUpdateCest
         $user = new User();
         $I->persistEntity($user, [
             'email'    => 'user_email@mail.ru',
+            'avatar'   => 'anonymous.png',
             'password' => 'bla-bla-bla',
             'roles'    => ['ROLE_TEST']
         ]);
@@ -138,6 +142,78 @@ class UserUpdateCest
 
 
     /**
+     * @param FunctionalTester $I
+     */
+    public function testUserCanNotUploadGitIgnoreFile(FunctionalTester $I): void
+    {
+        $vars = self::getVars();
+
+        $I->amGoingTo('save new User to the Database');
+        $user = new User();
+        $I->persistEntity($user, [
+            'email'    => 'user_email@mail.ru',
+            'avatar'   => 'anonymous.png',
+            'password' => 'bla-bla-bla',
+            'roles'    => ['ROLE_TEST']
+        ]);
+
+        $I->amOnPage($vars['url']);
+
+        $I->am('Tester');
+        $I->amGoingTo('click `Update` link');
+        $I->see('user_email@mail.ru');
+        $I->click("a[href=\"/en/user/".$user->getId()."/update\"]");
+        $I->seeResponseCodeIsSuccessful();
+        $I->seeCurrentUrlEquals("/en/user/".$user->getId()."/update");
+
+        $I->amGoingTo('update User email');
+        $I->fillField($vars['email_field_text'], 'user_email@mail.ru');
+        $I->fillField($vars['pswd_field_text'], 'kitten');
+        $I->attachFile($vars['file_field_tag'], '.gitignore');
+        $I->click($vars['submit_button']);
+
+        $I->amGoingTo('login with new password');
+        $I->see($vars['empty_file_msg']);
+    }
+
+
+    /**
+     * @param FunctionalTester $I
+     */
+    public function testUserCanNotUploadSQLFile(FunctionalTester $I): void
+    {
+        $vars = self::getVars();
+
+        $I->amGoingTo('save new User to the Database');
+        $user = new User();
+        $I->persistEntity($user, [
+            'email'    => 'user_email@mail.ru',
+            'avatar'   => 'anonymous.png',
+            'password' => 'bla-bla-bla',
+            'roles'    => ['ROLE_TEST']
+        ]);
+
+        $I->amOnPage($vars['url']);
+
+        $I->am('Tester');
+        $I->amGoingTo('click `Update` link');
+        $I->see('user_email@mail.ru');
+        $I->click("a[href=\"/en/user/".$user->getId()."/update\"]");
+        $I->seeResponseCodeIsSuccessful();
+        $I->seeCurrentUrlEquals("/en/user/".$user->getId()."/update");
+
+        $I->amGoingTo('update User email');
+        $I->fillField($vars['email_field_text'], 'user_email@mail.ru');
+        $I->fillField($vars['pswd_field_text'], 'kitten');
+        $I->attachFile('input[type="file"]', 'symfoapp.sql');
+        $I->click($vars['submit_button']);
+
+        $I->amGoingTo('login with new password');
+        $I->see($vars['non_image_msg']);
+    }
+
+
+    /**
      * @return array
      */
     private static function getVars(): array
@@ -148,6 +224,7 @@ class UserUpdateCest
             'header_tag'  => Userlist::$header['tag'],
             'user_link'   => Userlist::$links['topmenu_link_text'],
             'email_field_text' => Userlist::$form['email_field_text'],
+            'file_field_tag'   => Userlist::$form['file_field_tag'],
             'roles_field_text' => Userlist::$form['roles_field_text'],
             'pswd_field_text'  => Userlist::$form['password_field_text'],
             'submit_button'    => Userlist::$form['submit_button_tag'],
@@ -163,7 +240,9 @@ class UserUpdateCest
             'login_wrong_email_msg'=> SecuritySwitcher::$loginForm['wrong_email_message'],
             'login_password_field' => SecuritySwitcher::$loginForm['password_field_text'],
             'login_wrong_pswd_msg' => SecuritySwitcher::$loginForm['wrong_pswd_message'],
-            'login_submit_button'  => 'button[type="submit"]',
+            'login_submit_button'  => Userlist::$form['submit_button_tag'],
+            'empty_file_msg'       => Userlist::$form['empty_file_msg'],
+            'non_image_msg'        => Userlist::$form['no_image_msg'],
         ];
     }
 }

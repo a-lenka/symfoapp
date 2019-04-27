@@ -25,6 +25,7 @@ class UserShowListCest
         $first = new User();
         $I->persistEntity($first, [
             'email'    => 'first_user@mail.ru',
+            'avatar'   => 'anonymous.png',
             'password' => 'bla-bla-bla',
             'roles'    => ['ROLE_TEST']
         ]);
@@ -34,6 +35,7 @@ class UserShowListCest
         $second = new User();
         $I->persistEntity($second, [
             'email'    => 'second_user@mail.ru',
+            'avatar'   => 'anonymous.png',
             'password' => 'bla-bla-bla',
             'roles'    => ['ROLE_TEST']
         ]);
@@ -43,6 +45,7 @@ class UserShowListCest
         $third = new User();
         $I->persistEntity($third, [
             'email'    => 'third_user@mail.ru',
+            'avatar'   => 'anonymous.png',
             'password' => 'bla-bla-bla',
             'roles'    => ['ROLE_TEST']
         ]);
@@ -71,6 +74,7 @@ class UserShowListCest
         $first = new User();
         $I->persistEntity($first, [
             'email'    => 'aaa@mail.ru',
+            'avatar'   => 'anonymous.png',
             'password' => 'bla-bla-bla',
             'roles'    => ['ROLE_TEST']
         ]);
@@ -80,6 +84,7 @@ class UserShowListCest
         $third = new User();
         $I->persistEntity($third, [
             'email'    => 'zzz@mail.ru',
+            'avatar'   => 'anonymous.png',
             'password' => 'bla-bla-bla',
             'roles'    => ['ROLE_TEST']
         ]);

@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\UserType;
 use App\Repository\UserRepository;
+use App\Service\FileUploader;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -49,14 +50,9 @@ class UserController extends AbstractController
     {
         $users = $this->getUserRepository()->findAll();
 
-        $listPart = 'user/_list.html.twig';
-        $template = $request->isXmlHttpRequest()
-            ? $listPart
-            : 'list.html.twig';
-
-        return $this->render($template, [
+        return $this->render('list.html.twig', [
             'users'     => $users,
-            'list_part' => $listPart,
+            'list_part' => 'user/_list.html.twig',
             'sort_property' => 'default',
             'sort_order'    => 'default',
         ]);
@@ -140,13 +136,15 @@ class UserController extends AbstractController
      * @param integer $id
      * @param Request $request
      * @param UserPasswordEncoderInterface $passwordEncoder
+     * @param FileUploader $uploader
      *
      * @return Response
      */
     public function updateUser(
         $id,
         Request $request,
-        UserPasswordEncoderInterface $passwordEncoder
+        UserPasswordEncoderInterface $passwordEncoder,
+        FileUploader $uploader
     ): Response {
 
         $user = $this->getUserRepository()->find($id);
@@ -163,8 +161,11 @@ class UserController extends AbstractController
             $password = $passwordEncoder->encodePassword(
                 $user, $user->getPassword()
             );
-
             $user->setPassword($password);
+
+            $avatar  = $form['avatar']->getData();
+            $newName = $uploader->uploadUserAvatar($avatar);
+            $user->setAvatar($newName);
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
@@ -221,6 +222,7 @@ class UserController extends AbstractController
             $password = $passwordEncoder->encodePassword(
                 $user, $user->getPassword()
             );
+            $user->setAvatar($this->getParameter('anonymous'));
             $user->setPassword($password);
 
             $entityManager = $this->getDoctrine()->getManager();
