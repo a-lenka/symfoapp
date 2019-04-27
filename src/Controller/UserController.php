@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\UserType;
-use App\Repository\UserRepository;
 use App\Service\FileUploader;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,18 +20,6 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 class UserController extends AbstractController
 {
     /**
-     * Get User Repository for convenient work with User Entity
-     *
-     * @return UserRepository
-     */
-    private function getUserRepository(): UserRepository
-    {
-        return $this->getDoctrine()
-            ->getRepository(User::class);
-    }
-
-
-    /**
      * Show list of all User entities
      *
      * @Route("/{_locale}/user/list/all",
@@ -42,16 +29,15 @@ class UserController extends AbstractController
      *     requirements={"_locale": "%app_locales%"},
      * )
      *
-     * @param Request $request
-     *
      * @return Response
      */
-    public function showAll(Request $request): Response
+    public function showAll(): Response
     {
-        $users = $this->getUserRepository()->findAll();
+        $users = $this->getDoctrine()->getRepository(User::class)->findAll();
 
         return $this->render('list.html.twig', [
             'users'     => $users,
+            'title'     => 'Users',
             'list_part' => 'user/_list.html.twig',
             'sort_property' => 'default',
             'sort_order'    => 'default',
@@ -66,18 +52,22 @@ class UserController extends AbstractController
      *     name="user_list_sorted",
      *     methods="GET",
      *     defaults={"_locale"="%default_locale%"},
-     *     requirements={"_locale": "%app_locales%", "sort_property"="id|email|roles", "sort_order"="asc|desc|default"},
+     *     requirements={
+     *          "_locale": "%app_locales%",
+     *          "sort_property"="id|email|roles",
+     *          "sort_order"="asc|desc|default"
+     *      },
      * )
      *
      * @param Request $request
-     * @param int     $sort_property - Property to sort related tasks
-     * @param int     $sort_order    - Sorting order
+     * @param string  $sort_property - Property to sort related tasks
+     * @param string  $sort_order    - Sorting order
      *
      * @return Response
      */
-    public function showSorted(Request $request, $sort_property, $sort_order): Response
+    public function showSorted(Request $request, string $sort_property, string $sort_order): Response
     {
-        $allUsers = $this->getUserRepository()->sortByProperty(
+        $allUsers = $this->getDoctrine()->getRepository(User::class)->sortByProperty(
             $sort_property, $sort_order
         );
 
@@ -88,6 +78,7 @@ class UserController extends AbstractController
 
         return $this->render($template, [
             'users'     => $allUsers,
+            'title'     => 'Users',
             'list_part' => $listPart,
             'sort_property' => $sort_property,
             'sort_order'    => $sort_order,
@@ -110,9 +101,9 @@ class UserController extends AbstractController
      *
      * @return Response
      */
-    public function showDetails(Request $request, $id): Response
+    public function showDetails(Request $request, int $id): Response
     {
-        $user     = $this->getUserRepository()->find($id);
+        $user     = $this->getDoctrine()->getRepository(User::class)->find($id);
         $template = $request->isXmlHttpRequest()
             ? 'user/_details.html.twig'
             : 'user/details.html.twig';
@@ -141,13 +132,13 @@ class UserController extends AbstractController
      * @return Response
      */
     public function updateUser(
-        $id,
+        int $id,
         Request $request,
         UserPasswordEncoderInterface $passwordEncoder,
         FileUploader $uploader
     ): Response {
 
-        $user = $this->getUserRepository()->find($id);
+        $user = $this->getDoctrine()->getRepository(User::class)->find($id);
 
         $form = $this->createForm(UserType::class, $user, [
             'action' => $this->generateUrl('user_update', ['id' => $id]),
@@ -261,9 +252,9 @@ class UserController extends AbstractController
      *
      * @return Response
      */
-    public function confirmDeleteUser(Request $request, $id): Response
+    public function confirmDeleteUser(Request $request, int $id): Response
     {
-        $user     = $this->getUserRepository()->find($id);
+        $user     = $this->getDoctrine()->getRepository(User::class)->find($id);
         $template = $request->isXmlHttpRequest()
             ? 'user/_confirm-delete.html.twig'
             : 'confirm.html.twig';
@@ -289,9 +280,9 @@ class UserController extends AbstractController
      *
      * @return Response
      */
-    public function deleteUser($id): Response
+    public function deleteUser(int $id): Response
     {
-        $user = $this->getUserRepository()->find($id);
+        $user = $this->getDoctrine()->getRepository(User::class)->find($id);
 
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->remove($user);

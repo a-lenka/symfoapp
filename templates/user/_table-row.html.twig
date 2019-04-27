@@ -1,6 +1,8 @@
-<td>{{ user.id }}</td>
+<td>{{- user.id -}}</td>
+
 <td>
     <img class="avatar" src="{{ asset('uploads/avatars/' ~ user.avatar) }}">
 </td>
-<td>{{ user.email }}</td>
-<td>{{ user.roles|join(', ') }}</td>
+
+<td>{{- user.email -}}</td>
+<td>{{- user.roles|join(', ') -}}</td>

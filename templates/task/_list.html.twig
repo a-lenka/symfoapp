@@ -1,0 +1,22 @@
+<h1>{{- title|trans -}}</h1>
+
+<table class="responsive-table highlight">
+    <thead>
+        <tr>
+            {{ include('task/_table-headers.html.twig') }}
+
+            <th scope="col">{{ 'Actions'|trans }}</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for task in tasks %}
+            <tr>
+                {{ include('task/_table-row.html.twig') }}
+
+                {# Task actions field #}
+                <td class="center-align"></td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
