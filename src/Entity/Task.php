@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -62,27 +63,27 @@ class Task
      */
     public function setTitle(string $title): self
     {
-        $this->name = $title;
+        $this->title = $title;
 
         return $this;
     }
 
 
     /**
-     * @return \DateTimeInterface|null
+     * @return DateTimeInterface|null
      */
-    public function getDateDeadline(): ?\DateTimeInterface
+    public function getDateDeadline(): ?DateTimeInterface
     {
         return $this->dateDeadline;
     }
 
 
     /**
-     * @param \DateTimeInterface $dateDeadline
+     * @param DateTimeInterface $dateDeadline
      *
      * @return Task
      */
-    public function setDateDeadline(\DateTimeInterface $dateDeadline): self
+    public function setDateDeadline(DateTimeInterface $dateDeadline): self
     {
         $this->dateDeadline = $dateDeadline;
 

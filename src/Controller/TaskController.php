@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Task;
+use App\Form\TaskType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,11 +27,9 @@ class TaskController extends AbstractController
      *     requirements={"_locale": "%app_locales%"},
      * )
      *
-     * @param Request $request
-     *
      * @return Response
      */
-    public function showAll(Request $request): Response
+    public function showAll(): Response
     {
         $tasks = $this->getDoctrine()->getRepository(Task::class)->findAll();
 
@@ -81,6 +80,55 @@ class TaskController extends AbstractController
             'list_part' => $listPart,
             'sort_property' => $sort_property,
             'sort_order'    => $sort_order,
+        ]);
+    }
+
+
+    /**
+     * Create Task Entity
+     *
+     * @Route("/{_locale}/task/create",
+     *     name="task_create",
+     *     methods="GET|POST",
+     *     defaults={"_locale"="%default_locale%"},
+     *     requirements={"_locale": "%app_locales%"},
+     * )
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function createTask(Request $request): Response {
+
+        $task = new Task();
+
+        $form = $this->createForm(TaskType::class, $task, [
+            'action' => $this->generateUrl('task_create'),
+        ]);
+
+        $form->handleRequest($request);
+
+        if ($request->isMethod('POST')
+            && $form->isSubmitted()
+            && $form->isValid()
+        ) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($task);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('task_list_all');
+        }
+
+        $formPart = 'task/_form.html.twig';
+        $template = $request->isXmlHttpRequest()
+            ? $formPart
+            : 'form.html.twig';
+
+        return $this->render($template, [
+            'task'  => $task,
+            'title' => 'Create task',
+            'form'  => $form->createView(),
+            'form_part' => $formPart,
         ]);
     }
 }
