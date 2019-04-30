@@ -35,9 +35,9 @@
                    value="{% if last_username is defined %}{{ last_username }}{% endif %}">
             <label for="email">{{ 'Email'|trans }}</label>
 
-            {% if error is defined %}
+            {% if error and error is defined %}
                 <span class="helper-text red-text text-darken-2">
-                    {% if error %}{{ error.messageKey|trans(error.messageData) }}{% endif %}
+                    {{ error.messageKey|trans(error.messageData) }}
                 </span>
             {% else %}
                 <span class="helper-text"
@@ -58,9 +58,9 @@
                    class="validate">
             <label for="password">{{ 'Password'|trans }}</label>
 
-            {% if error is defined %}
+            {% if error and error is defined %}
                 <span class="helper-text red-text text-darken-2">
-                    {% if error %}{{ error.messageKey|trans(error.messageData) }}{% endif %}
+                    {{ error.messageKey|trans(error.messageData) }}
                 </span>
             {% else %}
                 <span class="helper-text"
