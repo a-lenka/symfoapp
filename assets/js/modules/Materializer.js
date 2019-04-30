@@ -2,7 +2,7 @@
  * Manage Materialize CSS components
  *
  * @module ../../js/modules/Materializer
- * @type {{initComponents}}
+ * @type {{initComponents, reInitFormFields}}
  */
 let Materializer = function() {
 
@@ -16,6 +16,16 @@ let Materializer = function() {
         M.Dropdown.init(dropdowns, {constrainWidth: false});
     };
 
+
+    /**
+     * Reinitialize form inputs to render `active` class
+     * when form is in Modal window
+     */
+    let reInitInputs = function() {
+        M.updateTextFields();
+    };
+
+
     /**
      * Reinitialize Select Component
      */
@@ -25,9 +35,19 @@ let Materializer = function() {
     };
 
 
+    /**
+     * Some Materialize CSS Components do not work with dynamic content,
+     * so they need to be reinitialized after form will be inserted into Modal
+     */
+    let reInitFormFields = function() {
+        reInitInputs();
+        reInitSelects();
+    };
+
+
     return {
-        initComponents: initComponents,
-        reInitSelects : reInitSelects,
+        initComponents  : initComponents,
+        reInitFormFields: reInitFormFields,
     }
 }();
 

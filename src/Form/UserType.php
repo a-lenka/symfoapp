@@ -28,14 +28,6 @@ class UserType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('avatar', FileType::class, [
-                'help'  => 'User avatar',
-                'label' => 'User avatar',
-                'mapped'=> false,
-                'constraints' => [
-                    new Image()
-                ]
-            ])
             ->add('email', EmailType::class, [
                 'help'  => 'User email',
                 'label' => 'User email',
@@ -57,6 +49,14 @@ class UserType extends AbstractType
             ->add('password', PasswordType::class, [
                 'help'  => 'User password',
                 'label' => 'User password',
+            ])
+            ->add('avatar', FileType::class, [
+                'help'  => 'User avatar',
+                'label' => 'User avatar',
+                'mapped'=> false,
+                'constraints' => [
+                    new Image()
+                ]
             ])
             ->add('submit', SubmitType::class, [
                 'label' => 'Save'

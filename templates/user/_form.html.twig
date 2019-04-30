@@ -1,15 +1,18 @@
 {% form_theme form 'themes/materialize-fields.html.twig' %}
 
-<h4>{{ title|trans }}</h4>
+<div class="modal-header">
+    <h4>{{ title|trans }}</h4>
+</div>
 
 {{ form_start(form) }}
-    {{ form_errors(form) }}
-    {{ form_row(form.email) }}
-    {{ form_row(form.roles) }}
-    {{ form_row(form.password) }}
-    {{ form_row(form.avatar) }}
+    <div class="modal-body">
+        {{ form_row(form.email) }}
+        {{ form_row(form.roles) }}
+        {{ form_row(form.password) }}
+        {{ form_row(form.avatar) }}
+    </div>
 
-    <div class="row">
+    <div class="modal-footer">
         {{ form_row(form.submit) }}
     </div>
 {{ form_end(form) }}
