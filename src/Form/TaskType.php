@@ -31,7 +31,6 @@ class TaskType extends AbstractType
                 'help'  => 'What to do',
             ])
             ->add('dateDeadline', DateTimePickerType::class, [
-                'widget' => 'single_text',
                 'label'  => 'Deadline date',
                 'help'   => 'When to do',
             ])
