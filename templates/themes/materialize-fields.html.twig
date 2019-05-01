@@ -1,5 +1,5 @@
 {# see https://github.com/symfony/symfony/blob/master/src/Symfony/Bridge/Twig/Resources/views/Form/form_div_layout.html.twig #}
-{# {{ dump(_context|keys) }}       - Shows available vars #}
+{# {{ dump(_context|keys) }}        - Shows available vars #}
 {# {{ dump(form.parent.children) }} - Show form fields #}
 
 
@@ -56,11 +56,18 @@
     {%- if widget == 'single_text' -%}
         {{- block('form_widget_simple') -}}
     {%- else -%}
-        <div {{ block('widget_container_attributes') }}>
+        <div class="input-field col s6">
             {{- form_widget(form.date) -}}
+            {{- form_label(form.date) -}}
             {{- form_errors(form.date) -}}
+            {{- form_help(form) -}}
+        </div>
+
+        <div class="input-field col s6">
             {{- form_widget(form.time) -}}
+            {{- form_label(form.time) -}}
             {{- form_errors(form.time) -}}
+            {{- form_help(form) -}}
         </div>
     {%- endif -%}
 {%- endblock datetime_widget -%}
@@ -68,7 +75,11 @@
 
 {%- block date_widget -%}
     {%- if widget == 'single_text' -%}
+        {%- set attr = attr|default({})|merge({class: 'datepicker '}) -%}
+
+        <i class="material-icons prefix">date_range</i>
         {{ block('form_widget_simple') }}
+
     {%- else -%}
         <div {{ block('widget_container_attributes') }}>
             {{- date_pattern|replace({
@@ -83,9 +94,13 @@
 
 {%- block time_widget -%}
     {%- if widget == 'single_text' -%}
+        {%- set attr = attr|default({})|merge({class: 'timepicker '}) -%}
+
+        <i class="material-icons prefix">access_time</i>
         {{ block('form_widget_simple') }}
     {%- else -%}
         {%- set vars = widget == 'text' ? { 'attr': { 'size': 1 }} : {} -%}
+
         <div {{ block('widget_container_attributes') }}>
             {{ form_widget(form.hour, vars) }}{% if with_minutes %}:{{ form_widget(form.minute, vars) }}{% endif %}{% if with_seconds %}:{{ form_widget(form.second, vars) }}{% endif %}
         </div>
@@ -220,34 +235,32 @@
 
 {# Label #}
 {%- block form_label -%}
+    {%- set field_type = form.vars.block_prefixes[1] -%}
+    {% set blackHole = 'active' %}
 
-    {%- set field_type    = form.vars.block_prefixes[1] -%}
+    {% if form.vars.block_prefixes[1] == 'date' or form.vars.block_prefixes[1] == 'time' %}
+        {# TODO: Something is eating an `active` class from my code. In any combination. o_O  #}
+        {%- set label_attr = label_attr|default({})|merge({class: 'active' ~ ' active '~"#{blackHole} " ~ blackHole }) %}
+    {% endif %}
 
     {%- if label is not same as(false) -%}
         {%- if not compound -%}
             {%- set label_attr = label_attr|merge({'for': id}) -%}
-
-            {% if field_type == 'datetime' %}
-                {# The label with Materialize CSS styles interferes with HTML5 checkbox #}
-                {%- set label_attr = label_attr|merge({'class': (label_attr.class|default('') ~ ' active')|trim}) -%}
-                {%- set attr       = attr|merge(label_attr) -%}
-            {% endif %}
         {%- endif -%}
 
         {%- if required -%}
-            {%- set label_attr = label_attr|merge({'class': (label_attr.class|default('') ~ ' required')|trim}) -%}
-        {%- endif -%}
-
-        {%- if label is empty -%}
-            {%- if label_format is not empty -%}
-                {%- set label = label_format|replace({
-                    '%name%': name,
-                    '%id%': id,
-                }) -%}
-            {%- else -%}
-                {%- set label = name|humanize -%}
+            {%- set label_attr = label_attr|merge({'class': (label_attr.class|default('') ~ ' required')}) -%}
+            {%- if label is empty -%}
+                {%- if label_format is not empty -%}
+                    {%- set label = label_format|replace({
+                        '%name%': name,
+                        '%id%': id,
+                    }) -%}
+                {%- else -%}
+                    {%- set label = name|humanize -%}
+                {%- endif -%}
             {%- endif -%}
-        {%- endif -%}
+        {% endif %}
 
         {% set has_not_domain = translation_domain|default('') is same as(false) %}
         {% set domain         = translation_domain|default('messages') %}
@@ -260,6 +273,7 @@
                     {%- with { attr: label_attr } -%}{{ block('attributes') }}{%- endwith -%}
                 {%- endif -%}
             >
+                {%- set label = name|humanize -%}
                 {{- has_not_domain ? label|trans : label|trans(params, domain)|raw -}}
             </{{ element|default('label') }}>
         {%- endif -%}
@@ -273,7 +287,7 @@
     {%- set attr        = row_attr|default({})|merge({ class: 'row' }) -%}
 
     {%- set field_type      = form.vars.block_prefixes[1] -%}
-    {%- set halfWidthTypes  = ['checkbox', 'radio'] -%}
+    {%- set halfWidthTypes  = ['checkbox', 'radio', 'date', 'time',] -%}
     {%- set notNeedRowTypes = ['checkbox', 'radio'] -%}
     {%- set is_full_width_row   = field_type not in halfWidthTypes ? 's12' : 's6' %}
     {%- set div_wrapper_classes = "input-field col #{is_full_width_row}" %}
@@ -281,18 +295,20 @@
     {%- if field_type != 'file' -%}
         {% if field_type not in notNeedRowTypes %}
             <div {% with attr %}{{ block('attributes') }}{% endwith %}>
-                <div class="{{ div_wrapper_classes }}">
+                {% if field_type != 'datetime' %}<div class="{{ div_wrapper_classes }}">{% endif %}
         {% endif %}
                     {{- form_widget(form, widget_attr) -}}
-                    {{- form_label(form) -}}
+                    {% if field_type != 'datetime' %}
+                        {{- form_label(form) -}}
+                    {% endif %}
 
                     {% if form_errors(form) is not empty %}
                         {{ form_errors(form) }}
                     {% elseif help is defined %}
-                        {{ form_help(form) }}
+                        {% if field_type != 'datetime' %}{{ form_help(form) }}{% endif %}
                     {% endif %}
         {% if field_type not in notNeedRowTypes %}
-                </div>
+            {% if field_type != 'datetime' %}</div>{% endif %}
             </div>
         {% endif %}
     {%- else -%}

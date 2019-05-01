@@ -12,8 +12,11 @@ let Materializer = function() {
     let initComponents = function() {
         M.AutoInit();
 
-        let dropdowns = document.querySelectorAll('.dropdown-trigger');
-        M.Dropdown.init(dropdowns, {constrainWidth: false});
+        reInitInputs();
+        reInitSelects();
+        reInitDropdowns();
+        reInitDatePickers();
+        reInitTimePickers();
     };
 
 
@@ -27,11 +30,50 @@ let Materializer = function() {
 
 
     /**
+     * Configure Materialize Dropdown component
+     */
+    let reInitDropdowns = function() {
+        let dropdowns = document.querySelectorAll('.dropdown-trigger');
+        M.Dropdown.init(dropdowns, {'constrainWidth': false});
+
+    };
+
+
+    /**
+     * Default Materialize CSS format in unreadable for the server
+     */
+    let reInitDatePickers = function() {
+        let datepickers = document.querySelectorAll('.datepicker');
+        let instances = M.Datepicker.init(datepickers, {
+            'format': 'yyyy-mm-dd',
+            'autoClose': true,
+            'firstDay': 1,
+            'showMonthAfterYear': true,
+            'showDaysInNextAndPreviousMonths': true,
+        });
+    };
+
+
+    /**
+     * Pickers must be configured to work
+     */
+    let reInitTimePickers = function() {
+        let timepickers = document.querySelectorAll('.timepicker');
+        let instances = M.Timepicker.init(timepickers, {
+            'twelveHour': false,
+            'autoClose': true,
+        });
+    };
+
+
+    /**
      * Reinitialize Select Component
      */
     let reInitSelects = function() {
         let selects   = document.querySelectorAll('select');
-        let instances = M.FormSelect.init(selects, {});
+        let instances = M.FormSelect.init(selects, {
+            'dropdownOptions': {'constrainWidth': false},
+        });
     };
 
 
@@ -42,6 +84,8 @@ let Materializer = function() {
     let reInitFormFields = function() {
         reInitInputs();
         reInitSelects();
+        reInitDatePickers();
+        reInitTimePickers();
     };
 
 

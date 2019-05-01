@@ -8,6 +8,7 @@
 'Create task': 'Create task'
 'Create user': 'Create user'
 'Current password': 'Current password'
+'Date': 'Date'
 'Deadline date': 'Deadline date'
 'Delete permanently': 'Delete permanently'
 'Done': 'Done'
@@ -44,6 +45,7 @@
 'This email you will use to log in and recover your password': 'This email you will use to log in and recover your password'
 'This value is not valid.': 'This value is not valid'
 "This value should be the user's current password.": "This value should be the user's current password"
+'Time': 'Time'
 'Title': 'Title'
 'Try again, please': 'Try again, please'
 'Update': 'Update'

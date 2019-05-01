@@ -33,6 +33,8 @@ class TaskType extends AbstractType
             ->add('dateDeadline', DateTimePickerType::class, [
                 'label'  => 'Deadline date',
                 'help'   => 'When to do',
+                'date_label' => 'Date',
+                'time_label' => 'Time',
             ])
             ->add('state', ChoiceType::class, [
                 'expanded' => false,
