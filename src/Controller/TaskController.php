@@ -98,7 +98,8 @@ class TaskController extends AbstractController
      *
      * @return Response
      */
-    public function createTask(Request $request): Response {
+    public function createTask(Request $request): Response
+    {
 
         $task = new Task();
 

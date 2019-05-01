@@ -3,9 +3,9 @@
 namespace App\Form;
 
 use App\Entity\Task;
+use App\Form\Fields\DateTimePickerType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -30,9 +30,10 @@ class TaskType extends AbstractType
                 'label' => 'Task name',
                 'help'  => 'What to do',
             ])
-            ->add('dateDeadline', DateTimeType::class, [
-                'label' => 'Deadline date',
-                'help'  => 'When to do',
+            ->add('dateDeadline', DateTimePickerType::class, [
+                'widget' => 'single_text',
+                'label'  => 'Deadline date',
+                'help'   => 'When to do',
             ])
             ->add('state', ChoiceType::class, [
                 'expanded' => false,

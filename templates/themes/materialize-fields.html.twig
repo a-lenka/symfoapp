@@ -178,9 +178,18 @@
 
 {# Label #}
 {%- block form_label -%}
+
+    {%- set field_type = form.vars.block_prefixes[1] -%}
+
     {%- if label is not same as(false) -%}
         {%- if not compound -%}
             {%- set label_attr = label_attr|merge({'for': id}) -%}
+
+            {% if field_type == 'datetime' %}
+                {# The label with Materialize CSS styles interferes with HTML5 checkbox #}
+                {%- set label_attr = label_attr|merge({'class': (label_attr.class|default('') ~ ' active')|trim}) -%}
+                {%- set attr       = attr|merge(label_attr) -%}
+            {% endif %}
         {%- endif -%}
 
         {%- if required -%}
@@ -202,8 +211,6 @@
         {% set domain         = translation_domain|default('messages') %}
         {% set params         = translation_parametrs|default({}) %}
 
-        {%- set field_type   = form.vars.block_prefixes[1] -%}
-
         {# Label for checkbox will be rendered in checkbox widget block #}
         {%- if field_type != 'checkbox' -%}
             <{{ element|default('label') }}
@@ -211,7 +218,7 @@
                     {%- with { attr: label_attr } -%}{{ block('attributes') }}{%- endwith -%}
                 {%- endif -%}
             >
-                {{ has_not_domain ? label|trans : label|trans(params, domain)|raw -}}
+                {{- has_not_domain ? label|trans : label|trans(params, domain)|raw -}}
             </{{ element|default('label') }}>
         {%- endif -%}
     {%- endif -%}
