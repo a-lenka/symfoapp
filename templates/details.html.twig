@@ -1,0 +1,7 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ title|trans }}: {{ entity.id }}{% endblock title %}
+
+{% block content %}
+    {% include details_part %}
+{% endblock content %}

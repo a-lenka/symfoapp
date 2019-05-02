@@ -101,13 +101,18 @@ class TaskController extends AbstractController
      */
     public function showDetails(Request $request, int $id): Response
     {
-        $task     = $this->getDoctrine()->getRepository(Task::class)->find($id);
-        $template = $request->isXmlHttpRequest()
-            ? 'task/_details.html.twig'
-            : 'task/details.html.twig';
+        $task = $this->getDoctrine()->getRepository(Task::class)->find($id);
+
+        $details_part = 'task/_details.html.twig';
+        $template     = $request->isXmlHttpRequest()
+            ? $details_part
+            : 'details.html.twig';
 
         return $this->render($template, [
-            'task' => $task,
+            'task'      => $task,
+            'entity'    => $task, // For common `details`
+            'title'     => 'Task',
+            'details_part' => $details_part,
         ]);
     }
 
