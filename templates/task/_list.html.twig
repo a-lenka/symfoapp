@@ -25,6 +25,11 @@
                        class="modal-trigger" data-target="materialize-modal">
                         <i class="material-icons">remove_circle_outline</i>
                     </a>
+
+                    <a href="{{ path('task_update', {'id': task.id }) }}"
+                       class="modal-trigger" data-target="materialize-modal">
+                        <i class="material-icons">refresh</i>
+                    </a>
                 </td>
             </tr>
         {% endfor %}
