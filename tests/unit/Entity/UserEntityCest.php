@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Tests;
+namespace App\Tests\Unit\Entity;
 
 use App\Entity\User;
+use App\Tests\UnitTester;
 
 /**
  * Class UserEntityCest
- * @package App\Tests
+ * @package App\Tests\Unit\Entity
  */
 class UserEntityCest
 {
@@ -22,6 +23,7 @@ class UserEntityCest
         $user = new User();
         $I->persistEntity($user, [
             'email'    => 'new_email@mail.ru',
+            'avatar'   => 'anonymous.png',
             'password' => $encoder->encodePassword($user, 'kitten'),
             'roles'    => ['ROLE_TEST']
         ]);
@@ -44,6 +46,7 @@ class UserEntityCest
         $I->amGoingTo('create a new User with an empty roles');
         $I->persistEntity(new User, [
             'email'    => 'other_email@mail.ru',
+            'avatar'   => 'anonymous.png',
             'password' => '',
             'roles'    => ['ROLE_TEST']
         ]);
@@ -68,6 +71,7 @@ class UserEntityCest
         $I->amGoingTo('create a new User with an empty roles');
         $I->persistEntity(new User, [
             'email'    => 'another_email@mail.ru',
+            'avatar'   => 'anonymous.png',
             'password' => 'kitten',
             'roles'    => []
         ]);
@@ -92,6 +96,7 @@ class UserEntityCest
         $I->amGoingTo('create a new User with the `ROLE_USER`');
         $I->persistEntity(new User, [
             'email'    => 'any_email@mail.ru',
+            'avatar'   => 'anonymous.png',
             'password' => 'kitten',
             'roles'    => ['ROLE_USER']
         ]);
@@ -115,6 +120,7 @@ class UserEntityCest
         $I->amGoingTo('create a new User with the `ROLE_ROOT');
         $I->persistEntity(new User, [
             'email'    => 'any@mail.ru',
+            'avatar'   => 'anonymous.png',
             'password' => 'kitten',
             'roles'    => ['ROLE_ROOT']
         ]);

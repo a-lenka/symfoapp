@@ -134,6 +134,55 @@ class TaskController extends AbstractController
 
 
     /**
+     * Update Task Entity
+     *
+     * @Route("/{_locale}/task/{id}/update",
+     *     name="task_update",
+     *     methods="GET|POST",
+     *     defaults={"_locale"="%default_locale%"},
+     *     requirements={"_locale": "%app_locales%"},
+     * )
+     *
+     * @param Request $request
+     * @param integer $id
+     *
+     * @return Response
+     */
+    public function updateTask(Request $request, int $id): Response
+    {
+        $task = $this->getDoctrine()->getRepository(Task::class)->find($id);
+
+        $form = $this->createForm(TaskType::class, $task, [
+            'action' => $this->generateUrl('task_update', ['id' => $id]),
+        ]);
+        $form->handleRequest($request);
+
+        if ($request->isMethod('POST')
+            && $form->isSubmitted()
+            && $form->isValid()
+        ) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($task);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('task_list_all');
+        }
+
+        $formPart = 'task/_form.html.twig';
+        $template = $request->isXmlHttpRequest()
+            ? $formPart
+            : 'form.html.twig';
+
+        return $this->render($template, [
+            'task' => $task,
+            'form' => $form->createView(),
+            'form_part' => $formPart,
+            'title' => 'Update task',
+        ]);
+    }
+
+
+    /**
      * Confirm deleting Task Entity
      *
      * @Route("/{_locale}/task/{id}/delete/confirm",

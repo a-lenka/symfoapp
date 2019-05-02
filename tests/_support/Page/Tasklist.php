@@ -46,6 +46,8 @@ class Tasklist
         'deadline_date_field_text' => 'Date',
         'deadline_time_field_text' => 'Time',
         'submit_button' => 'button[type="submit"]',
+        'in_progress'   => 'In progress',
+        'done'          => 'Done',
     ];
 
 
