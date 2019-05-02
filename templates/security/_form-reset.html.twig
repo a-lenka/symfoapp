@@ -1,14 +1,16 @@
 {% form_theme form 'themes/materialize-fields.html.twig' %}
 
-<h4>{{ 'Reset password'|trans }}</h4>
+<div class="modal-header">
+    <h4>{{ 'Reset password'|trans }}</h4>
+</div>
 
 {{ form_start(form, {'action': path('reset')}) }}
-    {{ form_errors(form) }}
+    <div class="modal-body">
+        {{ form_row(form.currentPassword) }}
+        {{ form_row(form.newPassword) }}
+    </div>
 
-    {{ form_row(form.currentPassword) }}
-    {{ form_row(form.newPassword) }}
-
-    <div class="row">
+    <div class="modal-footer">
         {{ form_row(form.submit) }}
     </div>
 {{ form_end(form) }}

@@ -111,8 +111,15 @@ textarea.materialize-textarea {
     & + label:after {
         @extend %input-after-style;
     }
-}
 
+    /** TODO: Delete this after the `active` class
+         will stop fading out from `materialize-fields.html.twig` */
+    &.datepicker:placeholder-shown + label,
+    &.timepicker:placeholder-shown + label {
+        transform: translateY(-14px) scale(.8);
+        transform-origin: 0 0;
+    }
+}
 
 /* Validation Sass Placeholders */
 %valid-input-style {

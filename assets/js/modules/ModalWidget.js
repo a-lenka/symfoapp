@@ -33,6 +33,7 @@ let ModalWidget = function() {
 
                 // Since form is available on the page
                 if(form.instance) {
+                    Materializer.reInitFormFields();
                     listener.setSubmitListener();
                 }
             }
@@ -117,7 +118,7 @@ let ModalWidget = function() {
         listenReInitComponentsEvent: function(event) {
             console.log(event);
             if(event.animationName === 'selectWasInserted') {
-                Materializer.reInitSelects();
+                Materializer.reInitFormFields();
             }
         },
     };
