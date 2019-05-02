@@ -20,7 +20,12 @@
                 {{ include('task/_table-row.html.twig') }}
 
                 {# Task actions field #}
-                <td class="center-align"></td>
+                <td class="center-align">
+                    <a href="{{ path('task_delete_confirm', {'id': task.id }) }}"
+                       class="modal-trigger" data-target="materialize-modal">
+                        <i class="material-icons">remove_circle_outline</i>
+                    </a>
+                </td>
             </tr>
         {% endfor %}
     </tbody>
