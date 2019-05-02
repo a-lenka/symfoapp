@@ -63,14 +63,14 @@ CREATE TABLE `task` (
 
 --
 -- Dumping data for table `task`
---
+-- 'Y-m-d\TH:i:s'
 
 LOCK TABLES `task` WRITE;
 /*!40000 ALTER TABLE `task` DISABLE KEYS */;
 INSERT INTO `task` (`id`, `title`, `date_deadline`, `state`) VALUES (
-    1,'First task','2020-04-27 13:34:40','In progress'
+    1,'First task','2000-10-30 20:00:00','In progress'
 ),(
-    2,'Second task','2019-04-27 13:35:26','Done'
+    2,'Second task','2001-10-30 20:00:00','Done'
 );
 /*!40000 ALTER TABLE `task` ENABLE KEYS */;
 UNLOCK TABLES;
