@@ -68,9 +68,9 @@ CREATE TABLE `task` (
 LOCK TABLES `task` WRITE;
 /*!40000 ALTER TABLE `task` DISABLE KEYS */;
 INSERT INTO `task` (`id`, `title`, `date_deadline`, `state`) VALUES (
-    1,'First task','2020-04-27 13:34:40','in progress'
+    1,'First task','2020-04-27 13:34:40','In progress'
 ),(
-    2,'Second task','2019-04-27 13:35:26','done'
+    2,'Second task','2019-04-27 13:35:26','Done'
 );
 /*!40000 ALTER TABLE `task` ENABLE KEYS */;
 UNLOCK TABLES;
