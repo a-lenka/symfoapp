@@ -114,8 +114,8 @@ textarea.materialize-textarea {
 
     /** TODO: Delete this after the `active` class
          will stop fading out from `materialize-fields.html.twig` */
-    &.datepicker + label,
-    &.timepicker + label {
+    &.datepicker:placeholder-shown + label,
+    &.timepicker:placeholder-shown + label {
         transform: translateY(-14px) scale(.8);
         transform-origin: 0 0;
     }
