@@ -12,6 +12,7 @@ class Tasklist
     public static $url = [
         'en' => '/en/task/list/all',
         'ru' => '/ru/task/list/all',
+        'create' => '/en/task/create'
     ];
 
 
@@ -36,5 +37,20 @@ class Tasklist
         'deadline_desc' => '/en/task/list/all/sorted/dateDeadline/desc',
         'state_asc'  => '/en/task/list/all/sorted/state/asc',
         'state_desc' => '/en/task/list/all/sorted/state/desc',
+    ];
+
+
+    /** @var array $form - Form data */
+    public static $form = [
+        'title_field_text' => 'Task name',
+        'deadline_date_field_text' => 'Date',
+        'deadline_time_field_text' => 'Time',
+        'submit_button' => 'button[type="submit"]',
+    ];
+
+
+    /** @var array $create */
+    public static $create = [
+        'create_btn_icon_text'=> 'add',
     ];
 }

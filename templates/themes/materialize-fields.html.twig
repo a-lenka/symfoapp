@@ -29,6 +29,11 @@
         {%- set required = false -%}
     {%- endif -%}
 
+    {%- set field_type = form.vars.block_prefixes[1] -%}
+
+    {%-if type == 'text' and field_type not in ['date', 'time'] -%}
+        <i class="material-icons prefix">short_text</i>
+    {%- endif -%}
     <input type="{{ type }}" {{ block('widget_attributes') }} value="{{ is_value }}">
 {%- endblock form_widget_simple -%}
 
@@ -273,7 +278,7 @@
                     {%- with { attr: label_attr } -%}{{ block('attributes') }}{%- endwith -%}
                 {%- endif -%}
             >
-                {%- set label = name|humanize -%}
+                {%- if label is empty -%}{%- set label = name|humanize -%}{%- endif -%}
                 {{- has_not_domain ? label|trans : label|trans(params, domain)|raw -}}
             </{{ element|default('label') }}>
         {%- endif -%}
