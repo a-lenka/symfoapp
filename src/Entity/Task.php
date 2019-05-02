@@ -15,27 +15,46 @@ class Task
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
+     * @ORM\Column(
+     *     type="integer"
+     * )
      */
     private $id;
 
-
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(
+     *     type="string",
+     *     length=255
+     * )
      */
     private $title;
 
-
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(
+     *     type="datetime"
+     * )
      */
     private $dateDeadline;
 
-
     /**
-     * @ORM\Column(type="string", length=50)
+     * @ORM\Column(
+     *     type="string",
+     *     length=50
+     * )
      */
     private $state;
+
+    /**
+     * @ORM\ManyToOne(
+     *     targetEntity="App\Entity\User",
+     *     inversedBy="tasks"
+     * )
+     *
+     * @ORM\JoinColumn(
+     *     nullable=false
+     * )
+     */
+    private $owner;
 
 
     /**
@@ -108,6 +127,28 @@ class Task
     public function setState(string $state): self
     {
         $this->state = $state;
+
+        return $this;
+    }
+
+
+    /**
+     * @return User|null
+     */
+    public function getOwner(): ?User
+    {
+        return $this->owner;
+    }
+
+
+    /**
+     * @param User|null $owner
+     *
+     * @return Task
+     */
+    public function setOwner(?User $owner): self
+    {
+        $this->owner = $owner;
 
         return $this;
     }

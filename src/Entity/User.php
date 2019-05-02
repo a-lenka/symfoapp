@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -18,37 +20,68 @@ class User implements UserInterface
      *
      * @ORM\Id()
      * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
+     * @ORM\Column(
+     *     type="integer"
+     * )
      */
     private $id;
 
     /**
      * @var string|null $email - User unique ID in the system
      *
-     * @ORM\Column(type="string", length=180, unique=true)
+     * @ORM\Column(
+     *     type="string",
+     *     length=180,
+     *     unique=true
+     * )
      */
     private $email;
 
     /**
      * @var array $roles - User roles
      *
-     * @ORM\Column(type="json")
+     * @ORM\Column(
+     *     type="json"
+     * )
      */
     private $roles = [];
 
     /**
      * @var string|null $password - The hashed password
      *
-     * @ORM\Column(type="string")
+     * @ORM\Column(
+     *     type="string"
+     * )
      */
     private $password;
 
     /**
      * @var string|null $avatar - User avatar
      *
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(
+     *     type="string",
+     *     length=255
+     * )
      */
     private $avatar;
+
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="App\Entity\Task",
+     *     mappedBy="owner",
+     *     orphanRemoval=true
+     * )
+     */
+    private $tasks;
+
+
+    /**
+     * User constructor.
+     */
+    public function __construct()
+    {
+        $this->tasks = new ArrayCollection();
+    }
 
 
     /**
@@ -181,6 +214,51 @@ class User implements UserInterface
     public function getAvatar(): ?string
     {
         return $this->avatar;
+    }
+
+
+    /**
+     * @return Collection|Task[]
+     */
+    public function getTasks(): Collection
+    {
+        return $this->tasks;
+    }
+
+
+    /**
+     * @param Task $task
+     *
+     * @return User
+     */
+    public function addTask(Task $task): self
+    {
+        if (!$this->tasks->contains($task)) {
+            $this->tasks[] = $task;
+            $task->setOwner($this);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * @param Task $task
+     *
+     * @return User
+     */
+    public function removeTask(Task $task): self
+    {
+        if ($this->tasks->contains($task)) {
+            $this->tasks->removeElement($task);
+
+            // Set the owning side to null (unless already changed)
+            if ($task->getOwner() === $this) {
+                $task->setOwner(null);
+            }
+        }
+
+        return $this;
     }
 
 }

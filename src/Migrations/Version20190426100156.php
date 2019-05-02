@@ -38,7 +38,10 @@ final class Version20190426100156 extends AbstractMigration
             'Migration can only be executed safely on \'mysql\'.'
         );
 
-        $this->addSql('ALTER TABLE user ADD avatar VARCHAR(255) NOT NULL');
+        $this->addSql('
+            ALTER TABLE user 
+                ADD avatar VARCHAR(255) NOT NULL
+            ');
     }
 
 
@@ -55,6 +58,9 @@ final class Version20190426100156 extends AbstractMigration
             'Migration can only be executed safely on \'mysql\'.'
         );
 
-        $this->addSql('ALTER TABLE user DROP avatar');
+        $this->addSql('
+            ALTER TABLE user 
+                DROP avatar
+        ');
     }
 }
