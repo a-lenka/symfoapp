@@ -12,7 +12,7 @@ class Tasklist
     public static $url = [
         'en' => '/en/task/list/all',
         'ru' => '/ru/task/list/all',
-        'create' => '/en/task/create'
+        'create' => '/en/task/create',
     ];
 
 

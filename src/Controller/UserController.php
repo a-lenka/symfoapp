@@ -104,12 +104,17 @@ class UserController extends AbstractController
     public function showDetails(Request $request, int $id): Response
     {
         $user     = $this->getDoctrine()->getRepository(User::class)->find($id);
-        $template = $request->isXmlHttpRequest()
-            ? 'user/_details.html.twig'
-            : 'user/details.html.twig';
+
+        $details_part = 'user/_details.html.twig';
+        $template     = $request->isXmlHttpRequest()
+            ? $details_part
+            : 'details.html.twig';
 
         return $this->render($template, [
-            'user' => $user,
+            'user'      => $user,
+            'entity'    => $user, // For common `details`
+            'title'     => 'User',
+            'details_part' => $details_part,
         ]);
     }
 

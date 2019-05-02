@@ -85,6 +85,39 @@ class TaskController extends AbstractController
 
 
     /**
+     * Show details page for one separate Task
+     *
+     * @Route("/{_locale}/task/{id}/details",
+     *     name="task_details",
+     *     methods="GET",
+     *     defaults={"_locale"="%default_locale%"},
+     *     requirements={"_locale": "%app_locales%"},
+     * )
+     *
+     * @param Request $request
+     * @param integer $id - Task id from request params
+     *
+     * @return Response
+     */
+    public function showDetails(Request $request, int $id): Response
+    {
+        $task = $this->getDoctrine()->getRepository(Task::class)->find($id);
+
+        $details_part = 'task/_details.html.twig';
+        $template     = $request->isXmlHttpRequest()
+            ? $details_part
+            : 'details.html.twig';
+
+        return $this->render($template, [
+            'task'      => $task,
+            'entity'    => $task, // For common `details`
+            'title'     => 'Task',
+            'details_part' => $details_part,
+        ]);
+    }
+
+
+    /**
      * Create Task Entity
      *
      * @Route("/{_locale}/task/create",

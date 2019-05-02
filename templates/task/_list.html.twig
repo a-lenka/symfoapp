@@ -21,14 +21,19 @@
 
                 {# Task actions field #}
                 <td class="center-align">
-                    <a href="{{ path('task_delete_confirm', {'id': task.id }) }}"
+                    <a href="{{ path('task_details', {'id': task.id }) }}"
                        class="modal-trigger" data-target="materialize-modal">
-                        <i class="material-icons">remove_circle_outline</i>
+                        <i class="material-icons">info_outline</i>
                     </a>
 
                     <a href="{{ path('task_update', {'id': task.id }) }}"
                        class="modal-trigger" data-target="materialize-modal">
                         <i class="material-icons">refresh</i>
+                    </a>
+
+                    <a href="{{ path('task_delete_confirm', {'id': task.id }) }}"
+                       class="modal-trigger" data-target="materialize-modal">
+                        <i class="material-icons">remove_circle_outline</i>
                     </a>
                 </td>
             </tr>
