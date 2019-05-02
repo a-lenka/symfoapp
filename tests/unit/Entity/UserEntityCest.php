@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Tests;
+namespace App\Tests\Unit\Entity;
 
 use App\Entity\User;
+use App\Tests\UnitTester;
 
 /**
  * Class UserEntityCest
- * @package App\Tests
+ * @package App\Tests\Unit\Entity
  */
 class UserEntityCest
 {
