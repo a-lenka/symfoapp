@@ -100,7 +100,6 @@ class TaskController extends AbstractController
      */
     public function createTask(Request $request): Response
     {
-
         $task = new Task();
 
         $form = $this->createForm(TaskType::class, $task, [
@@ -131,5 +130,60 @@ class TaskController extends AbstractController
             'form'  => $form->createView(),
             'form_part' => $formPart,
         ]);
+    }
+
+
+    /**
+     * Confirm deleting Task Entity
+     *
+     * @Route("/{_locale}/task/{id}/delete/confirm",
+     *     name="task_delete_confirm",
+     *     methods="GET",
+     *     defaults={"_locale"="%default_locale%"},
+     *     requirements={"_locale": "%app_locales%"},
+     * )
+     *
+     * @param Request $request
+     * @param integer $id
+     *
+     * @return Response
+     */
+    public function confirmDeleteTask(Request $request, int $id): Response
+    {
+        $task     = $this->getDoctrine()->getRepository(Task::class)->find($id);
+        $template = $request->isXmlHttpRequest()
+            ? 'task/_confirm-delete.html.twig'
+            : 'confirm.html.twig';
+
+        return $this->render($template, [
+            'task' => $task,
+            'confirm_part' => 'task/_confirm-delete.html.twig',
+        ]);
+    }
+
+
+    /**
+     * Delete Task Entity permanently
+     *
+     * @Route("/{_locale}/task/{id}/delete",
+     *     name="task_delete",
+     *     methods="GET",
+     *     defaults={"_locale"="%default_locale%"},
+     *     requirements={"_locale": "%app_locales%"},
+     * )
+     *
+     * @param integer $id
+     *
+     * @return Response
+     */
+    public function deleteTask(int $id): Response
+    {
+        $task = $this->getDoctrine()->getRepository(Task::class)->find($id);
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->remove($task);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('task_list_all');
     }
 }

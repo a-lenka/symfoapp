@@ -1,7 +1,7 @@
-<h5>{{ 'User'|trans ~ ' "' ~ user.email ~ '" ' ~ '(he)will be deleted permanently'|trans }}</h5>
+<h5>{{ 'Task'|trans ~ ' "' ~ task.title ~ '" ' ~ '(she)will be deleted permanently'|trans }}</h5>
 
 <div class="row modal-footer">
-    <a href="{{ path('user_delete', {'id': user.id }) }}"
+    <a href="{{ path('task_delete', {'id': task.id}) }}"
        class="btn waves-effect waves-light red">
         {{ 'Delete permanently'|trans }}
         <i class="material-icons right">delete_forever</i>

@@ -53,4 +53,10 @@ class Tasklist
     public static $create = [
         'create_btn_icon_text'=> 'add',
     ];
+
+
+    /** @var array $delete */
+    public static $delete = [
+        'delete_permanently_button'=> 'Delete permanently',
+    ];
 }
