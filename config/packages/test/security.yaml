@@ -1,0 +1,5 @@
+security:
+    firewalls:
+        main:
+            # Activate different ways to authenticate
+            http_basic: true
