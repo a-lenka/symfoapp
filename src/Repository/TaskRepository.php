@@ -31,16 +31,18 @@ class TaskRepository extends ServiceEntityRepository
     /**
      * Find all Tasks and sort them by the given property
      *
+     * @param int    $ownerId  - User ID
      * @param string $property - Property to sort
      * @param string $order    - ASC or DESC
      *
      * @return array - Returns collection of Task objects
      */
-    public function sortByProperty(string $property, string $order): array
+    public function sortByProperty(int $ownerId, string $property, string $order): array
     {
         if($order === 'default') {$order = 'asc';}
 
         return $this->createQueryBuilder('t')
+            ->where("t.owner = $ownerId")
             ->addOrderBy("t.$property", $order)
             ->getQuery()
             ->getResult()
