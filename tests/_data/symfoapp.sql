@@ -7,7 +7,7 @@
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
- SET NAMES utf8mb4 ;
+SET NAMES utf8mb4 ;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -20,29 +20,39 @@
 --
 
 DROP TABLE IF EXISTS `migration_versions`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
-CREATE TABLE `migration_versions` (
-    `version` varchar(14) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+    /*!40101 SET @saved_cs_client     = @@character_set_client */;
+    SET character_set_client = utf8mb4 ;
+
+CREATE TABLE `migration_versions`
+(
+    `version` varchar(14) COLLATE utf8mb4_unicode_ci NOT NULL,
     `executed_at` datetime NOT NULL COMMENT '(DC2Type:datetime_immutable)',
     PRIMARY KEY (`version`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+)
+ENGINE=InnoDB
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_unicode_ci;
+
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `migration_versions`
 --
 
-LOCK TABLES `migration_versions` WRITE;
-/*!40000 ALTER TABLE `migration_versions` DISABLE KEYS */;
-INSERT INTO `migration_versions` (`version`, `executed_at`) VALUES (
-    '20190410172012','2019-04-10 17:44:08'
-),(
-    '20190426100156','2019-04-26 10:05:46'
-),(
-    '20190427042248','2019-04-27 04:31:06'
-);
-/*!40000 ALTER TABLE `migration_versions` ENABLE KEYS */;
+LOCK TABLES `migration_versions`
+    WRITE;
+
+INSERT INTO `migration_versions`
+    VALUES
+    (
+        '20190410172012','2019-05-02 13:47:06'
+    ),(
+        '20190426100156','2019-05-02 13:47:07'
+    ),(
+        '20190427042248','2019-05-02 13:47:07'
+    ),(
+        '20190502132302','2019-05-02 13:47:07'
+    );
 UNLOCK TABLES;
 
 --
@@ -50,29 +60,47 @@ UNLOCK TABLES;
 --
 
 DROP TABLE IF EXISTS `task`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
- SET character_set_client = utf8mb4 ;
-CREATE TABLE `task` (
+    /*!40101 SET @saved_cs_client     = @@character_set_client */;
+    SET character_set_client = utf8mb4 ;
+
+CREATE TABLE `task`
+(
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
     `date_deadline` datetime NOT NULL,
     `state` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-    PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    `owner_id` int(11) NOT NULL,
+    PRIMARY KEY (`id`),
+    KEY `IDX_527EDB257E3C61F9` (`owner_id`),
+    CONSTRAINT `FK_527EDB257E3C61F9`
+    FOREIGN KEY (`owner_id`)
+        REFERENCES `user` (`id`)
+)
+ENGINE=InnoDB AUTO_INCREMENT=6
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `task`
--- 'Y-m-d\TH:i:s'
+--
 
-LOCK TABLES `task` WRITE;
-/*!40000 ALTER TABLE `task` DISABLE KEYS */;
-INSERT INTO `task` (`id`, `title`, `date_deadline`, `state`) VALUES (
-    1,'First task','2000-10-30 20:00:00','In progress'
-),(
-    2,'Second task','2001-10-30 20:00:00','Done'
-);
-/*!40000 ALTER TABLE `task` ENABLE KEYS */;
+LOCK TABLES `task`
+    WRITE;
+
+INSERT INTO `task`
+    VALUES
+    (
+        1,'First Admin task','2000-09-30 20:00:00','In progress',2
+    ),(
+        2,'Second Admin task','2000-10-30 20:00:00','In progress',2
+    ),(
+        3,'First User task','2001-09-30 20:00:00','In progress',3
+    ),(
+        4,'Second User task','2001-10-30 20:00:00','In progress',3
+    ),(
+        5,'Third User task','2001-10-30 20:00:00','In progress',3
+    );
 UNLOCK TABLES;
 
 --
@@ -80,36 +108,41 @@ UNLOCK TABLES;
 --
 
 DROP TABLE IF EXISTS `user`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-SET character_set_client = utf8mb4 ;
-CREATE TABLE `user` (
+    /*!40101 SET @saved_cs_client     = @@character_set_client */;
+    SET character_set_client = utf8mb4 ;
+
+CREATE TABLE `user`
+(
     `id` int(11) NOT NULL AUTO_INCREMENT,
-    `email` varchar(180) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+    `email` varchar(180) COLLATE utf8mb4_unicode_ci NOT NULL,
     `roles` json NOT NULL,
-    `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+    `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
     `avatar` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
     PRIMARY KEY (`id`),
-    UNIQUE KEY `UNIQ_8D93D649E7927C74` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=1200 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    UNIQUE KEY `uniq_8d93d649e7927c74` (`email`)
+)
+ENGINE=InnoDB AUTO_INCREMENT=5
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `user`
 --
 
-LOCK TABLES `user` WRITE;
-/*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` (`id`, `email`, `roles`, `password`, `avatar`) VALUES (
-    124,'root@mail.ru','[\"ROLE_ROOT\"]','$argon2i$v=19$m=1024,t=2,p=2$aW9ZQVF2S2NVdEE5Y2pIag$k7K1DykOrkq0e+U9bxy/Bd7gcsYVhZ/7cqL3iJs5CyI','root.png'
-),(
-    125,'admin@mail.ru','[\"ROLE_ADMIN\"]','$argon2i$v=19$m=1024,t=2,p=2$TVhDZ2RDRFZvay5hMzdDTw$89xwWNA9pxnaEpFm35LVjp1u3gu0Cz0uv+PMhiMN6vY','admin.png'
-),(
-    126,'user@mail.ru','[]','$argon2i$v=19$m=1024,t=2,p=2$aWxtcndqWTFvOEZyT2JQbQ$/FabEzhGxuwN8FFeUvz1+KAYQYX+nbrjTzXQpq/32PQ','user.png'
-),(
-    628,'anonymous@mail.ru','[]','$argon2i$v=19$m=1024,t=2,p=2$ZmIwN0pXRGw2NVJtZ3VnUQ$05SAiLxRHG2Wl4mfO85wBCPMs+k6UIJn/eE7ExX5F2A','anonymous.png'
-);
+LOCK TABLES `user`
+    WRITE;
 
-/*!40000 ALTER TABLE `user` ENABLE KEYS */;
+INSERT INTO `user`
+    VALUES (
+        1,'root@mail.ru','[\"ROLE_ROOT\"]','$argon2i$v=19$m=1024,t=2,p=2$V2I5cXBGWkdaTGJteGFBdA$oLGqiCH8t1d5JiMXhgwZ70uTJEanW5eKzuNu2US0RHc','root.png'
+    ),(
+        2,'admin@mail.ru','[\"ROLE_ADMIN\"]','$argon2i$v=19$m=1024,t=2,p=2$WTQzUFlGbnpRaS9PWjJyZQ$oNbBDbQ688OF+Y1wHIwwd9lcAgxNfBIzhd7M80gTBmI','admin.png'
+    ),(
+        3,'user@mail.ru','[]','$argon2i$v=19$m=1024,t=2,p=2$aXZQS0VPRkt6UHliOHhVeQ$5xODP96ySKXXqjFH18AEQ/ExQmEHhVkpcae9uKJkO8o','user.png'
+    ),(
+        4,'anonymous@mail.ru','[]','$argon2i$v=19$m=1024,t=2,p=2$NjNQTUpXLk9iQk9lcEtqOQ$kX44aRUpZT5TvpJ1D4eFyuQq6LhU12tp37YnWOvlw6w','anonymous.png'
+    );
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -121,4 +154,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-04-27 15:36:51
+-- Dump completed on 2019-05-02 18:07:52

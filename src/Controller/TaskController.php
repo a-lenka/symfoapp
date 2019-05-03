@@ -5,8 +5,10 @@ namespace App\Controller;
 use App\Entity\Task;
 use App\Form\TaskType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -31,10 +33,26 @@ class TaskController extends AbstractController
      */
     public function showAll(): Response
     {
-        $tasks = $this->getDoctrine()->getRepository(Task::class)->findAll();
+        $user = $this->getUser();
+
+        if(!$user) {
+            throw new AccessDeniedException(
+                /** TODO: Secure the link from non authenticated Users instead */
+                'Login please. You can access this page only from your account.', 403
+            );
+        }
+
+        $userTasks = $user->getTasks();
+
+        if(!$userTasks[0]) {
+            throw new NotFoundHttpException(
+                /** TODO: Show some template instead. User is not obliged to have tasks */
+                'It seems there are no tasks found. Do you want to create the new one?'
+            );
+        }
 
         return $this->render('list.html.twig', [
-            'tasks'     => $tasks,
+            'tasks'     => $userTasks,
             'title'     => 'Tasks',
             'list_part' => 'task/_list.html.twig',
             'sort_property' => 'default',
@@ -65,9 +83,25 @@ class TaskController extends AbstractController
      */
     public function showSorted(Request $request, string $sort_property, string $sort_order): Response
     {
-        $allTasks = $this->getDoctrine()->getRepository(Task::class)->sortByProperty(
-            $sort_property, $sort_order
+        $user = $this->getUser();
+
+        if(!$user) {
+            throw new AccessDeniedException(
+                /** TODO: Secure the link from non authenticated Users instead */
+                'Login please. You can access this page only from your account.', 403
+            );
+        }
+
+        $userTasks = $this->getDoctrine()->getRepository(Task::class)->sortByProperty(
+            $user->getId(), $sort_property, $sort_order
         );
+
+        if(!$userTasks[0]) {
+            throw new NotFoundHttpException(
+                /** TODO: Show some template instead. User is not obliged to have tasks */
+                'It seems there are no tasks found. Do you want to create the new one?'
+            );
+        }
 
         $listPart = 'task/_list.html.twig';
         $template = $request->isXmlHttpRequest()
@@ -75,7 +109,7 @@ class TaskController extends AbstractController
             : 'list.html.twig';
 
         return $this->render($template, [
-            'tasks'     => $allTasks,
+            'tasks'     => $userTasks,
             'title'     => 'Tasks',
             'list_part' => $listPart,
             'sort_property' => $sort_property,
@@ -109,9 +143,9 @@ class TaskController extends AbstractController
             : 'details.html.twig';
 
         return $this->render($template, [
-            'task'      => $task,
-            'entity'    => $task, // For common `details`
-            'title'     => 'Task',
+            'task'   => $task,
+            'entity' => $task, // For common `details`
+            'title'  => 'Task',
             'details_part' => $details_part,
         ]);
     }
@@ -145,6 +179,8 @@ class TaskController extends AbstractController
             && $form->isSubmitted()
             && $form->isValid()
         ) {
+            $task->setOwner($this->getUser());
+
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($task);
             $entityManager->flush();
@@ -210,7 +246,7 @@ class TaskController extends AbstractController
             'task' => $task,
             'form' => $form->createView(),
             'form_part' => $formPart,
-            'title' => 'Update task',
+            'title'     => 'Update task',
         ]);
     }
 
