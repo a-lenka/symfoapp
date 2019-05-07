@@ -46,7 +46,10 @@ let Sorter = function() {
         confirmSortEvent: function(event) {
             Logger.logEvent(event);
 
-            let isSortEvent = event && event.target.href && event.target.href.includes('sorted');
+            let isSortEvent = event
+                && event.target.href !== undefined
+                && event.target.href.includes('sorted');
+
             console.log('Check if it is Sort event? : ' + isSortEvent);
             return isSortEvent;
         },
