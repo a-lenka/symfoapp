@@ -2,14 +2,14 @@
  * Manage Materialize CSS components
  *
  * @module ../../js/modules/Materializer
- * @type {{initComponents, reInitFormFields}}
+ * @type {{initJS, reInitFormFields}}
  */
 let Materializer = function() {
 
     /**
      * Initialize all Materialize CSS components at once
      */
-    let initComponents = function() {
+    let initJS = function() {
         M.AutoInit();
 
         reInitInputs();
@@ -90,7 +90,7 @@ let Materializer = function() {
 
 
     return {
-        initComponents  : initComponents,
+        initJS: initJS,
         reInitFormFields: reInitFormFields,
     }
 }();

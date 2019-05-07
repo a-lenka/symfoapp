@@ -59,10 +59,13 @@ let AjaxSender = function() {
      * Send GET request
      *
      * @param {string}   path            - Request path
-     * @param {callback} success         - Success callback
+     * @param {Function} success         - Success callback
      * @param {(FormData|Object)} [data] - Request data (optional)
      */
     let sendGet = function(path, success, data=null) {
+        console.log('GET: ' + path);
+        console.log(data);
+
         sendRequest('GET', path, success, data);
     };
 
@@ -71,10 +74,13 @@ let AjaxSender = function() {
      * Send POST request
      *
      * @param {string}   path            - Request path
-     * @param {callback} success         - Success callback
+     * @param {Function} success         - Success callback
      * @param {(FormData|Object)} [data] - Request data (optional)
      */
     let sendPost = function(path, success, data=null) {
+        console.log('POST: ' + path);
+        console.log(data);
+
         sendRequest('POST', path, success, data);
     };
 

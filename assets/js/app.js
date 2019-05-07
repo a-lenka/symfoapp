@@ -25,8 +25,8 @@ import Sorter       from '../js/modules/Sorter.js';
 
 // Events
 document.addEventListener('DOMContentLoaded', function() {
-    Materializer.initComponents();
-    ModalWidget.listenCallModalEvent();
+    Materializer.initJS();
+    ModalWidget.requestFormContent();
     Sorter.listenSortEvent();
 });
 

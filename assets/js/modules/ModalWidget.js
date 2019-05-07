@@ -6,158 +6,240 @@ import Materializer from '../../js/modules/Materializer';
  * Handle Materialize CSS Modal events
  *
  * @module ../../js/modules/ModalWidget
- * @type {{
- *  listenCallModalEvent: (listener.listenCallModalEvent|listenCallModalEvent)
- * }}
+ * @type {{listenCallModalEvent}}
  */
 let ModalWidget = function() {
 
-    // Materialize Modal element
     let modal = {
         id: 'materialize-modal',
 
-        get instance() {
-            return document.getElementById(modal.id);
-        },
+        get elem() {
+            console.log('Find Modal elem');
 
-        appendXhrContent: function(xhr) {
-            let elem = container.instance;
-
-            elem.innerHTML = xhr.responseText;
-            modal.clear();
-            modal.instance.append(elem);
-
-            // Delete modal content after overlay click
-            if(overlay.instance) {
-                listener.setCancelModalListener();
-
-                // Since form is available on the page
-                if(form.instance) {
-                    Materializer.reInitFormFields();
-                    listener.setSubmitListener();
-                }
+            let modalElem = document.getElementById(modal.id);
+            if(!modalElem) {
+                throw new Error('Modal not found. ID is wrong');
             }
+
+            return modalElem;
         },
 
-        clear: function() {
-            modal.instance.innerHTML = '';
+        clearSelf: function() {
+            console.log('Clear Modal');
+            modal.elem.innerHTML = '';
         }
     };
 
-    // Modal Container into which content will be inserted
+
     let container = {
         tag  : 'div',
         class: 'modal-content',
 
-        get instance() {
-            let instance = document.createElement(container.tag);
-            instance.classList.add(container.class);
-            return instance;
+        get elem() {
+            console.log('Create Modal container');
+
+            let div = document.createElement(container.tag);
+            div.classList.add(container.class);
+
+            return div;
         }
     };
 
-    // Listens Modal Events
-    let listener = {
-        class: 'modal-listeners',
-        tag  : 'body',
 
-        get getLocation() {
-            return document.getElementsByClassName(listener.class)[0];
+    let form = {
+        get elem() {
+            console.log('Find form');
+
+            let form = document.forms[0];
+            if(!form) {
+                throw new Error('The form must be here, but it\'s not found');
+            }
+            if(document.forms.length > 1) {
+                console.warn('Here must be only one form, but there are more');
+            }
+
+            return document.forms[0];
         },
 
-        get postLocation() {
-            return form.instance;
+        get actionAttr() {
+            console.log('Get form action attribute');
+
+            let formAction = form.elem.getAttribute('action');
+            if(!formAction) {
+                throw new Error('The form `action` attribute` is empty');
+            }
+
+            return formAction;
         },
 
-        confirmCallModalEvent: function(event) {
+        get submitButton() {
+            console.log('Get submit button');
+
+            let submitButton = document.querySelectorAll('button[type="submit"]')[0];
+            if(!submitButton) {
+                throw new Error('The submit button was not found');
+            }
+
+            return submitButton;
+        },
+
+        reInitComponents: function(event) {
             console.log(event);
-            return event.target.getAttribute(trigger.attrName) === trigger.attrValue;
+            let isFormAppended = event.animationName === 'selectWasInserted';
+            console.log('Check if the form was appended? : ' + isFormAppended);
+
+            if(isFormAppended) {
+                Materializer.reInitFormFields();
+                console.log('ReInit form components');
+            }
+        },
+    };
+
+
+    let overlay = {
+        class: 'modal-overlay',
+
+        get elem() {
+            console.log('Find overlay');
+
+            let overlayElem = document.getElementsByClassName(overlay.class)[0];
+            if(!overlayElem) {
+                throw new Error('The overlay must be here, but it\'s not found');
+            }
+
+            return overlayElem;
+        },
+    };
+
+
+    let eventManager = {
+        triggers: {
+            form: {
+                attrName : 'data-target',
+                attrValue: modal.id,
+            },
+        },
+
+        listeners: {
+            requestForm: {
+                class: 'modal-listeners',
+
+                get elem() {
+                    console.log('Find Request form listener');
+
+                    let listener = document.getElementsByClassName(eventManager.listeners.requestForm.class)[0];
+                    if(!listener) {
+                        throw new Error('The Request form listener was not found. The class is wrong');
+                    }
+
+                    return listener;
+                },
+            },
+
+            submitForm: {
+                get elem() {
+                  return form.elem;
+                },
+            },
+        },
+
+        confirmRequestModalEvent: function(event) {
+            let attrName  = eventManager.triggers.form.attrName;
+            let attrValue = eventManager.triggers.form.attrValue;
+
+            console.log(event);
+            let isRequestModalEvent = event && event.target.getAttribute(attrName) === attrValue;
+            console.log('Check if it is Request Modal event? : ' + isRequestModalEvent);
+            return isRequestModalEvent;
         },
 
         confirmFullPageInResponse: function(xhr) {
-            return xhr.responseText.match("^<!DOCTYPE html>");
+            let isFullPageInResponse = xhr.responseText.match("^<!DOCTYPE html>");
+
+            console.log('Check if it is full page in Response? : ' + isFullPageInResponse);
+            return isFullPageInResponse;
         },
 
-        setCallFormListener: function() {
-            listener.getLocation.addEventListener('click', listener.listenCallModalEvent);
-            listener.getLocation.addEventListener('animationstart', listener.listenReInitComponentsEvent);
+        setRequestFormListeners: function() {
+            console.log('Set Request form listeners');
+            let listener = eventManager.listeners.requestForm.elem;
+
+            listener.addEventListener('click', eventManager.requestFormContent);
+            listener.addEventListener('animationstart', form.reInitComponents);
         },
 
-        listenCallModalEvent: function(event) {
+        requestFormContent: function(event) {
+            console.log('Request Form content');
 
-            if(event && listener.confirmCallModalEvent(event)) {
+            if(eventManager.confirmRequestModalEvent(event)) {
                 event.preventDefault();
 
                 // To have path for any modals
                 let path = event.target.pathname.trim();
-                AjaxSender.sendGet(path, modal.appendXhrContent);
+                AjaxSender.sendGet(path, appendFormContent);
             }
         },
 
-        setSubmitListener: function() {
-            listener.postLocation.addEventListener('submit', listener.listenSubmitFormEvent);
+        setSubmitFormListeners: function() {
+            console.log('Set Submit form listeners');
+
+            let listener = eventManager.listeners.submitForm.elem;
+            listener.addEventListener('submit', eventManager.submitFormContent);
         },
 
-        listenSubmitFormEvent: function(event) {
+        submitFormContent: function(event) {
+            console.log('Submit form');
             event.preventDefault();
 
-            let formData = new FormData(form.instance);
-            let path = form.actionAttr;
-            AjaxSender.sendPost(path, modal.appendXhrContent, formData);
-        },
+            let formData = new FormData(form.elem);
+            if(!formData) {
+                throw new Error('The Form Data is empty');
+            }
 
-        listenCancelModal: function() {
-            modal.clear();
-            window.history.back();
+            let path = form.actionAttr;
+
+            AjaxSender.sendPost(path, appendFormContent, formData);
         },
 
         setCancelModalListener: function() {
-            overlay.instance.addEventListener('click', listener.listenCancelModal);
-        },
+            console.log('Set Cancel Modal listeners');
 
-        listenReInitComponentsEvent: function(event) {
-            console.log(event);
-            if(event.animationName === 'selectWasInserted') {
+            overlay.elem.addEventListener('click', cancelModal);
+        },
+    };
+
+
+    let appendFormContent = function(xhr) {
+        console.log('Append content to Modal');
+        let elem       = container.elem;
+        elem.innerHTML = xhr.responseText;
+
+        modal.clearSelf();
+        modal.elem.append(elem);
+
+        console.log('Check Overlay is here');
+        if(overlay.elem) {
+            eventManager.setCancelModalListener();
+
+            console.log('Check Form is here');
+            if(form.elem) {
                 Materializer.reInitFormFields();
+                eventManager.setSubmitFormListeners();
             }
-        },
+        }
     };
 
-    // Modal form
-    let form = {
-        get instance() {
-            if(document.forms) {
-                return document.forms[0];
-            }
-        },
 
-        get actionAttr() {
-            return form.instance.getAttribute('action');
-        },
+    let cancelModal = function() {
+        console.log('Cancel Modal');
 
-        get submitButton() {
-            return document.querySelectorAll('button[type="submit"]')[0];
-        },
-    };
-
-    // Modal overlay
-    let overlay = {
-        class: 'modal-overlay',
-
-        get instance() {
-            return document.getElementsByClassName(overlay.class)[0];
-        },
-    };
-
-    // Fire Modal events
-    let trigger = {
-        attrName : 'data-target',
-        attrValue: modal.id,
+        modal.clearSelf();
+        window.history.back();
     };
 
 
     return {
-        listenCallModalEvent: listener.setCallFormListener,
+        requestFormContent: eventManager.setRequestFormListeners,
     };
 }();
 
