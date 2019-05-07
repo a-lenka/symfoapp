@@ -1,6 +1,7 @@
 // Imports
 import AjaxSender   from '../../js/modules/AjaxSender';
 import Materializer from '../../js/modules/Materializer';
+import Logger       from '../../js/modules/Logger';
 
 /**
  * Handle Materialize CSS Modal events
@@ -84,7 +85,7 @@ let ModalWidget = function() {
         },
 
         reInitComponents: function(event) {
-            console.log(event);
+            Logger.logEvent(event);
             let isFormAppended = event.animationName === 'selectWasInserted';
             console.log('Check if the form was appended? : ' + isFormAppended);
 
@@ -147,7 +148,7 @@ let ModalWidget = function() {
             let attrName  = eventManager.triggers.form.attrName;
             let attrValue = eventManager.triggers.form.attrValue;
 
-            console.log(event);
+            Logger.logEvent(event);
             let isRequestModalEvent = event && event.target.getAttribute(attrName) === attrValue;
             console.log('Check if it is Request Modal event? : ' + isRequestModalEvent);
             return isRequestModalEvent;

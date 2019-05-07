@@ -8,12 +8,47 @@
 let Logger = function() {
 
     // Colors
-    const formDataClr = 'teal';
-    const xhrDataClr  = '#6699cc';
+    const debugClr = '#dcdcdc';
+    const infoClr  = '#afeeee';
+    const errorClr = '#ff4500';
+
+    const formDataClr  = '#a3e4d7';
+    const xhrDataClr   = '#6a5acd';
+    const eventDataClr = '#ffb6c1';
+    const funcGroupClr = debugClr;
 
     // Font sizes
-    const groupHeaderFontSize = '12px';
-    const dataFontSize        = '14px';
+    const groupHeaderFontSize = '11px';
+    const dataFontSize        = '12px';
+
+    // Indents
+    const groupHeaderPadding = '3px';
+    const groupItemPadding   = '2px';
+
+
+    /**
+     * Use it to log functions, which has inner logs
+     *
+     * @param {string} name     - Block name
+     * @param {string} fontSize
+     * @param {string} color
+     */
+    let printGroupStart = function(name, fontSize=dataFontSize, color=debugClr) {
+        console.groupCollapsed(
+            '%c['   + name + ']',
+            'font-size:' + fontSize +
+            '; color:'   + color +
+            '; padding:' + groupHeaderPadding + ';'
+        );
+    };
+
+
+    /**
+     * Print the end of the group
+     */
+    let printGroupEnd = function() {
+        console.groupEnd();
+    };
 
 
     /**
@@ -27,21 +62,21 @@ let Logger = function() {
 
         console.groupCollapsed(
             '%c[' + groupTitle + ']',
-            'font-size:' + groupHeaderFontSize +
-            '; color: '  + formDataClr +
-            '; padding: 5px;'
+            'font-size:'  + groupHeaderFontSize +
+            '; color: '   + formDataClr +
+            '; padding: ' + groupHeaderPadding + ';'
         );
 
         for(let pair of formData.entries()) {
             console.log(
                 '%c' +pair[0]+ ' -> ' + pair[1],
                 'font-size:' + dataFontSize +
-                '; color: '  + formDataClr +
-                '; padding: 2px;'
+                '; color:'   + formDataClr +
+                '; padding:' + groupItemPadding + ';'
             );
         }
 
-        console.groupEnd();
+        printGroupEnd();
     };
 
 
@@ -53,10 +88,10 @@ let Logger = function() {
     let logXhrData = function(xhr) {
 
         console.groupCollapsed(
-            '%c[XHR Response Text]',
+            '%c[XHR: Response Text]',
             'font-size: ' + groupHeaderFontSize +
-            '; color:' + xhrDataClr +
-            '; padding: 5px;'
+            '; color:'    + xhrDataClr +
+            '; padding: ' + groupHeaderPadding + ';'
         );
 
         console.log(xhr.responseText);
@@ -64,9 +99,33 @@ let Logger = function() {
         console.groupEnd();
     };
 
+
+    /**
+     * Shows Event in collapsed mode
+     *
+     * @param {Event} event - XHR
+     */
+    let logEvent = function(event) {
+
+        console.groupCollapsed(
+            '%c[Event: ' + event.type + ']',
+            'font-size: '     + groupHeaderFontSize +
+            '; color:'        + eventDataClr +
+            '; padding: '     + groupHeaderPadding + ';'
+        );
+
+        console.log(event);
+
+        console.groupEnd();
+    };
+
+
     return {
+        printGroupStart: printGroupStart,
+        printGroupEnd  : printGroupEnd,
         logFormData: logFormData,
         logXhrData : logXhrData,
+        logEvent   : logEvent,
     }
 }();
 
