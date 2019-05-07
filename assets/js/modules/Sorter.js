@@ -54,24 +54,25 @@ let Sorter = function() {
             return isSortEvent;
         },
 
-        setSortListener: function() {
+        setSortListeners: function() {
             console.log('Set Sort listener');
 
             let sortListener = eventManager.listeners.elem;
-            sortListener.addEventListener('click', eventManager.requestSortedItems);
+            sortListener.addEventListener('click', requestSortedItems);
         },
+    };
 
-        requestSortedItems: function(event) {
-            console.log('Request Sorted items');
 
-            if(eventManager.confirmSortEvent(event)) {
-                event.preventDefault();
+    let requestSortedItems = function(event) {
+        console.log('Request Sorted items');
 
-                // To have path for any modals
-                let path = event.target.pathname.trim();
-                AjaxSender.sendGet(path, appendSortedContent);
-            }
-        },
+        if(eventManager.confirmSortEvent(event)) {
+            event.preventDefault();
+
+            // To have path for any modals
+            let path = event.target.pathname.trim();
+            AjaxSender.sendGet(path, appendSortedContent);
+        }
     };
 
 
@@ -92,7 +93,7 @@ let Sorter = function() {
 
 
     return {
-        requestSortedItems: eventManager.setSortListener,
+        setSortListeners: eventManager.setSortListeners,
     };
 }();
 
