@@ -107,6 +107,35 @@ let ModalWidget = function() {
     };
 
 
+    let checker = {
+        confirmRequestModalEvent: function(event) {
+            let attrName  = eventManager.triggers.form.attrName;
+            let attrValue = eventManager.triggers.form.attrValue;
+
+            Logger.logEvent(event);
+
+            let isRequestModalEvent = event && event.target.getAttribute(attrName) === attrValue;
+            console.log('Check if it is Request Modal event? : ' + isRequestModalEvent);
+            return isRequestModalEvent;
+        },
+
+        confirmFullPageInResponse: function(xhr) {
+            let isFullPageInResponse = xhr.responseText.match("^<!DOCTYPE html>");
+
+            console.log('Check if it is full page in Response? : ' + isFullPageInResponse);
+            return isFullPageInResponse;
+        },
+
+        confirmFormModal: function(xhr) {
+            let path        = xhr.getResponseHeader('X-Target-URL');
+            let isFormModal = path.indexOf('details') === 1 || path.indexOf('confirm') === 1;
+
+            console.log('Check if it is Form Modal? : ' + isFormModal);
+            return isFormModal;
+        },
+    };
+
+
     let eventManager = {
         triggers: {
             form: {
@@ -138,32 +167,6 @@ let ModalWidget = function() {
             },
         },
 
-        confirmRequestModalEvent: function(event) {
-            let attrName  = eventManager.triggers.form.attrName;
-            let attrValue = eventManager.triggers.form.attrValue;
-
-            Logger.logEvent(event);
-
-            let isRequestModalEvent = event && event.target.getAttribute(attrName) === attrValue;
-            console.log('Check if it is Request Modal event? : ' + isRequestModalEvent);
-            return isRequestModalEvent;
-        },
-
-        confirmFullPageInResponse: function(xhr) {
-            let isFullPageInResponse = xhr.responseText.match("^<!DOCTYPE html>");
-
-            console.log('Check if it is full page in Response? : ' + isFullPageInResponse);
-            return isFullPageInResponse;
-        },
-
-        confirmFormModal: function(xhr) {
-            let path        = xhr.getResponseHeader('X-Target-URL');
-            let isFormModal = path.indexOf('details') === 1 || path.indexOf('confirm') === 1;
-
-            console.log('Check if it is Form Modal? : ' + isFormModal);
-            return isFormModal;
-        },
-
         setRequestFormListeners: function() {
             console.log('Set Request form listeners');
             let listener = eventManager.listeners.requestForm.elem;
@@ -189,7 +192,7 @@ let ModalWidget = function() {
     let requestFormContent = function(event) {
         console.log('Request Form content');
 
-        if(eventManager.confirmRequestModalEvent(event)) {
+        if(checker.confirmRequestModalEvent(event)) {
             event.preventDefault();
 
             // To have path for any modals
@@ -215,7 +218,7 @@ let ModalWidget = function() {
         if(overlay.elem) {
             eventManager.setCancelModalListener();
 
-            if(eventManager.confirmFormModal(xhr)) {
+            if(checker.confirmFormModal(xhr)) {
                 console.log('Check Form is here');
 
                 if(form.elem) {

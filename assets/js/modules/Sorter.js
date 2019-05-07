@@ -26,6 +26,20 @@ let Sorter = function() {
     };
 
 
+    let checker = {
+        confirmSortEvent: function(event) {
+            Logger.logEvent(event);
+
+            let isSortEvent = event
+                && event.target.href !== undefined
+                && event.target.href.includes('sorted');
+
+            console.log('Check if it is Sort event? : ' + isSortEvent);
+            return isSortEvent;
+        },
+    };
+
+
     let eventManager = {
         listeners: {
             class: 'sort-listeners',
@@ -43,17 +57,6 @@ let Sorter = function() {
             },
         },
 
-        confirmSortEvent: function(event) {
-            Logger.logEvent(event);
-
-            let isSortEvent = event
-                && event.target.href !== undefined
-                && event.target.href.includes('sorted');
-
-            console.log('Check if it is Sort event? : ' + isSortEvent);
-            return isSortEvent;
-        },
-
         setSortListeners: function() {
             console.log('Set Sort listener');
 
@@ -66,7 +69,7 @@ let Sorter = function() {
     let requestSortedItems = function(event) {
         console.log('Request Sorted items');
 
-        if(eventManager.confirmSortEvent(event)) {
+        if(checker.confirmSortEvent(event)) {
             event.preventDefault();
 
             // To have path for any modals
