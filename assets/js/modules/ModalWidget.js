@@ -7,7 +7,7 @@ import Logger       from '../../js/modules/Logger';
  * Handle Materialize CSS Modal events
  *
  * @module ../../js/modules/ModalWidget
- * @type {{listenCallModalEvent}}
+ * @type {{setRequestListeners}}
  */
 let ModalWidget = function() {
 
@@ -27,7 +27,7 @@ let ModalWidget = function() {
         clearSelf: function() {
             console.log('Clear Modal');
             modal.elem.innerHTML = '';
-        }
+        },
     };
 
 
@@ -160,46 +160,34 @@ let ModalWidget = function() {
             console.log('Set Request form listeners');
             let listener = eventManager.listeners.requestForm.elem;
 
-            listener.addEventListener('click', eventManager.requestFormContent);
+            listener.addEventListener('click', requestFormContent);
             listener.addEventListener('animationstart', form.reInitComponents);
-        },
-
-        requestFormContent: function(event) {
-            console.log('Request Form content');
-
-            if(eventManager.confirmRequestModalEvent(event)) {
-                event.preventDefault();
-
-                // To have path for any modals
-                let path = event.target.pathname.trim();
-                AjaxSender.sendGet(path, appendFormContent);
-            }
         },
 
         setSubmitFormListeners: function() {
             console.log('Set Submit form listeners');
 
             let listener = eventManager.listeners.submitForm.elem;
-            listener.addEventListener('submit', eventManager.submitFormContent);
-        },
-
-        submitFormContent: function(event) {
-            event.preventDefault();
-
-            let formData = new FormData(form.elem);
-            if(!formData) {
-                throw new Error('The Form Data is empty');
-            }
-
-            let path = form.actionAttr;
-            console.log('Submit form');
-            AjaxSender.sendPost(path, appendFormContent, formData);
+            listener.addEventListener('submit', submitFormContent);
         },
 
         setCancelModalListener: function() {
             console.log('Set Cancel Modal listeners');
             overlay.elem.addEventListener('click', cancelModal);
         },
+    };
+
+
+    let requestFormContent = function(event) {
+        console.log('Request Form content');
+
+        if(eventManager.confirmRequestModalEvent(event)) {
+            event.preventDefault();
+
+            // To have path for any modals
+            let path = event.target.pathname.trim();
+            AjaxSender.sendGet(path, appendFormContent);
+        }
     };
 
 
@@ -228,6 +216,20 @@ let ModalWidget = function() {
     };
 
 
+    let submitFormContent = function(event) {
+        event.preventDefault();
+
+        let formData = new FormData(form.elem);
+        if(!formData) {
+            throw new Error('The Form Data is empty');
+        }
+
+        let path = form.actionAttr;
+        console.log('Submit form');
+        AjaxSender.sendPost(path, appendFormContent, formData);
+    };
+
+
     let cancelModal = function() {
         console.log('Cancel Modal');
 
@@ -237,7 +239,7 @@ let ModalWidget = function() {
 
 
     return {
-        requestFormContent: eventManager.setRequestFormListeners,
+        setRequestListeners: eventManager.setRequestFormListeners,
     };
 }();
 

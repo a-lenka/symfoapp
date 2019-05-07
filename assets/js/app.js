@@ -27,7 +27,7 @@ import Logger       from '../js/modules/Logger.js';
 // Events
 document.addEventListener('DOMContentLoaded', function() {
     Materializer.initJS();
-    ModalWidget.requestFormContent();
+    ModalWidget.setRequestListeners();
     Sorter.requestSortedItems();
 });
 
