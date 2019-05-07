@@ -19,8 +19,6 @@ let AjaxSender = function() {
      */
     let sendRequest = function(method, path, success, data) {
 
-        let requestData = (data === null) ? '' : data;
-
         let xhr = new XMLHttpRequest();
         xhr.open(method, path);
         // To `isXmlHttpRequest()` works correctly

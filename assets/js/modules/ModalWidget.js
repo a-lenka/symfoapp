@@ -81,10 +81,8 @@ let ModalWidget = function() {
 
         reInitComponents: function(event) {
             Logger.logEvent(event);
-            let isFormAppended = event.animationName === 'selectWasInserted';
-            console.log('Check if the form was appended? : ' + isFormAppended);
 
-            if(isFormAppended) {
+            if(checker.confirmFormIsAppended(event)) {
                 console.log('ReInit form components');
                 Materializer.reInitFormFields();
             }
@@ -126,12 +124,18 @@ let ModalWidget = function() {
             return isFullPageInResponse;
         },
 
-        confirmFormModal: function(xhr) {
+        confirmModalForForm: function(xhr) {
             let path        = xhr.getResponseHeader('X-Target-URL');
             let isFormModal = path.indexOf('details') === 1 || path.indexOf('confirm') === 1;
 
             console.log('Check if it is Form Modal? : ' + isFormModal);
             return isFormModal;
+        },
+
+        confirmFormIsAppended: function(event) {
+            let isFormAppended = event.animationName === 'selectWasInserted';
+            console.log('Check if the form was appended? : ' + isFormAppended);
+            return isFormAppended;
         },
     };
 
@@ -218,7 +222,7 @@ let ModalWidget = function() {
         if(overlay.elem) {
             eventManager.setCancelModalListener();
 
-            if(checker.confirmFormModal(xhr)) {
+            if(checker.confirmModalForForm(xhr)) {
                 console.log('Check Form is here');
 
                 if(form.elem) {
