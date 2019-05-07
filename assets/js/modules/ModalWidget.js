@@ -156,6 +156,14 @@ let ModalWidget = function() {
             return isFullPageInResponse;
         },
 
+        confirmFormModal: function(xhr) {
+            let path        = xhr.getResponseHeader('X-Target-URL');
+            let isFormModal = path.indexOf('details') === 1 || path.indexOf('confirm') === 1;
+
+            console.log('Check if it is Form Modal? : ' + isFormModal);
+            return isFormModal;
+        },
+
         setRequestFormListeners: function() {
             console.log('Set Request form listeners');
             let listener = eventManager.listeners.requestForm.elem;
@@ -207,10 +215,13 @@ let ModalWidget = function() {
         if(overlay.elem) {
             eventManager.setCancelModalListener();
 
-            console.log('Check Form is here');
-            if(form.elem) {
-                Materializer.reInitFormFields();
-                eventManager.setSubmitFormListeners();
+            if(eventManager.confirmFormModal(xhr)) {
+                console.log('Check Form is here');
+
+                if(form.elem) {
+                    Materializer.reInitFormFields();
+                    eventManager.setSubmitFormListeners();
+                }
             }
         }
     };
