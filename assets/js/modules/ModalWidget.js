@@ -15,13 +15,12 @@ let ModalWidget = function() {
         id: 'materialize-modal',
 
         get elem() {
-            console.log('Find Modal elem');
-
             let modalElem = document.getElementById(modal.id);
             if(!modalElem) {
                 throw new Error('Modal not found. ID is wrong');
             }
 
+            console.log('Find Modal elem');
             return modalElem;
         },
 
@@ -37,11 +36,10 @@ let ModalWidget = function() {
         class: 'modal-content',
 
         get elem() {
-            console.log('Create Modal container');
-
             let div = document.createElement(container.tag);
             div.classList.add(container.class);
 
+            console.log('Create Modal container');
             return div;
         }
     };
@@ -49,8 +47,6 @@ let ModalWidget = function() {
 
     let form = {
         get elem() {
-            console.log('Find form');
-
             let form = document.forms[0];
             if(!form) {
                 throw new Error('The form must be here, but it\'s not found');
@@ -59,28 +55,27 @@ let ModalWidget = function() {
                 console.warn('Here must be only one form, but there are more');
             }
 
+            console.log('Find form');
             return document.forms[0];
         },
 
         get actionAttr() {
-            console.log('Get form action attribute');
-
             let formAction = form.elem.getAttribute('action');
             if(!formAction) {
                 throw new Error('The form `action` attribute` is empty');
             }
 
+            console.log('Get form action attribute');
             return formAction;
         },
 
         get submitButton() {
-            console.log('Get submit button');
-
             let submitButton = document.querySelectorAll('button[type="submit"]')[0];
             if(!submitButton) {
                 throw new Error('The submit button was not found');
             }
 
+            console.log('Get submit button');
             return submitButton;
         },
 
@@ -90,8 +85,8 @@ let ModalWidget = function() {
             console.log('Check if the form was appended? : ' + isFormAppended);
 
             if(isFormAppended) {
-                Materializer.reInitFormFields();
                 console.log('ReInit form components');
+                Materializer.reInitFormFields();
             }
         },
     };
@@ -101,13 +96,12 @@ let ModalWidget = function() {
         class: 'modal-overlay',
 
         get elem() {
-            console.log('Find overlay');
-
             let overlayElem = document.getElementsByClassName(overlay.class)[0];
             if(!overlayElem) {
                 throw new Error('The overlay must be here, but it\'s not found');
             }
 
+            console.log('Find overlay');
             return overlayElem;
         },
     };
@@ -126,20 +120,20 @@ let ModalWidget = function() {
                 class: 'modal-listeners',
 
                 get elem() {
-                    console.log('Find Request form listener');
-
                     let listener = document.getElementsByClassName(eventManager.listeners.requestForm.class)[0];
                     if(!listener) {
                         throw new Error('The Request form listener was not found. The class is wrong');
                     }
 
+                    console.log('Find Request form listener');
                     return listener;
                 },
             },
 
             submitForm: {
                 get elem() {
-                  return form.elem;
+                    console.log('Find Submit form listener');
+                    return form.elem;
                 },
             },
         },
@@ -149,6 +143,7 @@ let ModalWidget = function() {
             let attrValue = eventManager.triggers.form.attrValue;
 
             Logger.logEvent(event);
+
             let isRequestModalEvent = event && event.target.getAttribute(attrName) === attrValue;
             console.log('Check if it is Request Modal event? : ' + isRequestModalEvent);
             return isRequestModalEvent;
@@ -189,7 +184,6 @@ let ModalWidget = function() {
         },
 
         submitFormContent: function(event) {
-            console.log('Submit form');
             event.preventDefault();
 
             let formData = new FormData(form.elem);
@@ -198,23 +192,26 @@ let ModalWidget = function() {
             }
 
             let path = form.actionAttr;
-
+            console.log('Submit form');
             AjaxSender.sendPost(path, appendFormContent, formData);
         },
 
         setCancelModalListener: function() {
             console.log('Set Cancel Modal listeners');
-
             overlay.elem.addEventListener('click', cancelModal);
         },
     };
 
 
     let appendFormContent = function(xhr) {
-        console.log('Append content to Modal');
+        if(!xhr.responseText) {
+            throw new Error('XHR is empty');
+        }
+
         let elem       = container.elem;
         elem.innerHTML = xhr.responseText;
 
+        console.log('Append content to Modal');
         modal.clearSelf();
         modal.elem.append(elem);
 

@@ -28,7 +28,7 @@ import Logger       from '../js/modules/Logger.js';
 document.addEventListener('DOMContentLoaded', function() {
     Materializer.initJS();
     ModalWidget.requestFormContent();
-    Sorter.listenSortEvent();
+    Sorter.requestSortedItems();
 });
 
 // Allow using history navigation in browser
