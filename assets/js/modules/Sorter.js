@@ -32,7 +32,8 @@ let Sorter = function() {
 
             let isSortEvent = event
                 && event.target.href !== undefined
-                && event.target.href.includes('sorted');
+                && event.target.href.includes('sorted')
+                && event.target.parentElement.localName === 'th';
 
             console.log('Check if it is Sort event? : ' + isSortEvent);
             return isSortEvent;
