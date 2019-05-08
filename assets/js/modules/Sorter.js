@@ -1,6 +1,7 @@
 // Imports
 import AjaxSender   from '../../js/modules/AjaxSender';
 import Logger from "./Logger";
+import Materializer from "./Materializer";
 
 /**
  * Handle sort items events
@@ -86,13 +87,10 @@ let Sorter = function() {
         }
 
         console.log('Append Sorted content');
-        let template = document.createElement('template');
-        template.innerHTML = xhr.responseText;
-
-        let content = document.importNode(template.content, true);
         let parent  = container.elem;
         parent.innerHTML = '';
-        parent.append(content);
+        parent.insertAdjacentHTML('afterbegin', xhr.responseText);
+        Materializer.reInitFloatingActions();
     };
 
 

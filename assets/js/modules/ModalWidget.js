@@ -96,7 +96,7 @@ let ModalWidget = function() {
         get elem() {
             let overlayElem = document.getElementsByClassName(overlay.class)[0];
             if(!overlayElem) {
-                throw new Error('The overlay must be here, but it\'s not found');
+                console.debug('The overlay must be here, but it\'s not found');
             }
 
             console.log('Find overlay');
@@ -110,9 +110,12 @@ let ModalWidget = function() {
             let attrName  = eventManager.triggers.form.attrName;
             let attrValue = eventManager.triggers.form.attrValue;
 
-            Logger.logEvent(event);
+            let hasModalAttributes  = event.target.getAttribute(attrName) === attrValue;
+            let hasClassBtnFloating = event.target.outerHTML.indexOf('red') === -1;
 
-            let isRequestModalEvent = event && event.target.getAttribute(attrName) === attrValue;
+            let isRequestModalEvent = event && hasModalAttributes && hasClassBtnFloating;
+
+            Logger.logEvent(event);
             console.log('Check if it is Request Modal event? : ' + isRequestModalEvent);
             return isRequestModalEvent;
         },
@@ -258,6 +261,8 @@ let ModalWidget = function() {
 
     return {
         setRequestListeners: eventManager.setRequestFormListeners,
+        setCancelModalListener: eventManager.setCancelModalListener,
+        appendFormContent: appendFormContent,
     };
 }();
 

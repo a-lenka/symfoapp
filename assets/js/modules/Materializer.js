@@ -84,6 +84,16 @@ let Materializer = function() {
 
 
     /**
+     * Reinitialize Select Component
+     */
+    let reInitFloatingActions = function() {
+        console.log('ReInit floating action button');
+        let buttons   = document.querySelectorAll('.fixed-action-btn');
+        let instances = M.FloatingActionButton.init(buttons, {});
+    };
+
+
+    /**
      * Some Materialize CSS Components do not work with dynamic content,
      * so they need to be reinitialized after form will be inserted into Modal
      */
@@ -99,6 +109,7 @@ let Materializer = function() {
     return {
         initJS: initJS,
         reInitFormFields: reInitFormFields,
+        reInitFloatingActions: reInitFloatingActions,
     }
 }();
 

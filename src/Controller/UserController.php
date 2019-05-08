@@ -87,6 +87,48 @@ class UserController extends AbstractController
 
 
     /**
+     * Confirm delete multiply User Entity
+     *
+     * @Route("/{_locale}/user/list/confirm",
+     *     name="user_list_confirm",
+     *     methods="POST",
+     *     defaults={"_locale"="%default_locale%"},
+     *     requirements={"_locale": "%app_locales%"},
+     * )
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function confirmDeleteMultiply(Request $request): Response
+    {
+        $repository = $this->getDoctrine()->getRepository(User::class);
+        $users = [];
+
+        $data   = $request->getContent();
+        $emails = json_decode($data, true);
+
+        foreach((array)$emails as $email) {
+            $user    = $repository->findOneBy(['email' => $email]);
+            $users[] = $user;
+        }
+
+        $confirm_part = 'user/_confirm-delete.html.twig';
+        $template = $request->isXmlHttpRequest()
+            ? $confirm_part
+            : 'confirm.html.twig';
+
+        return $this->render($template, [
+            'users'     => $users,
+            'title'     => 'Users',
+            'confirm_part'  => $confirm_part,
+            'sort_property' => 'default',
+            'sort_order'    => 'default',
+        ]);
+    }
+
+
+    /**
      * Show details page for one separate User
      *
      * @Route("/{_locale}/user/{id}/details",
