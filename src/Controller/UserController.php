@@ -105,11 +105,11 @@ class UserController extends AbstractController
         $repository = $this->getDoctrine()->getRepository(User::class);
         $users = [];
 
-        $data   = $request->getContent();
-        $emails = json_decode($data, true);
+        $data = $request->getContent();
+        $ids  = json_decode($data, true);
 
-        foreach((array)$emails as $email) {
-            $user    = $repository->findOneBy(['email' => $email]);
+        foreach((array)$ids as $id) {
+            $user    = $repository->findOneBy(['id' => $id]);
             $users[] = $user;
         }
 
@@ -147,11 +147,11 @@ class UserController extends AbstractController
         $repository    = $this->getDoctrine()->getRepository(User::class);
         $entityManager = $this->getDoctrine()->getManager();
 
-        $data   = $request->getContent();
-        $emails = json_decode($data, false);
+        $data = $request->getContent();
+        $ids  = json_decode($data, false);
 
-        foreach((array) $emails as $email) {
-            $user = $repository->findOneBy(['email' => $email]);
+        foreach((array) $ids as $id) {
+            $user = $repository->findOneBy(['id' => $id]);
             $entityManager->remove($user);
         }
 

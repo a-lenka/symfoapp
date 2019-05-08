@@ -57,17 +57,18 @@ let Multiplier = function() {
             return values.filter(checkbox => checkbox.checked === true);
         },
 
-        extractProperty: function(checkbox) {
-            let label  = checkbox.parentElement;
-            let td     = label.parentElement;
-            let row    = td.parentElement;
-            let goal   = row.children[2];
-            return goal.innerText;
+        extractId: function(checkbox) {
+            let label    = checkbox.parentElement;
+            let td       = label.parentElement;
+            let row      = td.parentElement;
+            let targetTd = row.children[row.children.length - 1];
+            let link     = targetTd.children[0];
+            return link.href.match(/\d+/)[0];
         },
 
         extractAllProperties: function() {
             let checked = table.getCheckedCheckboxes();
-            return Array.from(checked, checkbox => table.extractProperty(checkbox));
+            return Array.from(checked, checkbox => table.extractId(checkbox));
         },
     };
 
@@ -170,12 +171,12 @@ let Multiplier = function() {
         if(checker.confirmRequestCheckedItemsEvent(event)) {
             event.preventDefault();
 
-            let path   = '/' + helper.getCurrentLocale() + '/user/list/confirm';
-            let emails = table.extractAllProperties();
+            let path = '/' + helper.getCurrentLocale() + '/user/list/confirm';
+            let ids  = table.extractAllProperties();
 
             AjaxSender.sendPost(path, function (xhr) {
                 ModalWidget.appendFormContent(xhr);
-            }, JSON.stringify(emails));
+            }, JSON.stringify(ids));
         }
     };
 
