@@ -89,6 +89,16 @@ let Multiplier = function() {
             console.log('Check if it is Request checked items event? : ' + isRequestEvent);
 
             return isRequestEvent;
+        },
+
+        confirmDeletePermanentlyEvent: function(event) {
+            let isDeleteEvent = (event.target.pathname)
+                ? event.target.pathname.includes('list/delete')
+                : false;
+
+            console.log('Check if it is Delete permanently event? : ' + isDeleteEvent);
+
+            return isDeleteEvent;
         }
     };
 
@@ -136,6 +146,7 @@ let Multiplier = function() {
             if(table.elem) {
                 eventManager.listeners.chooseItems.elem.addEventListener('click', appendCheckboxes);
                 eventManager.listeners.chooseItems.elem.addEventListener('click', requestCheckedItems);
+                eventManager.listeners.chooseItems.elem.addEventListener('click', deletePermanently);
                 console.log('Set Multiply listeners');
             }
         },
@@ -161,6 +172,22 @@ let Multiplier = function() {
 
             let path   = '/' + helper.getCurrentLocale() + '/user/list/confirm';
             let emails = table.extractAllProperties();
+
+            AjaxSender.sendPost(path, function (xhr) {
+                ModalWidget.appendFormContent(xhr);
+            }, JSON.stringify(emails));
+        }
+    };
+
+
+    let deletePermanently = function(event) {
+        if(checker.confirmDeletePermanentlyEvent(event)) {
+            event.preventDefault();
+
+            let path   = '/' + helper.getCurrentLocale() + '/user/list/delete';
+            let emails = table.extractAllProperties();
+
+            console.log(emails);
 
             AjaxSender.sendPost(path, function (xhr) {
                 ModalWidget.appendFormContent(xhr);

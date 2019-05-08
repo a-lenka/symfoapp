@@ -129,6 +129,38 @@ class UserController extends AbstractController
 
 
     /**
+     * Delete multiply User Entity
+     *
+     * @Route("/{_locale}/user/list/delete",
+     *     name="user_list_delete",
+     *     methods="POST",
+     *     defaults={"_locale"="%default_locale%"},
+     *     requirements={"_locale": "%app_locales%"},
+     * )
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function deleteMultiply(Request $request): Response
+    {
+        $repository    = $this->getDoctrine()->getRepository(User::class);
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $data   = $request->getContent();
+        $emails = json_decode($data, false);
+
+        foreach((array) $emails as $email) {
+            $user = $repository->findOneBy(['email' => $email]);
+            $entityManager->remove($user);
+        }
+
+        $entityManager->flush();
+        return $this->redirectToRoute('user_list_all');
+    }
+
+
+    /**
      * Show details page for one separate User
      *
      * @Route("/{_locale}/user/{id}/details",
