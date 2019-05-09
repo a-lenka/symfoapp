@@ -52,12 +52,23 @@ let Multiplier = function() {
             return tbodyRows;
         },
 
-        getCheckedCheckboxes: function() {
-            let values = Object.values(checkbox.elems);
-            return values.filter(checkbox => checkbox.checked === true);
+        getIdCells() {
+            let tableElem = table.elem;
+            let tableRows = table.rows;
+
+            return Array.from(tableRows, row => row.children[0]);
         },
 
-        extractId: function(checkbox) {
+        getAllCheckboxes: function() {
+            return Object.values(checkbox.elems);
+        },
+
+        getCheckedCheckboxes: function() {
+            let checkboxes = table.getAllCheckboxes();
+            return checkboxes.filter(checkbox => checkbox.checked === true);
+        },
+
+        extractIdFromChecked: function(checkbox) {
             let label    = checkbox.parentElement;
             let td       = label.parentElement;
             let row      = td.parentElement;
@@ -68,7 +79,43 @@ let Multiplier = function() {
 
         extractAllIds: function() {
             let checked = table.getCheckedCheckboxes();
-            return Array.from(checked, checkbox => table.extractId(checkbox));
+            return Array.from(checked, checkbox => table.extractIdFromChecked(checkbox));
+        },
+
+
+        appendCheckboxes: function(event) {
+            let rows = document.getElementsByTagName('table')[0].rows;
+
+            for(let i = 0; i < rows.length; i++) {
+                rows[i].cells[0].innerHTML = checkbox.html;
+            }
+
+            eventManager.triggers.confirmButton.activate();
+
+            console.log('Append checkboxes');
+        },
+
+        switchCheckboxes: function(event) {
+            if (checker.confirmAppendCheckboxEvent(event)) {
+                let checkboxes = table.getAllCheckboxes();
+                let rows       = table.rows;
+
+                console.log(checkboxes);
+
+                if(checkboxes.length === 0) {
+                    rows.forEach(function (row) {
+                        row.children[0].innerHTML = checkbox.html;
+                    });
+
+                    eventManager.triggers.confirmButton.activate();
+                } else {
+                    rows.forEach(function(row) {
+                        row.children[0].innerHTML = row.children[row.children.length - 1].children[0].href.match(/\d+/);
+                    });
+
+                    eventManager.triggers.confirmButton.deactivate();
+                }
+            }
         },
     };
 
@@ -162,27 +209,12 @@ let Multiplier = function() {
 
         setMultiplyListeners: function() {
             if(table.elem) {
-                eventManager.listeners.chooseItems.elem.addEventListener('click', appendCheckboxes);
+                eventManager.listeners.chooseItems.elem.addEventListener('click', table.switchCheckboxes);
                 eventManager.listeners.chooseItems.elem.addEventListener('click', requestCheckedItems);
                 eventManager.listeners.chooseItems.elem.addEventListener('click', deletePermanently);
                 console.log('Set Multiply listeners');
             }
         },
-    };
-
-
-    let appendCheckboxes = function(event) {
-        if(checker.confirmAppendCheckboxEvent(event)) {
-            let rows = document.getElementsByTagName('table')[0].rows;
-
-            for(let i = 0; i < rows.length; i++) {
-                rows[i].cells[0].innerHTML = checkbox.html;
-            }
-
-            eventManager.triggers.confirmButton.activate();
-
-            console.log('Append checkboxes');
-        }
     };
 
 
