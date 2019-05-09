@@ -52,7 +52,7 @@ let Multiplier = function() {
             return tbodyRows;
         },
 
-        getIdCells() {
+        getIdCellsArray() {
             let tableElem = table.elem;
             let tableRows = table.rows;
 
@@ -77,20 +77,17 @@ let Multiplier = function() {
             return link.href.match(/\d+/);
         },
 
-        extractAllIds: function() {
+        extractAllIdsInArray: function() {
             let checked = table.getCheckedCheckboxes();
             return Array.from(checked, checkbox => table.extractIdFromChecked(checkbox));
         },
 
+        appendCheckboxes: function() {
+            let rows = table.rows;
 
-        appendCheckboxes: function(event) {
-            let rows = document.getElementsByTagName('table')[0].rows;
-
-            for(let i = 0; i < rows.length; i++) {
-                rows[i].cells[0].innerHTML = checkbox.html;
-            }
-
-            eventManager.triggers.confirmButton.activate();
+            rows.forEach(function(row) {
+                row.children[0].innerHTML = checkbox.html;
+            });
 
             console.log('Append checkboxes');
         },
@@ -103,14 +100,15 @@ let Multiplier = function() {
                 console.log(checkboxes);
 
                 if(checkboxes.length === 0) {
-                    rows.forEach(function (row) {
-                        row.children[0].innerHTML = checkbox.html;
-                    });
-
+                    table.appendCheckboxes();
                     eventManager.triggers.confirmButton.activate();
                 } else {
                     rows.forEach(function(row) {
-                        row.children[0].innerHTML = row.children[row.children.length - 1].children[0].href.match(/\d+/);
+                        let idCell     = row.children[0];
+                        let actionCell = row.children[row.children.length - 1];
+                        let actionLink = actionCell.children[0];
+
+                        idCell.innerHTML = actionLink.href.match(/\d+/);
                     });
 
                     eventManager.triggers.confirmButton.deactivate();
@@ -223,7 +221,7 @@ let Multiplier = function() {
             event.preventDefault();
 
             let path = eventManager.triggers.confirmButton.elem.getAttribute('href');
-            let ids  = table.extractAllIds();
+            let ids  = table.extractAllIdsInArray();
 
             eventManager.triggers.confirmButton.deactivate();
 
@@ -239,7 +237,7 @@ let Multiplier = function() {
             event.preventDefault();
 
             let path   = eventManager.triggers.deletePermanentlyButton.elem.getAttribute('href');
-            let emails = table.extractAllIds();
+            let emails = table.extractAllIdsInArray();
 
             console.log(emails);
 
