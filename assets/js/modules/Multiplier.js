@@ -66,7 +66,7 @@ let Multiplier = function() {
             return link.href.match(/\d+/)[0];
         },
 
-        extractAllProperties: function() {
+        extractAllIds: function() {
             let checked = table.getCheckedCheckboxes();
             return Array.from(checked, checkbox => table.extractId(checkbox));
         },
@@ -128,9 +128,16 @@ let Multiplier = function() {
                 selector: 'div.fixed-action-btn a.red',
 
                 get elem() {
-                    let deleteTrigger = document.querySelectorAll(eventManager.triggers.confirmButton.selector)[0];
-                    console.log(eventManager.triggers.confirmButton.selector);
+                    return document.querySelectorAll(eventManager.triggers.confirmButton.selector)[0];
                     return deleteTrigger;
+                },
+            },
+
+            deletePermanentlyButton: {
+                selector: 'a.btn.waves-effect.waves-light.red',
+
+                get elem() {
+                    return document.querySelectorAll(eventManager.triggers.deletePermanentlyButton.selector)[0];
                 },
             },
         },
@@ -171,9 +178,12 @@ let Multiplier = function() {
         if(checker.confirmRequestCheckedItemsEvent(event)) {
             event.preventDefault();
 
-            let path = '/' + helper.getCurrentLocale() + '/user/list/confirm';
-            let ids  = table.extractAllProperties();
+            let path = eventManager.triggers.confirmButton.elem.getAttribute('href');
+            let ids  = table.extractAllIds();
 
+            console.log(ids);
+            console.log(path);
+            console.log( JSON.stringify(ids));
             AjaxSender.sendPost(path, function (xhr) {
                 ModalWidget.appendFormContent(xhr);
             }, JSON.stringify(ids));
@@ -185,8 +195,8 @@ let Multiplier = function() {
         if(checker.confirmDeletePermanentlyEvent(event)) {
             event.preventDefault();
 
-            let path   = '/' + helper.getCurrentLocale() + '/user/list/delete';
-            let emails = table.extractAllProperties();
+            let path   = eventManager.triggers.deletePermanentlyButton.elem.getAttribute('href');
+            let emails = table.extractAllIds();
 
             console.log(emails);
 

@@ -9,11 +9,21 @@ html {
 *:after {
     box-sizing: inherit;
 }
-
 body {
     display: flex;
     min-height: 100vh;
     flex-direction: column;
+}
+
+// Animation for page loading
+body {
+    animation: body-opacity-change .1s ease-in-out .1s forwards;
+    opacity: 0;
+}
+
+@keyframes body-opacity-change {
+    from { opacity: 0; }
+    to   { opacity: 1; }
 }
 
 main {
