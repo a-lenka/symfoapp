@@ -1,9 +1,29 @@
-<h5>{{ 'User'|trans ~ ' "' ~ user.email ~ '" ' ~ '(he)will be deleted permanently'|trans }}</h5>
+{% if users is defined %}
+    <table class="responsive-table highlight">
+        <tbody>
+            {% for user in users %}
+                <tr>
+                    {{ include('user/_table-row.html.twig') }}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
-<div class="row modal-footer">
-    <a href="{{ path('user_delete', {'id': user.id }) }}"
-       class="btn waves-effect waves-light red">
-        {{ 'Delete permanently'|trans }}
-        <i class="material-icons right">delete_forever</i>
-    </a>
-</div>
+    <div class="row modal-footer">
+        <a href="{{ path('user_list_delete') }}"
+           class="btn waves-effect waves-light red">
+            {{ 'Delete permanently'|trans }}
+            <i class="material-icons right">delete_forever</i>
+        </a>
+    </div>
+{% elseif user is defined %}
+    <h5>{{ 'User'|trans ~ ' "' ~ user.email ~ '" ' ~ '(he)will be deleted permanently'|trans }}</h5>
+
+    <div class="row modal-footer">
+        <a href="{{ path('user_delete', {'id': user.id }) }}"
+           class="btn waves-effect waves-light red">
+            {{ 'Delete permanently'|trans }}
+            <i class="material-icons right">delete_forever</i>
+        </a>
+    </div>
+{% endif %}

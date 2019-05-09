@@ -62,6 +62,80 @@ class TaskController extends AbstractController
 
 
     /**
+     * Confirm delete multiply Task Entities
+     *
+     * @Route("/{_locale}/task/list/confirm",
+     *     name="task_list_confirm",
+     *     methods="POST",
+     *     defaults={"_locale"="%default_locale%"},
+     *     requirements={"_locale": "%app_locales%"},
+     * )
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function confirmDeleteMultiply(Request $request): Response
+    {
+        $repository = $this->getDoctrine()->getRepository(Task::class);
+        $tasks = [];
+
+        $data = $request->getContent();
+        $ids  = json_decode($data, true);
+
+        foreach((array)$ids as $id) {
+            $task    = $repository->findOneBy(['id' => $id]);
+            $tasks[] = $task;
+        }
+
+        $confirm_part = 'task/_confirm-delete.html.twig';
+        $template = $request->isXmlHttpRequest()
+            ? $confirm_part
+            : 'confirm.html.twig';
+
+        return $this->render($template, [
+            'tasks'     => $tasks,
+            'title'     => 'Tasks',
+            'confirm_part'  => $confirm_part,
+            'sort_property' => 'default',
+            'sort_order'    => 'default',
+        ]);
+    }
+
+
+    /**
+     * Delete multiply Task Entity
+     *
+     * @Route("/{_locale}/task/list/delete",
+     *     name="task_list_delete",
+     *     methods="POST",
+     *     defaults={"_locale"="%default_locale%"},
+     *     requirements={"_locale": "%app_locales%"},
+     * )
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function deleteMultiply(Request $request): Response
+    {
+        $repository    = $this->getDoctrine()->getRepository(Task::class);
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $data = $request->getContent();
+        $ids  = json_decode($data, false);
+
+        foreach((array) $ids as $id) {
+            $task = $repository->findOneBy(['id' => $id]);
+            $entityManager->remove($task);
+        }
+
+        $entityManager->flush();
+        return $this->redirectToRoute('task_list_all');
+    }
+
+
+    /**
      * Show sorted Task entities
      *
      * @Route("/{_locale}/task/list/all/sorted/{sort_property}/{sort_order}",

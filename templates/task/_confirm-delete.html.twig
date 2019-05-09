@@ -1,9 +1,29 @@
-<h5>{{ 'Task'|trans ~ ' "' ~ task.title ~ '" ' ~ '(she)will be deleted permanently'|trans }}</h5>
+{% if tasks is defined %}
+    <table class="responsive-table highlight">
+        <tbody>
+        {% for task in tasks %}
+            <tr>
+                {{ include('task/_table-row.html.twig') }}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 
-<div class="row modal-footer">
-    <a href="{{ path('task_delete', {'id': task.id}) }}"
-       class="btn waves-effect waves-light red">
-        {{ 'Delete permanently'|trans }}
-        <i class="material-icons right">delete_forever</i>
-    </a>
-</div>
+    <div class="row modal-footer">
+        <a href="{{ path('task_list_delete') }}"
+           class="btn waves-effect waves-light red">
+            {{ 'Delete permanently'|trans }}
+            <i class="material-icons right">delete_forever</i>
+        </a>
+    </div>
+{% elseif task is defined %}
+    <h5>{{ 'Task'|trans ~ ' "' ~ task.title ~ '" ' ~ '(she)will be deleted permanently'|trans }}</h5>
+
+    <div class="row modal-footer">
+        <a href="{{ path('task_delete', {'id': task.id}) }}"
+           class="btn waves-effect waves-light red">
+            {{ 'Delete permanently'|trans }}
+            <i class="material-icons right">delete_forever</i>
+        </a>
+    </div>
+{% endif %}

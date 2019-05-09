@@ -23,12 +23,14 @@ import Materializer from '../js/modules/Materializer.js';
 import ModalWidget  from '../js/modules/ModalWidget.js';
 import Sorter       from '../js/modules/Sorter.js';
 import Logger       from '../js/modules/Logger.js';
+import Multiplier   from '../js/modules/Multiplier.js';
 
 // Events
 document.addEventListener('DOMContentLoaded', function() {
     Materializer.initJS();
     ModalWidget.setRequestListeners();
     Sorter.setSortListeners();
+    Multiplier.setMultiplyListeners();
 });
 
 // Allow using history navigation in browser

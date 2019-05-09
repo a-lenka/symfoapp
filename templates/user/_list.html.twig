@@ -31,7 +31,6 @@
                         <i class="material-icons">refresh</i>
                     </a>
 
-
                     <a href="{{ path('user_delete_confirm', {'id': user.id }) }}"
                        class="modal-trigger" data-target="materialize-modal">
                         <i class="material-icons">remove_circle_outline</i>
@@ -41,3 +40,27 @@
         {% endfor %}
     </tbody>
 </table>
+
+
+{# Fixed Actions Button #}
+<div class="fixed-action-btn">
+    <a class="btn-floating btn-large">
+        <i class="large material-icons">more_vert</i>
+    </a>
+
+    <ul>
+        <li>
+            <a href="{{ path('user_list_confirm', {'users': users}) }}"
+               class="btn-floating red darken-1 modal-trigger"
+               data-target="materialize-modal" disabled>
+                <i class="material-icons">delete_forever</i>
+            </a>
+        </li>
+
+        <li>
+            <a href="#" class="btn-floating orange darken-1">
+                <i class="material-icons">playlist_add_check</i>
+            </a>
+        </li>
+    </ul>
+</div>
