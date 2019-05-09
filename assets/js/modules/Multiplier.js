@@ -63,7 +63,7 @@ let Multiplier = function() {
             let row      = td.parentElement;
             let targetTd = row.children[row.children.length - 1];
             let link     = targetTd.children[0];
-            return link.href.match(/\d+/)[0];
+            return link.href.match(/\d+/);
         },
 
         extractAllIds: function() {
@@ -129,7 +129,17 @@ let Multiplier = function() {
 
                 get elem() {
                     return document.querySelectorAll(eventManager.triggers.confirmButton.selector)[0];
-                    return deleteTrigger;
+                },
+
+                activate: function() {
+                    let btn = eventManager.triggers.confirmButton.elem;
+                    console.log(btn);
+                    btn.removeAttribute('disabled');
+                },
+
+                deactivate: function() {
+                    let btn = eventManager.triggers.confirmButton.elem;
+                    btn.setAttribute('disabled', true);
                 },
             },
 
@@ -169,6 +179,8 @@ let Multiplier = function() {
                 rows[i].cells[0].innerHTML = checkbox.html;
             }
 
+            eventManager.triggers.confirmButton.activate();
+
             console.log('Append checkboxes');
         }
     };
@@ -181,9 +193,8 @@ let Multiplier = function() {
             let path = eventManager.triggers.confirmButton.elem.getAttribute('href');
             let ids  = table.extractAllIds();
 
-            console.log(ids);
-            console.log(path);
-            console.log( JSON.stringify(ids));
+            eventManager.triggers.confirmButton.deactivate();
+
             AjaxSender.sendPost(path, function (xhr) {
                 ModalWidget.appendFormContent(xhr);
             }, JSON.stringify(ids));
