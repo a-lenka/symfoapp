@@ -2,6 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Task;
+use DateTime;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Response;
@@ -38,6 +41,28 @@ class TaskWidgetController extends AbstractController
 
 
     /**
+     * @return array
+     * @throws Exception
+     */
+    private function getOverdueTasks(): array
+    {
+        /** @var Task[] $tasks */
+        $tasks    = $this->getUser()->getTasks()->toArray();
+        $filtered = [];
+
+        $now = new DateTime('now');
+
+        foreach($tasks as $task) {
+            if($task->getDateDeadline() < $now) {
+                $filtered[] = $task;
+            }
+        }
+
+        return $filtered;
+    }
+
+
+    /**
      * @return Response
      */
     final public function renderDoneTasksPieChart(): Response
@@ -64,6 +89,41 @@ class TaskWidgetController extends AbstractController
                 'part'        => $part,
                 'done_tasks'  => $doneTasks,
                 'done_tasks_part'   => $doneTasksPart,
+                'in_progress_tasks' => $inProgressTasks,
+                'in_progress_tasks_part'  => $inProgressTasksPart,
+            ]
+        );
+    }
+
+
+    /**
+     * @return Response
+     * @throws Exception
+     */
+    final public function renderOverdueTasksDonutChart(): Response
+    {
+        $user = $this->getUser();
+
+        if(!$user) {
+            throw new AccessDeniedException(
+            /** TODO: Secure the link from non authenticated Users instead */
+                'Login please. You can access this page only from your account.', 403
+            );
+        }
+
+        $tasks = $this->getUser()->getTasks()->toArray();
+        $part  = 100 / count($tasks);
+        $overdueTasks    = $this->getOverdueTasks();
+        $overdueTasksPart= count($overdueTasks) * $part;
+        $inProgressTasks = $this->getTasksByProperty('state', 'In progress');
+        $inProgressTasksPart = count($inProgressTasks) * $part;
+
+        return $this->render(
+            'widgets/_overdue_tasks_donut.html.twig', [
+                'tasks'       => $tasks,
+                'part'        => $part,
+                'overdue_tasks'     => $overdueTasks,
+                'overdue_tasks_part'=> $overdueTasksPart,
                 'in_progress_tasks' => $inProgressTasks,
                 'in_progress_tasks_part'  => $inProgressTasksPart,
             ]

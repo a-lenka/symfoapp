@@ -1,0 +1,43 @@
+{# Colors #}
+{% set overdue_color_class = 'deep-orange lighten-2' %}
+{% set overdue_color_code  = '#ff8a65' %}
+
+{% set in_progress_color_class = 'indigo lighten-2' %}
+{% set in_progress_color_code  = '#7986cb' %}
+
+{# Widget #}
+<div class="card material-grad">
+    <div class="card-content" style="background-color: white;">
+        <span class="card-title center-align">{{ "Expired"|trans }}</span>
+
+        <div class="donut" style="background:
+            radial-gradient(white 40%, transparent 41%),
+            conic-gradient(
+                {{ overdue_color_code }} 0% {{ overdue_tasks_part }}%,
+                {{ in_progress_color_code }} {{ overdue_tasks_part }}% 60% /*,#80cbc4 60% 100%*/
+            );">
+        </div>
+
+        <div>
+            <p>
+                <span class="color-preview {{ overdue_color_class }}">
+                    {{- overdue_tasks|length -}}
+                </span>
+                {{- "Overdue tasks"|trans -}}
+            </p>
+
+            <p>
+                <span class="color-preview {{ in_progress_color_class }}">
+                    {{- in_progress_tasks|length -}}
+                </span>
+                {{- "In progress tasks"|trans -}}
+            </p>
+        </div>
+    </div>
+
+    <div class="card-action" style="background-color: white;">
+        <a href="{{ path('task_list_all') }}">
+            {{ "View tasks"|trans }}
+        </a>
+    </div>
+</div>

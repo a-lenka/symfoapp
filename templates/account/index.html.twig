@@ -13,6 +13,12 @@
                     'App\\Controller\\TaskWidgetController::renderDoneTasksPieChart'
                 )) }}
             </div>
+
+            <div class="col s6">
+                {{ render(controller(
+                    'App\\Controller\\TaskWidgetController::renderOverdueTasksDonutChart'
+                )) }}
+            </div>
         {% endif %}
     </div>
 {% endblock content %}
