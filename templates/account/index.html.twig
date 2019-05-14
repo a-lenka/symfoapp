@@ -3,5 +3,24 @@
 {% block title %}{{ "Account"|trans}}{% endblock %}
 
 {% block content %}
-    <h1>{{ "Account page"|trans }}</h1>
+    <h1>{{ app.user.email }}</h1>
+
+    <div class="row">
+        {# The widget can have s2 width #}
+        {% if app.user.tasks|length > 0 %}
+            <div class="col s6">
+                {{ render(controller(
+                    'App\\Controller\\TaskWidgetController::renderDoneTasksPieChart'
+                )) }}
+            </div>
+        {% endif %}
+    </div>
 {% endblock content %}
+
+
+{# App Scripts #}
+{% block javascripts %}
+    {{ parent() }}
+
+    {{ encore_entry_script_tags('conic_gradient') }}
+{% endblock javascripts %}

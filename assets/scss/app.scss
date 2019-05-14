@@ -22,7 +22,7 @@
 @import "components/navbar";
 @import "components/typography";
 @import "~materialize-css/sass/components/transitions";
-@import "~materialize-css/sass/components/cards";
+@import "components/cards";
 @import "~materialize-css/sass/components/toast";
 @import "~materialize-css/sass/components/tabs";
 @import "~materialize-css/sass/components/tooltip";
@@ -45,3 +45,4 @@
 @import "components/timepicker";
 @import "components/messages";
 @import "components/scrollbar";
+@import "components/widget";
