@@ -7,8 +7,6 @@
 parameters:
     app_locales: en|ru
     default_locale: 'en'
-    # For UserController
-    anonymous: 'anonymous.png'
 
 services:
     # Default configuration for services in *this* file
@@ -18,8 +16,7 @@ services:
         bind:
             $appLocales: '%app_locales%'
             $uploadsPath: '%kernel.project_dir%/public/uploads'
-            # For DI
-            $anonymous: '%anonymous%'
+            $publicUploadFilesystem: '@oneup_flysystem.public_uploads_filesystem_filesystem'
 
     # Makes classes in `src/` available to be used as services.
     # This creates a service per class

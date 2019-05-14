@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\UserType;
 use App\Service\FileUploader;
+use League\Flysystem\FileExistsException;
+use League\Flysystem\FileNotFoundException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -209,8 +211,10 @@ class UserController extends AbstractController
      * @param FileUploader $uploader
      *
      * @return Response
+     * @throws FileNotFoundException
+     * @throws FileExistsException
      */
-    public function updateUser(
+    final public function updateUser(
         int $id,
         Request $request,
         UserPasswordEncoderInterface $passwordEncoder,
@@ -236,7 +240,7 @@ class UserController extends AbstractController
             $avatar  = $form['avatar']->getData();
 
             if($avatar) {
-                $newName = $uploader->uploadUserAvatar($avatar);
+                $newName = $uploader->uploadUserAvatar($avatar, $user->getAvatar());
                 $user->setAvatar($newName);
             }
 
@@ -276,6 +280,8 @@ class UserController extends AbstractController
      * @param FileUploader                 $uploader
      *
      * @return Response
+     * @throws FileNotFoundException
+     * @throws FileExistsException
      */
     final public function createUser(
         Request $request,
@@ -300,7 +306,7 @@ class UserController extends AbstractController
             $user->setPassword($password);
 
             $avatar  = $form['avatar']->getData();
-            $newName = $uploader->uploadUserAvatar($avatar);
+            $newName = $uploader->uploadUserAvatar($avatar, $user->getAvatar());
             $user->setAvatar($newName);
 
             $entityManager = $this->getDoctrine()->getManager();
