@@ -11,6 +11,7 @@ use League\Flysystem\FileExistsException;
 use League\Flysystem\FileNotFoundException;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use App\Entity\User;
 
@@ -29,17 +30,36 @@ class UserFixtures extends AbstractFixture implements OrderedFixtureInterface, O
     /** @const string AVATARS_DIR - Avatars fixtures directory */
     private const AVATARS_DIR = '/images/avatars/';
 
+    /** KernelInterface $appKernel */
+    private $appKernel;
+
 
     /**
+     * @param KernelInterface              $appKernel
      * @param UserPasswordEncoderInterface $passwordEncoder
      * @param FileUploader                 $uploader
      */
     public function __construct(
+        KernelInterface $appKernel,
         UserPasswordEncoderInterface $passwordEncoder,
         FileUploader                 $uploader
     ) {
         $this->passwordEncoder = $passwordEncoder;
         $this->fileUploader    = $uploader;
+        $this->appKernel       = $appKernel;
+    }
+
+
+    /**
+     * Clear directory before fixtures loading
+     */
+    private function clearDir(): void
+    {
+        $files = glob($this->appKernel->getProjectDir().'/public/uploads/avatars/*');
+
+        foreach($files as $file) {
+            unlink($file);
+        }
     }
 
 
@@ -75,6 +95,8 @@ class UserFixtures extends AbstractFixture implements OrderedFixtureInterface, O
      */
     final public function load(ObjectManager $manager): void
     {
+        $this->clearDir();
+
         // Root
         $root = new User();
         $root->setAvatar($this->uploadDummyAvatars('root.png'));
