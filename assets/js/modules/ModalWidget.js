@@ -49,7 +49,7 @@ let ModalWidget = function() {
         get elem() {
             let form = document.forms[0];
             if(!form) {
-                throw new Error('The form must be here, but it\'s not found');
+                console.log('The form is not here');
             }
             if(document.forms.length > 1) {
                 console.warn('Here must be only one form, but there are more');
