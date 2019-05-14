@@ -32,6 +32,18 @@ class FileUploader
         $this->filesystem  = $publicUploadFilesystem;
     }
 
+    /**
+     * @param string $avatarName
+     *
+     * @throws FileNotFoundException
+     */
+    final public function deleteAvatar(?string $avatarName): void
+    {
+        if ($avatarName) {
+            $this->filesystem->delete(self::AVATARS_DIR.'/'.$avatarName);
+        }
+    }
+
 
     /**
      * @param UploadedFile|null $uploadedFile
@@ -71,9 +83,7 @@ class FileUploader
             fclose($stream);
         }
 
-        if ($existingFilename) {
-            $this->filesystem->delete(self::AVATARS_DIR.'/'.$existingFilename);
-        }
+        $this->deleteAvatar($existingFilename);
 
         return $newFileName;
     }

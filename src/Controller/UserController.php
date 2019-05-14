@@ -369,13 +369,18 @@ class UserController extends AbstractController
      *     requirements={"_locale": "%app_locales%"},
      * )
      *
+     * @param FileUploader $uploader
      * @param integer $id
      *
      * @return Response
+     * @throws FileNotFoundException
      */
-    public function deleteUser(int $id): Response
+    final public function deleteUser(FileUploader $uploader, int $id): Response
     {
         $user = $this->getDoctrine()->getRepository(User::class)->find($id);
+
+        $avatarName = $user->getAvatar();
+        $uploader->deleteAvatar($avatarName);
 
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->remove($user);
