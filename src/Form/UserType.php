@@ -40,6 +40,7 @@ class UserType extends AbstractType
             ->add('roles', ChoiceType::class, [
                 'expanded' => false,
                 'multiple' => true,
+                'required' => false,
                 'label'    => 'User roles',
                 'choices'  => [
                     'Root'  => 'ROLE_ROOT',
