@@ -2,10 +2,16 @@
 
 namespace App\DataFixtures;
 
+use App\Service\FileUploader;
 use Doctrine\Bundle\FixturesBundle\ORMFixtureInterface;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
+use League\Flysystem\FileExistsException;
+use League\Flysystem\FileNotFoundException;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use App\Entity\User;
 
@@ -18,13 +24,64 @@ class UserFixtures extends AbstractFixture implements OrderedFixtureInterface, O
     /** @var UserPasswordEncoderInterface */
     private $passwordEncoder;
 
+    /** @var FileUploader */
+    private $fileUploader;
+
+    /** @const string AVATARS_DIR - Avatars fixtures directory */
+    private const AVATARS_DIR = '/images/avatars/';
+
+    /** KernelInterface $appKernel */
+    private $appKernel;
+
 
     /**
+     * @param KernelInterface              $appKernel
      * @param UserPasswordEncoderInterface $passwordEncoder
+     * @param FileUploader                 $uploader
      */
-    public function __construct(UserPasswordEncoderInterface $passwordEncoder)
-    {
+    public function __construct(
+        KernelInterface $appKernel,
+        UserPasswordEncoderInterface $passwordEncoder,
+        FileUploader                 $uploader
+    ) {
         $this->passwordEncoder = $passwordEncoder;
+        $this->fileUploader    = $uploader;
+        $this->appKernel       = $appKernel;
+    }
+
+
+    /**
+     * Clear directory before fixtures loading
+     */
+    private function clearDir(): void
+    {
+        $files = glob($this->appKernel->getProjectDir().'/public/uploads/avatars/*');
+
+        foreach($files as $file) {
+            unlink($file);
+        }
+    }
+
+
+    /**
+     * @param string $filename
+     * @return string
+     *
+     * @throws FileExistsException
+     * @throws FileNotFoundException
+     */
+    private function uploadDummyAvatars(string $filename): string
+    {
+        $fs = new Filesystem();
+
+        $sourceFile = __DIR__.self::AVATARS_DIR.$filename;
+        $targetFile = sys_get_temp_dir().'/'.$filename;
+
+        $fs->copy($sourceFile, $targetFile, true);
+
+        return $this->fileUploader->uploadUserAvatar(
+            new File($targetFile), null
+        );
     }
 
 
@@ -32,12 +89,17 @@ class UserFixtures extends AbstractFixture implements OrderedFixtureInterface, O
      * Loads User Fixtures into Database
      *
      * @param ObjectManager $manager
+     *
+     * @throws FileExistsException
+     * @throws FileNotFoundException
      */
-    public function load(ObjectManager $manager): void
+    final public function load(ObjectManager $manager): void
     {
+        $this->clearDir();
+
         // Root
         $root = new User();
-        $root->setAvatar('root.png');
+        $root->setAvatar($this->uploadDummyAvatars('root.png'));
         $root->setEmail('root@mail.ru');
         $root->setRoles(['ROLE_ROOT']);
         $root->setPassword($this->passwordEncoder->encodePassword(
@@ -48,7 +110,7 @@ class UserFixtures extends AbstractFixture implements OrderedFixtureInterface, O
 
         // Admin
         $admin = new User();
-        $admin->setAvatar('admin.png');
+        $admin->setAvatar($this->uploadDummyAvatars('admin.png'));
         $admin->setEmail('admin@mail.ru');
         $admin->setRoles(['ROLE_ADMIN']);
         $admin->setPassword($this->passwordEncoder->encodePassword(
@@ -59,7 +121,7 @@ class UserFixtures extends AbstractFixture implements OrderedFixtureInterface, O
 
         // User
         $user = new User();
-        $user->setAvatar('user.png');
+        $user->setAvatar($this->uploadDummyAvatars('user.png'));
         $user->setEmail('user@mail.ru');
         $user->setRoles([]);
         $user->setPassword($this->passwordEncoder->encodePassword(
@@ -70,7 +132,7 @@ class UserFixtures extends AbstractFixture implements OrderedFixtureInterface, O
 
         // Anonymous
         $anonymous = new User();
-        $anonymous->setAvatar('anonymous.png');
+        $anonymous->setAvatar($this->uploadDummyAvatars('anonymous.png'));
         $anonymous->setEmail('anonymous@mail.ru');
         $anonymous->setRoles([]);
         $anonymous->setPassword($this->passwordEncoder->encodePassword(
@@ -78,6 +140,28 @@ class UserFixtures extends AbstractFixture implements OrderedFixtureInterface, O
         ));
 
         $manager->persist($anonymous);
+
+        // Housewife
+        $housewife = new User();
+        $housewife->setAvatar($this->uploadDummyAvatars('housewife.jpeg'));
+        $housewife->setEmail('housewife@mail.ru');
+        $housewife->setRoles([]);
+        $housewife->setPassword($this->passwordEncoder->encodePassword(
+            $housewife, 'kitten'
+        ));
+
+        $manager->persist($housewife);
+
+        // Student
+        $student = new User();
+        $student->setAvatar($this->uploadDummyAvatars('student.jpeg'));
+        $student->setEmail('student@mail.ru');
+        $student->setRoles([]);
+        $student->setPassword($this->passwordEncoder->encodePassword(
+            $student, 'kitten'
+        ));
+
+        $manager->persist($student);
 
         $manager->flush();
 
@@ -91,7 +175,7 @@ class UserFixtures extends AbstractFixture implements OrderedFixtureInterface, O
     /**
      * @return int
      */
-    public function getOrder(): int
+    final public function getOrder(): int
     {
         return 1;
     }
