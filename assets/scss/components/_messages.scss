@@ -3,10 +3,10 @@
     padding: 5px;
 
     &.error {
-        background-color: $error-bg-color;
+        background-color: $error-color-light;
     }
 
     &.success {
-        background-color: $success-bg-color;
+        background-color: $success-color-light;
     }
 }
