@@ -14,9 +14,6 @@ class FileUploader
     /** @var string $uploadsPath */
     private $uploadsPath;
 
-    /** @var string anonymous */
-    private $anonymous;
-
 
     /**
      * FileUploader constructor
@@ -27,16 +24,15 @@ class FileUploader
     public function __construct(string $uploadsPath, string $anonymous)
     {
         $this->uploadsPath = $uploadsPath;
-        $this->anonymous   = $anonymous;
     }
 
 
     /**
      * @param UploadedFile|null $uploadedFile
      *
-     * @return string
+     * @return string|null
      */
-    final public function uploadUserAvatar(?UploadedFile $uploadedFile): string
+    final public function uploadUserAvatar(?UploadedFile $uploadedFile): ?string
     {
         if ($uploadedFile) {
             // Old filename
@@ -54,6 +50,6 @@ class FileUploader
             return $newFileName;
         }
 
-        return $this->anonymous;
+        return null;
     }
 }

@@ -234,8 +234,11 @@ class UserController extends AbstractController
             $user->setPassword($password);
 
             $avatar  = $form['avatar']->getData();
-            $newName = $uploader->uploadUserAvatar($avatar);
-            $user->setAvatar($newName);
+
+            if($avatar) {
+                $newName = $uploader->uploadUserAvatar($avatar);
+                $user->setAvatar($newName);
+            }
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
@@ -268,14 +271,16 @@ class UserController extends AbstractController
      *     requirements={"_locale": "%app_locales%"},
      * )
      *
-     * @param Request $request
+     * @param Request                      $request
      * @param UserPasswordEncoderInterface $passwordEncoder
+     * @param FileUploader                 $uploader
      *
      * @return Response
      */
-    public function createUser(
+    final public function createUser(
         Request $request,
-        UserPasswordEncoderInterface $passwordEncoder
+        UserPasswordEncoderInterface $passwordEncoder,
+        FileUploader $uploader
     ): Response {
 
         $user = new User();
@@ -292,8 +297,11 @@ class UserController extends AbstractController
             $password = $passwordEncoder->encodePassword(
                 $user, $user->getPassword()
             );
-            $user->setAvatar($this->getParameter('anonymous'));
             $user->setPassword($password);
+
+            $avatar  = $form['avatar']->getData();
+            $newName = $uploader->uploadUserAvatar($avatar);
+            $user->setAvatar($newName);
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
