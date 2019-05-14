@@ -6,6 +6,8 @@ use Gedmo\Sluggable\Util\Urlizer;
 use League\Flysystem\FileExistsException;
 use League\Flysystem\FileNotFoundException;
 use League\Flysystem\FilesystemInterface;
+use Symfony\Component\Asset\Context\RequestStackContext;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
@@ -14,6 +16,9 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  */
 class FileUploader
 {
+    /** @var RequestStackContext */
+    private $requestStackContext;
+
     /** @var FilesystemInterface */
     private $filesystem;
 
@@ -24,12 +29,15 @@ class FileUploader
     /**
      * FileUploader constructor
      *
+     * @param RequestStackContext $requestStackContext
      * @param FilesystemInterface $publicUploadFilesystem
      */
     public function __construct(
+        RequestStackContext $requestStackContext,
         FilesystemInterface $publicUploadFilesystem
     ) {
-        $this->filesystem  = $publicUploadFilesystem;
+        $this->requestStackContext = $requestStackContext;
+        $this->filesystem          = $publicUploadFilesystem;
     }
 
     /**
@@ -46,14 +54,14 @@ class FileUploader
 
 
     /**
-     * @param UploadedFile|null $uploadedFile
-     * @param string|null       $existingFilename
+     * @param File|null   $uploadedFile
+     * @param string|null $existingFilename
      *
      * @return string|null
      * @throws FileExistsException
      * @throws FileNotFoundException
      */
-    final public function uploadUserAvatar(?UploadedFile $uploadedFile, ?string $existingFilename): string
+    final public function uploadUserAvatar(?File $uploadedFile, ?string $existingFilename): string
     {
         if (!$uploadedFile) {
             throw new FileNotFoundException('The User avatar was not uploaded');

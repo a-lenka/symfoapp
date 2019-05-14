@@ -15,7 +15,6 @@ services:
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
         bind:
             $appLocales: '%app_locales%'
-            $uploadsPath: '%kernel.project_dir%/public/uploads'
             $publicUploadFilesystem: '@oneup_flysystem.public_uploads_filesystem_filesystem'
 
     # Makes classes in `src/` available to be used as services.
@@ -45,3 +44,5 @@ services:
         public: true
         arguments:
             $debug: '%kernel.debug%'
+
+    Symfony\Component\Asset\Context\RequestStackContext: '@assets.context'
