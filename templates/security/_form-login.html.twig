@@ -6,13 +6,13 @@
 
 {# see CustomExceptionController #}
 {% if forbidden_message is defined %}
-    <p class="message-box error">
+    <p class="mmessage-box inline-message error">
         <span class="helper-text red-text text-darken-2 message-box error">
             {{ forbidden_message|trans }}
         </span>
     </p>
 {% elseif error is empty %}
-    <p class="message-box success">
+    <p class="message-box inline-message success">
         <span class="helper-text">
             {{ "Welcome to your app"|trans }}
         </span>
@@ -40,6 +40,7 @@
 
                 {% if error and error is defined %}
                     <span class="helper-text red-text text-darken-2">
+                        <span class="inline-badge error-badge">{{ "Error"|trans }}</span>
                         {{ error.messageKey|trans(error.messageData) }}
                     </span>
                 {% else %}
@@ -63,6 +64,7 @@
 
                 {% if error and error is defined %}
                     <span class="helper-text red-text text-darken-2">
+                        <span class="inline-badge error-badge">{{ "Error"|trans }}</span>
                         {{ error.messageKey|trans(error.messageData) }}
                     </span>
                 {% else %}

@@ -1,6 +1,17 @@
+.flash-container {
+    display: none;
+}
+
+.notice {
+    background-color: $info-color;
+}
+
 .message-box {
     border-radius: $message-box-radius;
-    padding: 5px;
+
+    &.inline-message {
+        padding: $inline-padding;
+    }
 
     &.error {
         background-color: $error-color-light;

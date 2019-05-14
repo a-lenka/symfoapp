@@ -7,6 +7,7 @@
  *
  *  Colors
  *  Links
+ *  Indents
  *  Badges
  *  Buttons
  *  Cards
@@ -57,8 +58,15 @@ $error-color-light: color("materialize-red", "lighten-5") !default;
 // Warning
 $warning-color: color("orange", "base") !default;
 
+// Info
+$info-color: color("cyan", "base") !default;
+
 // In progress
 $in-progress-color: color("indigo", "base") !default;
+
+
+// Text
+$text-color-light: color("grey", "lighten-5") !default;
 
 
 /**
@@ -70,12 +78,21 @@ $active-link-color: $primary-color-dark !default;
 
 
 /**
+ * Indents
+ * ========================================================================== */
+
+$inline-padding: 5px !default;
+$inline-margin: 0.5rem !default;
+$inline-border-radius: 2px !default;
+
+/**
  * Badges
  * ========================================================================== */
 
 $badge-bg-color: $secondary-color !default;
+$error-badge-bg-color: $error-color !default;
 $badge-height: 22px !default;
-
+$badge-border-radius: $inline-border-radius;
 
 /**
  * Buttons
