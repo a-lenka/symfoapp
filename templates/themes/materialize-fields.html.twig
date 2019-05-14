@@ -343,11 +343,20 @@
 
 {# Errors #}
 {%- block form_errors -%}
-    {# Add custom attributes for Help messages #}
+    {# Add custom attributes for Help messages errors.form.config.attributes.constraints is not empty and #}
     {%- if errors|length > 0 -%}
+        {% set newArray = [] %}
+
         {%- for error in errors -%}
             <span class="helper-text red-text text-darken-2">
-                {{- error.message -}}
+                {#{% if errors.form.config.options.constraints is not empty and error.cause %}#}
+                {% if error.cause %}
+                    {{- error.cause.message -}}
+                    {% set newArray = newArray|merge([error.messageTemplate]) %}
+                {% elseif error.messageTemplate in newArray %}
+                    {{- error.message -}}
+                    {% set newArray = newArray|merge([error.messageTemplate]) %}
+                {% endif %}
             </span>
         {%- endfor -%}
     {%- endif -%}
@@ -402,4 +411,3 @@
         <input type="hidden" name="_method" value="{{ method }}">
     {%- endif -%}
 {%- endblock form_start -%}
-

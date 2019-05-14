@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\UserType;
 use App\Service\FileUploader;
+use League\Flysystem\FileExistsException;
+use League\Flysystem\FileNotFoundException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -209,8 +211,10 @@ class UserController extends AbstractController
      * @param FileUploader $uploader
      *
      * @return Response
+     * @throws FileNotFoundException
+     * @throws FileExistsException
      */
-    public function updateUser(
+    final public function updateUser(
         int $id,
         Request $request,
         UserPasswordEncoderInterface $passwordEncoder,
@@ -234,8 +238,11 @@ class UserController extends AbstractController
             $user->setPassword($password);
 
             $avatar  = $form['avatar']->getData();
-            $newName = $uploader->uploadUserAvatar($avatar);
-            $user->setAvatar($newName);
+
+            if($avatar) {
+                $newName = $uploader->uploadUserAvatar($avatar, $user->getAvatar());
+                $user->setAvatar($newName);
+            }
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
@@ -268,14 +275,18 @@ class UserController extends AbstractController
      *     requirements={"_locale": "%app_locales%"},
      * )
      *
-     * @param Request $request
+     * @param Request                      $request
      * @param UserPasswordEncoderInterface $passwordEncoder
+     * @param FileUploader                 $uploader
      *
      * @return Response
+     * @throws FileNotFoundException
+     * @throws FileExistsException
      */
-    public function createUser(
+    final public function createUser(
         Request $request,
-        UserPasswordEncoderInterface $passwordEncoder
+        UserPasswordEncoderInterface $passwordEncoder,
+        FileUploader $uploader
     ): Response {
 
         $user = new User();
@@ -292,8 +303,11 @@ class UserController extends AbstractController
             $password = $passwordEncoder->encodePassword(
                 $user, $user->getPassword()
             );
-            $user->setAvatar($this->getParameter('anonymous'));
             $user->setPassword($password);
+
+            $avatar  = $form['avatar']->getData();
+            $newName = $uploader->uploadUserAvatar($avatar, $user->getAvatar());
+            $user->setAvatar($newName);
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
@@ -355,13 +369,18 @@ class UserController extends AbstractController
      *     requirements={"_locale": "%app_locales%"},
      * )
      *
+     * @param FileUploader $uploader
      * @param integer $id
      *
      * @return Response
+     * @throws FileNotFoundException
      */
-    public function deleteUser(int $id): Response
+    final public function deleteUser(FileUploader $uploader, int $id): Response
     {
         $user = $this->getDoctrine()->getRepository(User::class)->find($id);
+
+        $avatarName = $user->getAvatar();
+        $uploader->deleteAvatar($avatarName);
 
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->remove($user);

@@ -49,7 +49,7 @@ let ModalWidget = function() {
         get elem() {
             let form = document.forms[0];
             if(!form) {
-                throw new Error('The form must be here, but it\'s not found');
+                console.log('The form is not here');
             }
             if(document.forms.length > 1) {
                 console.warn('Here must be only one form, but there are more');
@@ -129,7 +129,8 @@ let ModalWidget = function() {
 
         confirmModalForForm: function(xhr) {
             let path        = xhr.getResponseHeader('X-Target-URL');
-            let isFormModal = path.indexOf('details') === 1 || path.indexOf('confirm') === 1;
+            let isFormModal = path.indexOf('details') === 1
+                || path.indexOf('confirm') === 1;
 
             console.log('Check if it is Form Modal? : ' + isFormModal);
             return isFormModal;
@@ -225,13 +226,11 @@ let ModalWidget = function() {
         if(overlay.elem) {
             eventManager.setCancelModalListener();
 
-            if(checker.confirmModalForForm(xhr)) {
-                console.log('Check Form is here');
-
-                if(form.elem) {
-                    Materializer.reInitFormFields();
-                    eventManager.setSubmitFormListeners();
-                }
+            // We should not set submit listeners
+            // If here is details or confirm modals
+            if (form.elem && !checker.confirmModalForForm(xhr)) {
+                Materializer.reInitFormFields();
+                eventManager.setSubmitFormListeners();
             }
         }
     };

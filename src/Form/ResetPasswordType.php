@@ -46,7 +46,7 @@ class ResetPasswordType extends AbstractType
                 ],
                 'second_options' => [
                     'label' => 'Confirm new password',
-                    'help'  => 'Enter your new password',
+                    'help'  => 'Enter your new password one more time',
                 ],
             ])
             ->add('submit', SubmitType::class, [

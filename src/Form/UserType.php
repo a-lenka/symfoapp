@@ -12,6 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Image;
+use Symfony\Component\Validator\Constraints\NotNull;
 
 /**
  * Defines the form used to create and manipulate User Entities
@@ -25,8 +26,12 @@ class UserType extends AbstractType
      * @param FormBuilderInterface $builder
      * @param array                $options
      */
-    public function buildForm(FormBuilderInterface $builder, array $options): void
+    final public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $user   = $options['data'] ?? null;
+        assert($user instanceof User);
+        $isEdit = $user && $user->getId();
+
         $builder
             ->add('email', EmailType::class, [
                 'help'  => 'User email',
@@ -35,6 +40,7 @@ class UserType extends AbstractType
             ->add('roles', ChoiceType::class, [
                 'expanded' => false,
                 'multiple' => true,
+                'required' => false,
                 'label'    => 'User roles',
                 'choices'  => [
                     'Root'  => 'ROLE_ROOT',
@@ -50,16 +56,32 @@ class UserType extends AbstractType
                 'help'  => 'User password',
                 'label' => 'User password',
             ])
+            ->add('submit', SubmitType::class, [
+                'label' => 'Save'
+            ])
+        ;
+
+        $imageConstraints = [
+            new Image([
+                'maxSize' => '5M'
+            ])
+        ];
+
+
+        if (!$isEdit || !$user->getAvatar()) {
+            $imageConstraints[] = new NotNull([
+                'message' => 'Please upload an image',
+            ]);
+        }
+
+
+        $builder
             ->add('avatar', FileType::class, [
                 'help'  => 'User avatar',
                 'label' => 'User avatar',
-                'mapped'=> false,
-                'constraints' => [
-                    new Image()
-                ]
-            ])
-            ->add('submit', SubmitType::class, [
-                'label' => 'Save'
+                'mapped'   => false,
+                'required' => false,
+                'constraints' => $imageConstraints
             ])
         ;
     }
@@ -68,7 +90,7 @@ class UserType extends AbstractType
     /**
      * @param OptionsResolver $resolver
      */
-    public function configureOptions(OptionsResolver $resolver): void
+    final public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => User::class,
