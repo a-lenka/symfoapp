@@ -61,7 +61,7 @@ class FileUploader
     final public function deleteAvatar(?string $avatarName): void
     {
         if ($avatarName) {
-            $this->filesystem->delete(self::AVATARS_DIR.'/'.$avatarName);
+            $this->filesystem->delete('/'.$avatarName);
         }
     }
 
