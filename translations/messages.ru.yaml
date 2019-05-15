@@ -30,6 +30,8 @@
 'In progress tasks': 'В процессе'
 'Invalid credentials.': 'Недействительные аутентификационные данные'
 'Invalid CSRF token.': 'Введенные данные не прошли проверку. Попробуйте еще раз, пожалуйста'
+
+'It seems there are no tasks found': 'Похоже, что список задач абсолютно пуст'
 'Login': 'Вход'
 'Logout': 'Выход'
 'New password': 'Новый пароль'

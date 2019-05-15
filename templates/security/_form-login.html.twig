@@ -6,7 +6,7 @@
 
 {# see CustomExceptionController #}
 {% if forbidden_message is defined %}
-    <p class="mmessage-box inline-message error">
+    <p class="message-box inline-message error">
         <span class="helper-text red-text text-darken-2 message-box error">
             {{ forbidden_message|trans }}
         </span>
@@ -18,7 +18,7 @@
         </span>
     </p>
 {% else %}
-    <p class="message-box error">
+    <p class="message-box inline-message error">
         <span class="helper-text red-text text-darken-2 message-box error">
             {{ "Try again, please"|trans }}
         </span>

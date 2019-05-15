@@ -47,9 +47,9 @@ class TaskController extends AbstractController
         $userTasks = $user->getTasks();
 
         if(!$userTasks[0]) {
-            throw new NotFoundHttpException(
-                /** TODO: Show some template instead. User is not obliged to have tasks */
-                'It seems there are no tasks found. Do you want to create the new one?'
+            $this->addFlash(
+                'notice',
+                'It seems there are no tasks found'
             );
         }
 
