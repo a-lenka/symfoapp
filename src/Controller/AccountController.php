@@ -12,11 +12,11 @@ use Symfony\Component\Routing\Annotation\Route;
  *
  * Class AccountController
  * @package App\Controller
+ * @IsGranted("ROLE_USER")
  */
 class AccountController extends AbstractController
 {
     /**
-     * @IsGranted("ROLE_ROOT")
      * @Route("/{_locale}/account",
      *     name="account",
      *     methods="GET",

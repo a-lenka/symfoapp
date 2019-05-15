@@ -7,6 +7,7 @@ use App\Form\UserType;
 use App\Service\FileUploader;
 use League\Flysystem\FileExistsException;
 use League\Flysystem\FileNotFoundException;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,6 +19,7 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
  *
  * Class UserController
  * @package App\Controller
+ * @IsGranted("ROLE_ROOT")
  */
 class UserController extends AbstractController
 {

@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Task;
 use DateTime;
 use Exception;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,6 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
  *
  * Class TaskController
  * @package App\Controller
+ * @IsGranted("ROLE_USER")
  */
 class TaskWidgetController extends AbstractController
 {

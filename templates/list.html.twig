@@ -3,6 +3,14 @@
 {% block title %}{{ title|trans }}{% endblock title %}
 
 {% block content %}
+    {%- for label, messages in app.flashes -%}
+        {%- for message in messages -%}
+            <div class="flash-container {{ label }}">
+                {{- message|trans -}}
+            </div>
+        {%- endfor -%}
+    {%- endfor -%}
+
     <div class="row">
         {% include list_part %}
     </div>

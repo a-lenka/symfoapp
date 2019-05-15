@@ -40,6 +40,19 @@ class FileUploader
         $this->filesystem          = $publicUploadFilesystem;
     }
 
+
+    /**
+     * @param string $fileName
+     *
+     * @return string
+     */
+    final public function getPublicPath(string $fileName): string
+    {
+        return $this->requestStackContext
+                ->getBasePath().'/uploads/'.$fileName;
+    }
+
+
     /**
      * @param string $avatarName
      *

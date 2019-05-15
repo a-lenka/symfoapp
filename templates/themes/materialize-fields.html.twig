@@ -317,8 +317,10 @@
             </div>
         {% endif %}
     {%- else -%}
-        <p>
-            <div class="file-field input-field col s12">
+        <div class="row">
+            {%- set hasAvatar = "avatar" in form.parent.children|keys and form.parent.vars.value.avatar != 'avatars/' -%}
+
+            <div class="file-field input-field col {% if hasAvatar %}s11{% else %}s12{% endif %}">
                 <div class="btn">
                     <span>
                         <i class="material-icons">file_upload</i>
@@ -336,7 +338,14 @@
                     {{- form_help(form) -}}
                 {%- endif -%}
             </div>
-        </p>
+
+            {% if hasAvatar %}
+                <div class="col s1">
+                    <img class="avatar-icon small" alt="user-avatar"
+                         src="{{ uploaded_asset(form.parent.vars.value.avatar) }}">
+                </div>
+            {% endif %}
+        </div>
     {%- endif -%}
 {%- endblock form_row -%}
 
@@ -351,9 +360,11 @@
             <span class="helper-text red-text text-darken-2">
                 {#{% if errors.form.config.options.constraints is not empty and error.cause %}#}
                 {% if error.cause %}
+                    <span class="inline-badge error-badge">{{ "Error"|trans }}</span>
                     {{- error.cause.message -}}
                     {% set newArray = newArray|merge([error.messageTemplate]) %}
                 {% elseif error.messageTemplate in newArray %}
+                    <span class="inline-badge error-badge">{{ "Error"|trans }}</span>
                     {{- error.message -}}
                     {% set newArray = newArray|merge([error.messageTemplate]) %}
                 {% endif %}

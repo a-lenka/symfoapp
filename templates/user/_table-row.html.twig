@@ -1,7 +1,7 @@
-<td>{{- user.id -}}</td>
+<td class="center-align">{{- user.id -}}</td>
 
-<td>
-    <img class="avatar" src="{{ asset('uploads/avatars/' ~ user.avatar) }}">
+<td class="center-align">
+    <img class="avatar-icon small" src="{{- uploaded_asset(user.avatar) -}}">
 </td>
 
 <td>{{- user.email -}}</td>

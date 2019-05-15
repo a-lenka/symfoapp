@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Task;
 use App\Form\Fields\DateTimePickerType;
+use DateTime;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -23,7 +24,7 @@ class TaskType extends AbstractType
      * @param FormBuilderInterface $builder
      * @param array                $options
      */
-    public function buildForm(FormBuilderInterface $builder, array $options): void
+    final public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('title', TextType::class, [
@@ -35,6 +36,7 @@ class TaskType extends AbstractType
                 'help'   => 'When to do',
                 'date_label' => 'Date',
                 'time_label' => 'Time',
+                'data' => (new DateTime('now'))->modify('+1 day'),
             ])
             ->add('state', ChoiceType::class, [
                 'expanded' => false,

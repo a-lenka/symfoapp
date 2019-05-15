@@ -17,13 +17,25 @@
         </a>
     </div>
 {% elseif user is defined %}
-    <h5>{{ 'User'|trans ~ ' "' ~ user.email ~ '" ' ~ '(he)will be deleted permanently'|trans }}</h5>
+    <div class="modal-header">
+        <h5>{{- 'User'|trans ~ ' "' ~ user.email ~ '" ' ~ '(he)will be deleted permanently'|trans -}}</h5>
+    </div>
 
-    <div class="row modal-footer">
-        <a href="{{ path('user_delete', {'id': user.id }) }}"
-           class="btn waves-effect waves-light red">
-            {{ 'Delete permanently'|trans }}
-            <i class="material-icons right">delete_forever</i>
-        </a>
+    <div class="modal-body">
+        <ul class="collection">
+            <li class="collection-item avatar valign-wrapper">
+                <img class="circle" src="{{- uploaded_asset(user.avatar) -}}">
+
+                <div>
+                    <span class="title">{{- user.id -}}</span>
+                    <p>{{- user.email -}}</p>
+                    <p>{{- user.roles|join(', ') -}}</p>
+                </div>
+
+                <a href="{{ path('user_delete', {'id': user.id }) }}" class="secondary-content">
+                    <i class="material-icons small-md red-text darken-1">delete_forever</i>
+                </a>
+            </li>
+        </ul>
     </div>
 {% endif %}

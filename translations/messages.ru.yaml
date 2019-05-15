@@ -21,6 +21,7 @@
 'Enter your new password one more time': 'Введите ваш новый пароль еще раз'
 'Enter your new password, please': 'Введите ваш новый пароль, пожалуйста'
 'Enter your password, please': 'Введите пароль, пожалуйста'
+'Error': 'Ошибка'
 'Expired': 'Просрочено'
 'Home': 'Домой'
 'Home page': 'Домашняя страница'
@@ -29,6 +30,8 @@
 'In progress tasks': 'В процессе'
 'Invalid credentials.': 'Недействительные аутентификационные данные'
 'Invalid CSRF token.': 'Введенные данные не прошли проверку. Попробуйте еще раз, пожалуйста'
+
+'It seems there are no tasks found': 'Похоже, что список задач абсолютно пуст'
 'Login': 'Вход'
 'Logout': 'Выход'
 'New password': 'Новый пароль'

@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Task;
 use App\Form\TaskType;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,6 +17,7 @@ use Symfony\Component\Routing\Annotation\Route;
  *
  * Class TaskController
  * @package App\Controller
+ * @IsGranted("ROLE_USER")
  */
 class TaskController extends AbstractController
 {
@@ -45,9 +47,9 @@ class TaskController extends AbstractController
         $userTasks = $user->getTasks();
 
         if(!$userTasks[0]) {
-            throw new NotFoundHttpException(
-                /** TODO: Show some template instead. User is not obliged to have tasks */
-                'It seems there are no tasks found. Do you want to create the new one?'
+            $this->addFlash(
+                'notice',
+                'It seems there are no tasks found'
             );
         }
 
