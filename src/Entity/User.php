@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Service\FileUploader;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -211,9 +212,9 @@ class User implements UserInterface
     /**
      * @return string|null
      */
-    public function getAvatar(): ?string
+    final public function getAvatar(): ?string
     {
-        return $this->avatar;
+        return FileUploader::AVATARS_DIR.'/'.$this->avatar;
     }
 
 
