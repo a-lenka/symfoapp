@@ -318,7 +318,9 @@
         {% endif %}
     {%- else -%}
         <div class="row">
-            <div class="file-field input-field col s12">
+            {%- set hasAvatar = "avatar" in form.parent.children|keys and form.parent.vars.value.avatar != 'avatars/' -%}
+
+            <div class="file-field input-field col {% if hasAvatar %}s11{% else %}s12{% endif %}">
                 <div class="btn">
                     <span>
                         <i class="material-icons">file_upload</i>
@@ -336,6 +338,13 @@
                     {{- form_help(form) -}}
                 {%- endif -%}
             </div>
+
+            {% if hasAvatar %}
+                <div class="col s1">
+                    <img class="avatar-icon small" alt="user-avatar"
+                         src="{{ uploaded_asset(form.parent.vars.value.avatar) }}">
+                </div>
+            {% endif %}
         </div>
     {%- endif -%}
 {%- endblock form_row -%}

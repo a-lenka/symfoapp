@@ -6,7 +6,10 @@
     pointer-events: none;
 }
 
-.avatar {
-    width: 50px;
-    border-radius: 50%;
+
+.avatar-icon {
+    &.small {
+        width: 50px;
+        border-radius: 50%;
+    }
 }
