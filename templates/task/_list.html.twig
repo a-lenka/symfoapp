@@ -1,10 +1,5 @@
 <h1>{{- title|trans -}}</h1>
 
-<a href="{{ path('task_create') }}" class="btn-floating btn-large modal-trigger"
-   data-target="materialize-modal">
-    <i class="material-icons">add</i>
-</a>
-
 <table class="responsive-table highlight">
     <thead>
         <tr>
@@ -49,6 +44,14 @@
     </a>
 
     <ul>
+        <li>
+            <a href="{{ path('task_create') }}"
+               class="btn-floating green darken-1 modal-trigger"
+               data-target="materialize-modal">
+                <i class="material-icons">add</i>
+            </a>
+        </li>
+
         <li>
             <a href="{{ path('task_list_confirm', {'tasks': tasks}) }}"
                class="btn-floating red darken-1 modal-trigger"
