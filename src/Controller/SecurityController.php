@@ -7,7 +7,9 @@ use App\Form\RegistrationType;
 use App\Form\ResetPasswordType;
 use App\Security\LoginFormAuthenticator;
 use Exception;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -73,6 +75,7 @@ class SecurityController extends AbstractController
 
 
     /**
+     * @IsGranted("ROLE_USER")
      * @Route("/{_locale}/logout",
      *     name="logout",
      *     methods="GET",
@@ -146,24 +149,30 @@ class SecurityController extends AbstractController
     /**
      * Controller is used to change User's password
      *
+     * @IsGranted("ROLE_USER")
      * @Route("/{_locale}/reset",
      *     name="reset",
      *     methods="GET|POST",
      *     requirements={"_locale": "%app_locales%"}
      * )
+     *
      * @param Request                      $request
      * @param UserPasswordEncoderInterface $encoder
      *
      * @return Response
-     * @throws \Twig_Error_Loader
-     * @throws \Twig_Error_Runtime
-     * @throws \Twig_Error_Syntax
      */
-    public function resetPassword(
+    final public function resetPassword(
         Request $request,
         UserPasswordEncoderInterface $encoder
     ): Response {
         $user = $this->getUser();
+
+        if(!$user) {
+            throw new AccessDeniedException(
+            /** TODO: Secure the link from non authenticated Users instead */
+                'Login please. You can access this page only from your account.', 403
+            );
+        }
 
         $form = $this->createForm(ResetPasswordType::class);
         $form->handleRequest($request);
