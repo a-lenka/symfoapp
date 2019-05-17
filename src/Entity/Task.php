@@ -56,6 +56,14 @@ class Task
      */
     private $owner;
 
+    /**
+     * @ORM\Column(
+     *     type="string",
+     *     length=50
+     * )
+     */
+    private $icon;
+
 
     /**
      * @return int|null
@@ -149,6 +157,28 @@ class Task
     public function setOwner(?User $owner): self
     {
         $this->owner = $owner;
+
+        return $this;
+    }
+
+
+    /**
+     * @return string|null
+     */
+    public function getIcon(): ?string
+    {
+        return $this->icon;
+    }
+
+
+    /**
+     * @param string $icon
+     *
+     * @return Task
+     */
+    public function setIcon(string $icon): self
+    {
+        $this->icon = $icon;
 
         return $this;
     }
