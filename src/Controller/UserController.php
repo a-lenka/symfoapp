@@ -142,11 +142,13 @@ class UserController extends AbstractController
      *     requirements={"_locale": "%app_locales%"},
      * )
      *
-     * @param Request $request
+     * @param FileUploader $uploader
+     * @param Request      $request
      *
      * @return Response
+     * @throws FileNotFoundException
      */
-    public function deleteMultiply(Request $request): Response
+    public function deleteMultiply(Request $request, FileUploader $uploader): Response
     {
         $repository    = $this->getDoctrine()->getRepository(User::class);
         $entityManager = $this->getDoctrine()->getManager();
@@ -157,6 +159,9 @@ class UserController extends AbstractController
         /** TODO: Delete avatar, when delete multiply User entities */
         foreach((array) $ids as $id) {
             $user = $repository->findOneBy(['id' => $id]);
+
+            $avatarName = $user->getAvatar();
+            $uploader->deleteAvatar($avatarName);
             $entityManager->remove($user);
         }
 
