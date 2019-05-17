@@ -88,6 +88,8 @@ class TaskFixtures extends AbstractFixture implements OrderedFixtureInterface, O
      */
     public function load(ObjectManager $manager): void
     {
+        $this->clearDir();
+
         // Admin Tasks
         $firstAdminTask = new Task();
         $firstAdminTask->setIcon($this->uploadDummyIcons('art.png'));
