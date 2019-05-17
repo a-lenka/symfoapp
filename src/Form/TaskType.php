@@ -7,10 +7,13 @@ use App\Form\Fields\DateTimePickerType;
 use DateTime;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Image;
+use Symfony\Component\Validator\Constraints\NotNull;
 
 /**
  * Defines the form used to create and manipulate Task Entities
@@ -26,6 +29,10 @@ class TaskType extends AbstractType
      */
     final public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $task   = $options['data'] ?? null;
+        assert($task instanceof Task);
+        $isEdit = $task && $task->getId();
+
         $builder
             ->add('title', TextType::class, [
                 'label' => 'Task name',
@@ -48,6 +55,30 @@ class TaskType extends AbstractType
             ])
             ->add('submit', SubmitType::class, [
                 'label' => 'Save'
+            ])
+        ;
+
+        $imageConstraints = [
+            new Image([
+                'maxSize' => '5M'
+            ])
+        ];
+
+
+        if (!$isEdit || !$task->getIcon()) {
+            $imageConstraints[] = new NotNull([
+                'message' => 'Please upload an icon',
+            ]);
+        }
+
+
+        $builder
+            ->add('icon', FileType::class, [
+                'help'  => 'Task icon',
+                'label' => 'Task icon',
+                'mapped'   => false,
+                'required' => false,
+                'constraints' => $imageConstraints
             ])
         ;
     }

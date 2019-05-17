@@ -240,7 +240,7 @@ class UserController extends AbstractController
             );
             $user->setPassword($password);
 
-            $avatar  = $form['avatar']->getData();
+            $avatar = $form['avatar']->getData();
 
             if($avatar) {
                 $newName = $uploader->uploadUserAvatar($avatar, $user->getAvatar());

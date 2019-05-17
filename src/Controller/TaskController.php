@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Task;
 use App\Form\TaskType;
+use App\Service\FileUploader;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Finder\Exception\AccessDeniedException;
@@ -288,12 +289,13 @@ class TaskController extends AbstractController
      *     requirements={"_locale": "%app_locales%"},
      * )
      *
-     * @param Request $request
-     * @param integer $id
+     * @param Request      $request
+     * @param FileUploader $uploader
+     * @param integer      $id,
      *
      * @return Response
      */
-    public function updateTask(Request $request, int $id): Response
+    public function updateTask(Request $request, FileUploader $uploader, int $id): Response
     {
         $task = $this->getDoctrine()->getRepository(Task::class)->find($id);
 
@@ -306,6 +308,13 @@ class TaskController extends AbstractController
             && $form->isSubmitted()
             && $form->isValid()
         ) {
+            $icon = $form['icon']->getData();
+
+            if($icon) {
+                $newName = $uploader->uploadTaskIcon($icon, $task->getIcon());
+                $task->setIcon($newName);
+            }
+
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($task);
             $entityManager->flush();
