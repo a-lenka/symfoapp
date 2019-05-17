@@ -120,7 +120,7 @@ class TaskController extends AbstractController
      *
      * @return Response
      */
-    public function deleteMultiply(Request $request): Response
+    public function deleteMultiply(Request $request, FileUploader $uploader): Response
     {
         $repository    = $this->getDoctrine()->getRepository(Task::class);
         $entityManager = $this->getDoctrine()->getManager();
@@ -130,6 +130,10 @@ class TaskController extends AbstractController
 
         foreach((array) $ids as $id) {
             $task = $repository->findOneBy(['id' => $id]);
+
+            $iconName = $task->getIcon();
+            $uploader->deleteAvatar($iconName);
+
             $entityManager->remove($task);
         }
 
