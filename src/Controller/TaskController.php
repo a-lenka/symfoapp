@@ -238,11 +238,12 @@ class TaskController extends AbstractController
      *     requirements={"_locale": "%app_locales%"},
      * )
      *
-     * @param Request $request
+     * @param Request      $request
+     * @param FileUploader $uploader
      *
      * @return Response
      */
-    public function createTask(Request $request): Response
+    public function createTask(Request $request, FileUploader $uploader): Response
     {
         $task = new Task();
 
@@ -257,6 +258,10 @@ class TaskController extends AbstractController
             && $form->isValid()
         ) {
             $task->setOwner($this->getUser());
+
+            $icon  = $form['icon']->getData();
+            $newName = $uploader->uploadTaskIcon($icon, $task->getIcon());
+            $task->setIcon($newName);
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($task);
