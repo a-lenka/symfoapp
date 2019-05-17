@@ -380,13 +380,17 @@ class TaskController extends AbstractController
      *     requirements={"_locale": "%app_locales%"},
      * )
      *
-     * @param integer $id
+     * @param FileUploader $uploader
+     * @param integer      $id
      *
      * @return Response
      */
-    public function deleteTask(int $id): Response
+    public function deleteTask(FileUploader $uploader, int $id): Response
     {
         $task = $this->getDoctrine()->getRepository(Task::class)->find($id);
+
+        $iconName = $task->getIcon();
+        $uploader->deleteAvatar($iconName);
 
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->remove($task);
