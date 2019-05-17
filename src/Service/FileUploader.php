@@ -25,6 +25,9 @@ class FileUploader
     /** @const string AVATARS_DIR */
     public const AVATARS_DIR = 'avatars';
 
+    /** @const string ICONS_DIR */
+    public const ICONS_DIR = 'icons';
+
 
     /**
      * FileUploader constructor

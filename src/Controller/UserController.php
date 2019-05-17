@@ -154,6 +154,7 @@ class UserController extends AbstractController
         $data = $request->getContent();
         $ids  = json_decode($data, false);
 
+        /** TODO: Delete avatar, when delete multiply User entities */
         foreach((array) $ids as $id) {
             $user = $repository->findOneBy(['id' => $id]);
             $entityManager->remove($user);

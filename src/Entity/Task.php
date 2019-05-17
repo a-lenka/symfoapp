@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Service\FileUploader;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -167,7 +168,7 @@ class Task
      */
     public function getIcon(): ?string
     {
-        return $this->icon;
+        return FileUploader::ICONS_DIR.'/'.$this->icon;
     }
 
 
