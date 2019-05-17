@@ -6,7 +6,6 @@ use Gedmo\Sluggable\Util\Urlizer;
 use League\Flysystem\FileExistsException;
 use League\Flysystem\FileNotFoundException;
 use League\Flysystem\FilesystemInterface;
-use Symfony\Component\Asset\Context\RequestStackContext;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -16,8 +15,8 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  */
 class FileUploader
 {
-    /** @var RequestStackContext */
-    private $requestStackContext;
+    /** @var PathKeeper */
+    private $pathKeeper;
 
     /** @var FilesystemInterface */
     private $filesystem;
@@ -31,28 +30,15 @@ class FileUploader
 
     /**
      * FileUploader constructor
-     *
-     * @param RequestStackContext $requestStackContext
+     * @param PathKeeper          $pathKeeper
      * @param FilesystemInterface $publicUploadFilesystem
      */
     public function __construct(
-        RequestStackContext $requestStackContext,
+        PathKeeper $pathKeeper,
         FilesystemInterface $publicUploadFilesystem
     ) {
-        $this->requestStackContext = $requestStackContext;
-        $this->filesystem          = $publicUploadFilesystem;
-    }
-
-
-    /**
-     * @param string $fileName
-     *
-     * @return string
-     */
-    final public function getPublicPath(string $fileName): string
-    {
-        return $this->requestStackContext
-                ->getBasePath().'/uploads/'.$fileName;
+        $this->pathKeeper = $pathKeeper;
+        $this->filesystem = $publicUploadFilesystem;
     }
 
 
