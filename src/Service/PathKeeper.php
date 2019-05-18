@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use Symfony\Component\Asset\Context\RequestStackContext;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
  * Class PathKeeper
@@ -10,6 +11,9 @@ use Symfony\Component\Asset\Context\RequestStackContext;
  */
 class PathKeeper
 {
+    /** KernelInterface $appKernel */
+    private $appKernel;
+
     /** @var RequestStackContext */
     private $requestStackContext;
 
@@ -26,11 +30,24 @@ class PathKeeper
     /**
      * FileUploader constructor
      *
+     * @param KernelInterface     $appKernel
      * @param RequestStackContext $requestStackContext
      */
-    public function __construct(RequestStackContext $requestStackContext)
+    public function __construct(KernelInterface $appKernel, RequestStackContext $requestStackContext)
     {
+        $this->appKernel           = $appKernel;
         $this->requestStackContext = $requestStackContext;
+    }
+
+
+    /**
+     * Returns absolute path to project root folder
+     *
+     * @returns string
+     */
+    final public function getProjectRootPath(): string
+    {
+        return $this->appKernel->getProjectDir();
     }
 
 

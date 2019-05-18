@@ -27,8 +27,8 @@ class TaskFixtures extends AbstractFixture implements OrderedFixtureInterface, O
     /** @var FileUploader */
     private $fileUploader;
 
-    /** @const string ICONS_DIR - Avatars fixtures directory */
-    private const ICONS_DIR = '/images/icons/';
+    /** @const string FIXTURE_ICONS_DIR */
+    private const FIXTURE_ICONS_DIR = '/images/icons/';
 
     /** KernelInterface $appKernel */
     private $appKernel;
@@ -69,7 +69,7 @@ class TaskFixtures extends AbstractFixture implements OrderedFixtureInterface, O
     {
         $fs = new Filesystem();
 
-        $sourceFile = __DIR__.self::ICONS_DIR.$filename;
+        $sourceFile = __DIR__.self::FIXTURE_ICONS_DIR.$filename;
         $targetFile = sys_get_temp_dir().'/'.$filename;
 
         $fs->copy($sourceFile, $targetFile, true);

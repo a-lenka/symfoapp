@@ -15,29 +15,17 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  */
 class FileUploader
 {
-    /** @var PathKeeper */
-    private $pathKeeper;
 
     /** @var FilesystemInterface */
     private $filesystem;
 
-    /** @const string AVATARS_DIR */
-    public const AVATARS_DIR = 'avatars';
-
-    /** @const string ICONS_DIR */
-    public const ICONS_DIR = 'icons';
-
 
     /**
      * FileUploader constructor
-     * @param PathKeeper          $pathKeeper
+     *
      * @param FilesystemInterface $publicUploadFilesystem
      */
-    public function __construct(
-        PathKeeper $pathKeeper,
-        FilesystemInterface $publicUploadFilesystem
-    ) {
-        $this->pathKeeper = $pathKeeper;
+    public function __construct(FilesystemInterface $publicUploadFilesystem) {
         $this->filesystem = $publicUploadFilesystem;
     }
 
