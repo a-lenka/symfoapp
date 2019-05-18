@@ -25,6 +25,8 @@
         {{- 'ID'|trans -}}
     </th>
 
+    <th scope="col" class="center-align">{{- 'Icon'|trans -}}</th>
+
     <th scope="col">
         {%- if sort_property == 'title' and sort_order == 'asc' -%}
             <a href="{{ path('task_list_sorted', {'sort_property': 'title', 'sort_order': 'desc' }) }}"
