@@ -34,7 +34,7 @@ class UserRepository extends ServiceEntityRepository
      *
      * @return array - Returns collection of User objects
      */
-    public function sortByProperty(string $property, string $order): array
+    final public function sortByProperty(string $property, string $order): array
     {
         if($order === 'default') {$order = 'asc';}
 

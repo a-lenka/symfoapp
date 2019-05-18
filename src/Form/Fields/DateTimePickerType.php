@@ -22,7 +22,7 @@ class DateTimePickerType extends AbstractType
      * @param FormInterface $form
      * @param array         $options - From the parent DateTime type
      */
-    public function buildView(FormView $view, FormInterface $form, array $options): void
+    final public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         // Only for old browsers
         $task = $form->getData();
@@ -36,7 +36,7 @@ class DateTimePickerType extends AbstractType
     /**
      * @param OptionsResolver $resolver
      */
-    public function configureOptions(OptionsResolver $resolver): void
+    final public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'html5'  => false,
@@ -49,7 +49,7 @@ class DateTimePickerType extends AbstractType
     /**
      * @return null|string
      */
-    public function getParent(): ?string
+    final public function getParent(): ?string
     {
         return DateTimeType::class;
     }

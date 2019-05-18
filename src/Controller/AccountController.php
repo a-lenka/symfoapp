@@ -26,7 +26,7 @@ class AccountController extends AbstractController
      *
      * @return Response
      */
-    public function index(): Response
+    final public function index(): Response
     {
         return $this->render('account/index.html.twig');
     }

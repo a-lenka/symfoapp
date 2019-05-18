@@ -78,7 +78,7 @@ class TaskFixtures extends AbstractFixture implements OrderedFixtureInterface, O
      *
      * @throws Exception
      */
-    public function load(ObjectManager $manager): void
+    final public function load(ObjectManager $manager): void
     {
         $path = $this->pathKeeper->getPublicUploadsSystemPath().'/icons';
         $this->fileUploader->clearDir($path);
@@ -139,7 +139,7 @@ class TaskFixtures extends AbstractFixture implements OrderedFixtureInterface, O
     /**
      * @return int
      */
-    public function getOrder(): int
+    final public function getOrder(): int
     {
         return 2;
     }

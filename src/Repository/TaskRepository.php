@@ -37,7 +37,7 @@ class TaskRepository extends ServiceEntityRepository
      *
      * @return array - Returns collection of Task objects
      */
-    public function sortByProperty(int $ownerId, string $property, string $order): array
+    final public function sortByProperty(int $ownerId, string $property, string $order): array
     {
         if($order === 'default') {$order = 'asc';}
 

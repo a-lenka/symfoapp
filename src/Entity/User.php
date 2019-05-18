@@ -88,7 +88,7 @@ class User implements UserInterface
     /**
      * @return int|null - User unique ID in the Database
      */
-    public function getId(): ?int
+    final public function getId(): ?int
     {
         return $this->id;
     }
@@ -97,7 +97,7 @@ class User implements UserInterface
     /**
      * @return string|null - User unique ID in the system
      */
-    public function getEmail(): ?string
+    final public function getEmail(): ?string
     {
         return $this->email;
     }
@@ -108,7 +108,7 @@ class User implements UserInterface
      *
      * @return User
      */
-    public function setEmail(string $email): self
+    final public function setEmail(string $email): self
     {
         $this->email = $email;
 
@@ -120,7 +120,7 @@ class User implements UserInterface
      * @return string - A visual identifier that represents this user.
      * @see UserInterface
      */
-    public function getUsername(): string
+    final public function getUsername(): string
     {
         return (string) $this->email;
     }
@@ -130,7 +130,7 @@ class User implements UserInterface
      * @return array - User roles
      * @see UserInterface
      */
-    public function getRoles(): array
+    final public function getRoles(): array
     {
         $roles = $this->roles;
         // Guarantee every user at least has ROLE_USER
@@ -145,7 +145,7 @@ class User implements UserInterface
      *
      * @return User
      */
-    public function setRoles(array $roles): self
+    final public function setRoles(array $roles): self
     {
         $this->roles = $roles;
 
@@ -157,7 +157,7 @@ class User implements UserInterface
      * @return string - Hashed password
      * @see UserInterface
      */
-    public function getPassword(): string
+    final public function getPassword(): string
     {
         return (string) $this->password;
     }
@@ -168,7 +168,7 @@ class User implements UserInterface
      *
      * @return User
      */
-    public function setPassword(string $password): self
+    final public function setPassword(string $password): self
     {
         $this->password = $password;
 
@@ -179,7 +179,7 @@ class User implements UserInterface
     /**
      * @see UserInterface
      */
-    public function getSalt(): void
+    final public function getSalt(): void
     {
         // Not needed when using the "bcrypt" algorithm in `security.yaml`
     }
@@ -188,7 +188,7 @@ class User implements UserInterface
     /**
      * @see UserInterface
      */
-    public function eraseCredentials(): void
+    final public function eraseCredentials(): void
     {
         // If you store any temporary, sensitive data on the user,
         // clear it here.
@@ -201,7 +201,7 @@ class User implements UserInterface
      *
      * @return User
      */
-    public function setAvatar(string $avatar): self
+    final public function setAvatar(string $avatar): self
     {
         $this->avatar = $avatar;
 
@@ -221,7 +221,7 @@ class User implements UserInterface
     /**
      * @return Collection|Task[]
      */
-    public function getTasks(): Collection
+    final public function getTasks(): Collection
     {
         return $this->tasks;
     }
@@ -232,7 +232,7 @@ class User implements UserInterface
      *
      * @return User
      */
-    public function addTask(Task $task): self
+    final public function addTask(Task $task): self
     {
         if (!$this->tasks->contains($task)) {
             $this->tasks[] = $task;
@@ -248,7 +248,7 @@ class User implements UserInterface
      *
      * @return User
      */
-    public function removeTask(Task $task): self
+    final public function removeTask(Task $task): self
     {
         if ($this->tasks->contains($task)) {
             $this->tasks->removeElement($task);
