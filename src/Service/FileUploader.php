@@ -56,6 +56,7 @@ class FileUploader
 
 
     /**
+     * @param string      $dirname
      * @param File|null   $uploadedFile
      * @param string|null $existingFilename
      *
@@ -63,7 +64,7 @@ class FileUploader
      * @throws FileExistsException
      * @throws FileNotFoundException
      */
-    final public function uploadUserAvatar(?File $uploadedFile, ?string $existingFilename): string
+    final public function uploadEntityIcon(string $dirname, ?File $uploadedFile, ?string $existingFilename): string
     {
         if (!$uploadedFile) {
             throw new FileNotFoundException('The User avatar was not uploaded');
@@ -85,7 +86,7 @@ class FileUploader
         // Move
         $stream = fopen($uploadedFile->getPathname(), 'r');
         $this->filesystem->writeStream(
-            self::AVATARS_DIR.'/'.$newFileName,
+            $dirname.'/'.$newFileName,
             $stream
         );
 

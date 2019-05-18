@@ -16,6 +16,9 @@ class PathKeeper
     /** @const string PUBLIC_UPLOADS_DIR */
     public const PUBLIC_UPLOADS_DIR = 'uploads';
 
+    /** @var string UPLOADED_AVATARS_DIR */
+    public const UPLOADED_AVATARS_DIR = 'avatars';
+
 
     /**
      * FileUploader constructor

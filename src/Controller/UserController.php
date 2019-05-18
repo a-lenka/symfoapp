@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\UserType;
 use App\Service\FileUploader;
+use App\Service\PathKeeper;
 use League\Flysystem\FileExistsException;
 use League\Flysystem\FileNotFoundException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -248,7 +249,12 @@ class UserController extends AbstractController
             $avatar = $form['avatar']->getData();
 
             if($avatar) {
-                $newName = $uploader->uploadUserAvatar($avatar, $user->getAvatar());
+                $newName = $uploader->uploadEntityIcon(
+                    PathKeeper::UPLOADED_AVATARS_DIR,
+                    $avatar,
+                    $user->getAvatar()
+                );
+
                 $user->setAvatar($newName);
             }
 
@@ -314,7 +320,11 @@ class UserController extends AbstractController
             $user->setPassword($password);
 
             $avatar  = $form['avatar']->getData();
-            $newName = $uploader->uploadUserAvatar($avatar, $user->getAvatar());
+            $newName = $uploader->uploadEntityIcon(
+                PathKeeper::UPLOADED_AVATARS_DIR,
+                $avatar,
+                $user->getAvatar()
+            );
             $user->setAvatar($newName);
 
             $entityManager = $this->getDoctrine()->getManager();

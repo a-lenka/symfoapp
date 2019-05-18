@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Service\FileUploader;
+use App\Service\PathKeeper;
 use Doctrine\Bundle\FixturesBundle\ORMFixtureInterface;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
@@ -79,8 +80,10 @@ class UserFixtures extends AbstractFixture implements OrderedFixtureInterface, O
 
         $fs->copy($sourceFile, $targetFile, true);
 
-        return $this->fileUploader->uploadUserAvatar(
-            new File($targetFile), null
+        return $this->fileUploader->uploadEntityIcon(
+            PathKeeper::UPLOADED_AVATARS_DIR,
+            new File($targetFile),
+            null
         );
     }
 
