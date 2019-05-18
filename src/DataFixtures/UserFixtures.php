@@ -159,6 +159,8 @@ class UserFixtures extends AbstractFixture implements OrderedFixtureInterface, O
         $this->addReference('admin', $admin);
         $this->addReference('user', $user);
         $this->addReference('anonymous', $anonymous);
+        $this->addReference('housewife', $housewife);
+        $this->addReference('student', $student);
     }
 
 
