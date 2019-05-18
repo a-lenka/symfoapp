@@ -1,16 +1,18 @@
+import * as M from 'materialize-css';
+
 /**
  * Manage Materialize CSS components
  *
  * @module ../../js/modules/Materializer
  * @type {{initJS, reInitFormFields}}
  */
+
 let Materializer = function() {
 
     /**
      * Initialize all Materialize CSS components at once
      */
     let initJS = function() {
-        console.log('Init Materialize components');
         M.AutoInit();
 
         reInitInputs();
@@ -26,7 +28,6 @@ let Materializer = function() {
      * when form is in Modal window
      */
     let reInitInputs = function() {
-        console.log('ReInit inputs');
         M.updateTextFields();
     };
 
@@ -35,7 +36,6 @@ let Materializer = function() {
      * Configure Materialize Dropdown component
      */
     let reInitDropdowns = function() {
-        console.log('ReInit dropdowns');
         let dropdowns = document.querySelectorAll('.dropdown-trigger');
         M.Dropdown.init(dropdowns, {'constrainWidth': false});
 
@@ -46,7 +46,6 @@ let Materializer = function() {
      * Default Materialize CSS format in unreadable for the server
      */
     let reInitDatePickers = function() {
-        console.log('ReInit datepickers');
         let datepickers = document.querySelectorAll('.datepicker');
         let instances = M.Datepicker.init(datepickers, {
             'format': 'yyyy-mm-dd',
@@ -62,7 +61,6 @@ let Materializer = function() {
      * Pickers must be configured to work
      */
     let reInitTimePickers = function() {
-        console.log('ReInit timepickers');
         let timepickers = document.querySelectorAll('.timepicker');
         let instances = M.Timepicker.init(timepickers, {
             'twelveHour': false,
@@ -75,7 +73,6 @@ let Materializer = function() {
      * Reinitialize Select Component
      */
     let reInitSelects = function() {
-        console.log('ReInit selects');
         let selects   = document.querySelectorAll('select');
         let instances = M.FormSelect.init(selects, {
             'dropdownOptions': {'constrainWidth': false},
@@ -87,7 +84,6 @@ let Materializer = function() {
      * Reinitialize Select Component
      */
     let reInitFloatingActions = function() {
-        console.log('ReInit floating action button');
         let buttons   = document.querySelectorAll('.fixed-action-btn');
         let instances = M.FloatingActionButton.init(buttons, {});
     };
@@ -98,7 +94,6 @@ let Materializer = function() {
      * so they need to be reinitialized after form will be inserted into Modal
      */
     let reInitFormFields = function() {
-        console.log('ReInit Form fields');
         reInitInputs();
         reInitSelects();
         reInitDatePickers();

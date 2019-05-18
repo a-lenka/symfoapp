@@ -18,7 +18,7 @@ let Multiplier = function() {
 
 
     let checkbox = {
-        html: '<label><input type="checkbox"><span></span></label>',
+        html    : `<label><input type="checkbox"><span></span></label>`,
         selector: 'input[type="checkbox"]',
 
         get elems() {
@@ -33,21 +33,14 @@ let Multiplier = function() {
         get elem() {
             let tableElem = document.querySelectorAll(table.class)[0];
 
-            if(tableElem) {
-                console.log('Find table');
-                return tableElem;
-            } else {
-                console.log('There are no table on this page');
-            }
+            if(tableElem) { return tableElem; }
         },
 
         get rows() {
-            let elem = table.elem;
+            let elem      = table.elem;
             let tbodyRows = elem.children[1].rows;
 
-            if(!tbodyRows) {
-                throw new Error('There are no rows in the table');
-            } else {console.log('Find rows');}
+            if(!tbodyRows) { throw new Error('There are no rows in the table'); }
 
             return tbodyRows;
         },
@@ -88,16 +81,12 @@ let Multiplier = function() {
             rows.forEach(function(row) {
                 row.children[0].innerHTML = checkbox.html;
             });
-
-            console.log('Append checkboxes');
         },
 
         switchCheckboxes: function(event) {
             if (checker.confirmAppendCheckboxEvent(event)) {
                 let checkboxes = table.getAllCheckboxes();
                 let rows       = table.rows;
-
-                console.log(checkboxes);
 
                 if(checkboxes.length === 0) {
                     table.appendCheckboxes();
@@ -120,31 +109,19 @@ let Multiplier = function() {
 
     let checker = {
         confirmAppendCheckboxEvent: function(event) {
-            let className     = eventManager.triggers.checkboxButton.className;
-            let isAppendEvent = event.target.className.includes(className);
-
-            console.log('Check if it is Check checkbox event? : ' + isAppendEvent);
-
-            return isAppendEvent;
+            let className = eventManager.triggers.checkboxButton.className;
+            return event.target.className.includes(className);
         },
 
         confirmRequestCheckedItemsEvent: function(event) {
-            let className      = eventManager.triggers.confirmButton.className;
-            let isRequestEvent = event.target.className.includes(className);
-
-            console.log('Check if it is Request checked items event? : ' + isRequestEvent);
-
-            return isRequestEvent;
+            let className = eventManager.triggers.confirmButton.className;
+            return event.target.className.includes(className);
         },
 
         confirmDeletePermanentlyEvent: function(event) {
-            let isDeleteEvent = (event.target.pathname)
+            return (event.target.pathname)
                 ? event.target.pathname.includes('list/delete')
                 : false;
-
-            console.log('Check if it is Delete permanently event? : ' + isDeleteEvent);
-
-            return isDeleteEvent;
         }
     };
 
@@ -157,14 +134,8 @@ let Multiplier = function() {
 
                 get elem() {
                     let btn = document.querySelectorAll(eventManager.triggers.checkboxButton.selector)[0];
-
-                    if(!btn) {
-                        throw new Error('Checkbox button not found');
-                    } else {
-                        console.log('Find checkbox button');
-
-                        return btn;
-                    }
+                    if(!btn) { throw new Error('Checkbox button not found'); }
+                    return btn;
                 },
             },
 
@@ -178,7 +149,6 @@ let Multiplier = function() {
 
                 activate: function() {
                     let btn = eventManager.triggers.confirmButton.elem;
-                    console.log(btn);
                     btn.removeAttribute('disabled');
                 },
 
@@ -210,7 +180,6 @@ let Multiplier = function() {
                 eventManager.listeners.chooseItems.elem.addEventListener('click', table.switchCheckboxes);
                 eventManager.listeners.chooseItems.elem.addEventListener('click', requestCheckedItems);
                 eventManager.listeners.chooseItems.elem.addEventListener('click', deletePermanently);
-                console.log('Set Multiply listeners');
             }
         },
     };
@@ -238,8 +207,6 @@ let Multiplier = function() {
 
             let path   = eventManager.triggers.deletePermanentlyButton.elem.getAttribute('href');
             let emails = table.extractAllIdsInArray();
-
-            console.log(emails);
 
             AjaxSender.sendPost(path, function (xhr) {
                 ModalWidget.appendFormContent(xhr);

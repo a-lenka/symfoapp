@@ -22,7 +22,6 @@ require('../../node_modules/materialize-css/dist/js/materialize.min.js');
 import Materializer from '../js/modules/Materializer.js';
 import ModalWidget  from '../js/modules/ModalWidget.js';
 import Sorter       from '../js/modules/Sorter.js';
-import Logger       from '../js/modules/Logger.js';
 import Multiplier   from '../js/modules/Multiplier.js';
 import Flasher      from '../js/modules/Flasher.js';
 
@@ -37,6 +36,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Allow using history navigation in browser
 window.onpopstate = function(event) {
-    Logger.logEvent(event);
+    //Logger.logEvent(event);
     //window.location.reload(true);
 };

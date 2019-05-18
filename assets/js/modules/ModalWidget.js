@@ -1,7 +1,6 @@
 // Imports
 import AjaxSender   from '../../js/modules/AjaxSender';
 import Materializer from '../../js/modules/Materializer';
-import Logger       from '../../js/modules/Logger';
 
 /**
  * Handle Materialize CSS Modal events
@@ -16,30 +15,24 @@ let ModalWidget = function() {
 
         get elem() {
             let modalElem = document.getElementById(modal.id);
-            if(!modalElem) {
-                throw new Error('Modal not found. ID is wrong');
-            }
+            if(!modalElem) { throw new Error('Modal not found'); }
 
-            console.log('Find Modal elem');
             return modalElem;
         },
 
         clearSelf: function() {
-            console.log('Clear Modal');
             modal.elem.innerHTML = '';
         },
     };
 
 
-    let container = {
+    let box = {
         tag  : 'div',
         class: 'modal-content',
 
         get elem() {
-            let div = document.createElement(container.tag);
-            div.classList.add(container.class);
-
-            console.log('Create Modal container');
+            let div = document.createElement(box.tag);
+            div.classList.add(box.class);
             return div;
         }
     };
@@ -47,43 +40,28 @@ let ModalWidget = function() {
 
     let form = {
         get elem() {
-            let form = document.forms[0];
-            if(!form) {
-                console.log('The form is not here');
-            }
-            if(document.forms.length > 1) {
-                console.warn('Here must be only one form, but there are more');
-            }
+            let forms = document.forms;
+            if(forms.length > 1) { console.log('Here are more than one form'); }
 
-            console.log('Find form');
-            return document.forms[0];
+            let form  = forms[0];
+            if(!form) { console.log('There are no form found'); }
+            return form;
         },
 
         get actionAttr() {
             let formAction = form.elem.getAttribute('action');
-            if(!formAction) {
-                throw new Error('The form `action` attribute` is empty');
-            }
-
-            console.log('Get form action attribute');
+            if(!formAction) { throw new Error('The form `action` attribute` is empty'); }
             return formAction;
         },
 
         get submitButton() {
             let submitButton = document.querySelectorAll('button[type="submit"]')[0];
-            if(!submitButton) {
-                throw new Error('The submit button was not found');
-            }
-
-            console.log('Get submit button');
+            if(!submitButton) { throw new Error('The submit button was not found'); }
             return submitButton;
         },
 
-        reInitComponents: function(event) {
-            Logger.logEvent(event);
-
+        reInitFormFields: function(event) {
             if(checker.confirmFormIsAppended(event)) {
-                console.log('ReInit form components');
                 Materializer.reInitFormFields();
             }
         },
@@ -95,11 +73,7 @@ let ModalWidget = function() {
 
         get elem() {
             let overlayElem = document.getElementsByClassName(overlay.class)[0];
-            if(!overlayElem) {
-                console.debug('The overlay must be here, but it\'s not found');
-            }
-
-            console.log('Find overlay');
+            if(!overlayElem) { console.log('Overlay is not here'); }
             return overlayElem;
         },
     };
@@ -110,36 +84,24 @@ let ModalWidget = function() {
             let attrName  = eventManager.triggers.form.attrName;
             let attrValue = eventManager.triggers.form.attrValue;
 
-            let hasModalAttributes  = event.target.getAttribute(attrName) === attrValue;
+            let hasModalAttributes  = event.target.getAttribute(attrName)   === attrValue;
             let hasClassBtnFloating = event.target.outerHTML.indexOf('red') === -1;
 
-            let isRequestModalEvent = event && hasModalAttributes && hasClassBtnFloating;
-
-            Logger.logEvent(event);
-            console.log('Check if it is Request Modal event? : ' + isRequestModalEvent);
-            return isRequestModalEvent;
+            return event && hasModalAttributes && hasClassBtnFloating;
         },
 
         confirmFullPageInResponse: function(xhr) {
-            let isFullPageInResponse = xhr.responseText.match("^<!DOCTYPE html>");
-
-            console.log('Check if it is full page in Response? : ' + isFullPageInResponse);
-            return isFullPageInResponse;
+            return xhr.responseText.match("^<!DOCTYPE html>");
         },
 
         confirmModalForForm: function(xhr) {
             let path        = xhr.getResponseHeader('X-Target-URL');
-            let isFormModal = path.indexOf('details') === 1
+            return path.indexOf('details') === 1
                 || path.indexOf('confirm') === 1;
-
-            console.log('Check if it is Form Modal? : ' + isFormModal);
-            return isFormModal;
         },
 
         confirmFormIsAppended: function(event) {
-            let isFormAppended = event.animationName === 'selectWasInserted';
-            console.log('Check if the form was appended? : ' + isFormAppended);
-            return isFormAppended;
+            return event.animationName === 'selectWasInserted';
         },
     };
 
@@ -162,43 +124,36 @@ let ModalWidget = function() {
                         throw new Error('The Request form listener was not found. The class is wrong');
                     }
 
-                    console.log('Find Request form listener');
                     return listener;
                 },
             },
 
             submitForm: {
                 get elem() {
-                    console.log('Find Submit form listener');
                     return form.elem;
                 },
             },
         },
 
         setRequestFormListeners: function() {
-            console.log('Set Request form listeners');
             let listener = eventManager.listeners.requestForm.elem;
 
             listener.addEventListener('click', requestFormContent);
-            listener.addEventListener('animationstart', form.reInitComponents);
+            listener.addEventListener('animationstart', form.reInitFormFields);
         },
 
         setSubmitFormListeners: function() {
-            console.log('Set Submit form listeners');
-
             let listener = eventManager.listeners.submitForm.elem;
             listener.addEventListener('submit', submitFormContent);
         },
 
         setCancelModalListener: function() {
-            console.log('Set Cancel Modal listeners');
             overlay.elem.addEventListener('click', cancelModal);
         },
     };
 
 
     let requestFormContent = function(event) {
-        console.log('Request Form content');
 
         if(checker.confirmRequestModalEvent(event)) {
             event.preventDefault();
@@ -211,18 +166,15 @@ let ModalWidget = function() {
 
 
     let appendFormContent = function(xhr) {
-        if(!xhr.responseText) {
-            throw new Error('XHR is empty');
-        }
+        if(!xhr.responseText) { throw new Error('XHR is empty'); }
 
-        let elem       = container.elem;
-        elem.innerHTML = xhr.responseText;
+        // `box.elem` doesn't work here` only through the variable
+        let boxElem = box.elem;
+        boxElem.innerHTML = xhr.responseText;
 
-        console.log('Append content to Modal');
         modal.clearSelf();
-        modal.elem.append(elem);
+        modal.elem.append(boxElem);
 
-        console.log('Check Overlay is here');
         if(overlay.elem) {
             eventManager.setCancelModalListener();
 
@@ -240,28 +192,22 @@ let ModalWidget = function() {
         event.preventDefault();
 
         let formData = new FormData(form.elem);
-        if(!formData) {
-            throw new Error('The Form Data is empty');
-        }
+        if(!formData) { throw new Error('The Form Data is empty'); }
 
         let path = form.actionAttr;
-        console.log('Submit form');
         AjaxSender.sendPost(path, appendFormContent, formData);
     };
 
 
     let cancelModal = function() {
-        console.log('Cancel Modal');
-
         modal.clearSelf();
         window.history.back();
     };
 
 
     return {
-        setRequestListeners: eventManager.setRequestFormListeners,
+        setRequestListeners   : eventManager.setRequestFormListeners,
         setCancelModalListener: eventManager.setCancelModalListener,
-        appendFormContent: appendFormContent,
     };
 }();
 

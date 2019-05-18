@@ -29,7 +29,7 @@ let Logger = function() {
     /**
      * Use it to log functions, which has inner logs
      *
-     * @param {string} name     - Block name
+     * @param {string} name - Block name
      * @param {string} fontSize
      * @param {string} color
      */

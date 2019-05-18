@@ -1,5 +1,7 @@
 // Imports
 
+import * as M from 'materialize-css';
+
 /**
  * Handle flash messages from Symfony Controllers
  *
