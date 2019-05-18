@@ -17,6 +17,9 @@ class PathKeeper
     /** @var RequestStackContext */
     private $requestStackContext;
 
+    /** @const string PUBLIC_DIR */
+    public const PUBLIC_DIR = 'public';
+
     /** @const string PUBLIC_UPLOADS_DIR */
     public const PUBLIC_UPLOADS_DIR = 'uploads';
 
@@ -45,7 +48,7 @@ class PathKeeper
      *
      * @returns string
      */
-    final public function getProjectRootPath(): string
+    final public function getProjectSystemPath(): string
     {
         return $this->appKernel->getProjectDir();
     }
@@ -60,5 +63,16 @@ class PathKeeper
     {
         return $this->requestStackContext
                 ->getBasePath().'/'.self::PUBLIC_UPLOADS_DIR;
+    }
+
+
+    /**
+     * Returns system path to public uploads folder
+     *
+     * @return string "/uploads"
+     */
+    final public function getPublicUploadsSystemPath(): string
+    {
+        return $this->getProjectSystemPath().'/'.self::PUBLIC_DIR.'/'.self::PUBLIC_UPLOADS_DIR;
     }
 }

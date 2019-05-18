@@ -27,21 +27,21 @@ class TaskFixtures extends AbstractFixture implements OrderedFixtureInterface, O
     /** @var FileUploader */
     private $fileUploader;
 
+    /** @var PathKeeper */
+    private $pathKeeper;
+
     /** @const string FIXTURE_ICONS_DIR */
     private const FIXTURE_ICONS_DIR = '/images/icons/';
 
-    /** KernelInterface $appKernel */
-    private $appKernel;
-
 
     /**
-     * @param KernelInterface $appKernel
-     * @param FileUploader    $uploader
+     * @param PathKeeper   $pathKeeper
+     * @param FileUploader $uploader
      */
-    public function __construct(KernelInterface $appKernel, FileUploader $uploader)
+    public function __construct(PathKeeper $pathKeeper, FileUploader $uploader)
     {
+        $this->pathKeeper   = $pathKeeper;
         $this->fileUploader = $uploader;
-        $this->appKernel    = $appKernel;
     }
 
 
@@ -50,7 +50,7 @@ class TaskFixtures extends AbstractFixture implements OrderedFixtureInterface, O
      */
     private function clearDir(): void
     {
-        $files = glob($this->appKernel->getProjectDir().'/public/uploads/icons/*');
+        $files = glob($this->pathKeeper->getPublicUploadsSystemPath().'/icons/*');
 
         foreach($files as $file) {
             unlink($file);
