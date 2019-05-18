@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Service\FileUploader;
+use App\Service\PathKeeper;
 use DateTime;
 use Doctrine\Bundle\FixturesBundle\ORMFixtureInterface;
 use Doctrine\Common\DataFixtures\AbstractFixture;
@@ -73,8 +74,8 @@ class TaskFixtures extends AbstractFixture implements OrderedFixtureInterface, O
 
         $fs->copy($sourceFile, $targetFile, true);
 
-        return $this->fileUploader->uploadTaskIcon(
-            new File($targetFile), null
+        return $this->fileUploader->uploadEntityIcon(
+            PathKeeper::UPLOADED_ICONS_DIR, new File($targetFile), null
         );
     }
 

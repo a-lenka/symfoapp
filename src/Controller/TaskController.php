@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Task;
 use App\Form\TaskType;
 use App\Service\FileUploader;
+use App\Service\PathKeeper;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Finder\Exception\AccessDeniedException;
@@ -264,7 +265,11 @@ class TaskController extends AbstractController
             $task->setOwner($this->getUser());
 
             $icon  = $form['icon']->getData();
-            $newName = $uploader->uploadTaskIcon($icon, $task->getIcon());
+            $newName = $uploader->uploadEntityIcon(
+                PathKeeper::UPLOADED_ICONS_DIR,
+                $icon,
+                $task->getIcon()
+            );
             $task->setIcon($newName);
 
             $entityManager = $this->getDoctrine()->getManager();
@@ -320,7 +325,11 @@ class TaskController extends AbstractController
             $icon = $form['icon']->getData();
 
             if($icon) {
-                $newName = $uploader->uploadTaskIcon($icon, $task->getIcon());
+                $newName = $uploader->uploadEntityIcon(
+                    PathKeeper::UPLOADED_ICONS_DIR,
+                    $icon,
+                    $task->getIcon()
+                );
                 $task->setIcon($newName);
             }
 

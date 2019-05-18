@@ -56,6 +56,9 @@ class FileUploader
 
 
     /**
+     * Rename the uploaded file, move it to the given directory in public uploads folder,
+     * then delete existing file, which is not used anywhere else
+     *
      * @param string      $dirname
      * @param File|null   $uploadedFile
      * @param string|null $existingFilename
@@ -94,51 +97,6 @@ class FileUploader
             fclose($stream);
         }
 
-        $this->deleteAvatar($existingFilename);
-
-        return $newFileName;
-    }
-
-
-    /**
-     * @param File|null   $uploadedFile
-     * @param string|null $existingFilename
-     *
-     * @return string|null
-     * @throws FileExistsException
-     * @throws FileNotFoundException
-     */
-    final public function uploadTaskIcon(?File $uploadedFile, ?string $existingFilename): string
-    {
-        if (!$uploadedFile) {
-            throw new FileNotFoundException('The Task icon was not uploaded');
-        }
-
-        // Old filename
-        if ($uploadedFile instanceof UploadedFile) {
-            $oldFileName = $uploadedFile->getClientOriginalName();
-        } else {
-            $oldFileName = $uploadedFile->getFileName();
-        }
-
-        $trimmed = pathinfo($oldFileName, PATHINFO_FILENAME);
-
-        // New filename
-        $unique      = uniqid('', false).'.'.$uploadedFile->guessExtension();
-        $newFileName = Urlizer::urlize($trimmed).'_'.$unique;
-
-        // Move
-        $stream = fopen($uploadedFile->getPathname(), 'r');
-        $this->filesystem->writeStream(
-            self::ICONS_DIR.'/'.$newFileName,
-            $stream
-        );
-
-        if (is_resource($stream)) {
-            fclose($stream);
-        }
-
-        /** TODO Rename the `deleteAvatar()` function */
         $this->deleteAvatar($existingFilename);
 
         return $newFileName;
