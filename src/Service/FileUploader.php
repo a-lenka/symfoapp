@@ -44,6 +44,21 @@ class FileUploader
 
 
     /**
+     * Delete all the files from the given directory
+     *
+     * @param string $path - System path to directory where all the files will be deleted
+     */
+    final public function clearDir($path): void
+    {
+        $files = glob($path.'/*');
+
+        foreach($files as $file) {
+            unlink($file);
+        }
+    }
+
+
+    /**
      * Rename the uploaded file, move it to the given directory in public uploads folder,
      * then delete existing file, which is not used anywhere else
      *

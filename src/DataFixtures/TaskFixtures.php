@@ -46,19 +46,6 @@ class TaskFixtures extends AbstractFixture implements OrderedFixtureInterface, O
 
 
     /**
-     * Clear directory before fixtures loading
-     */
-    private function clearDir(): void
-    {
-        $files = glob($this->pathKeeper->getPublicUploadsSystemPath().'/icons/*');
-
-        foreach($files as $file) {
-            unlink($file);
-        }
-    }
-
-
-    /**
      * @param string $filename
      * @return string
      *
@@ -89,7 +76,8 @@ class TaskFixtures extends AbstractFixture implements OrderedFixtureInterface, O
      */
     public function load(ObjectManager $manager): void
     {
-        $this->clearDir();
+        $path = $this->pathKeeper->getPublicUploadsSystemPath().'/icons';
+        $this->fileUploader->clearDir($path);
 
         // Admin Tasks
         $firstAdminTask = new Task();
