@@ -15,7 +15,6 @@ use League\Flysystem\FileExistsException;
 use League\Flysystem\FileNotFoundException;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
  * Class TaskFixtures
@@ -31,32 +30,37 @@ class TaskFixtures extends AbstractFixture implements OrderedFixtureInterface, O
     private $pathKeeper;
 
     /** @const string FIXTURE_ICONS_DIR */
-    private const FIXTURE_ICONS_DIR = '/images/icons/';
+    private const FIXTURE_ICONS_DIR = 'images/icons';
 
 
     /**
-     * @param PathKeeper   $pathKeeper
      * @param FileUploader $uploader
+     * @param PathKeeper   $pathKeeper
      */
-    public function __construct(PathKeeper $pathKeeper, FileUploader $uploader)
+    public function __construct(FileUploader $uploader, PathKeeper $pathKeeper)
     {
-        $this->pathKeeper   = $pathKeeper;
         $this->fileUploader = $uploader;
+        $this->pathKeeper   = $pathKeeper;
     }
 
 
     /**
+     * Copy file from `DataFixtures/images/icons` folder to temporary directory
+     * Then pass it from there to File Uploader.
+     * File Uploader rename file and put it to `public/uploads/icons` folder.
+     * So fixture images has their own folder and will not be replaced during uploading.
+     *
      * @param string $filename
      * @return string
      *
      * @throws FileExistsException
      * @throws FileNotFoundException
      */
-    private function uploadDummyIcons(string $filename): string
+    private function uploadDummyIcon(string $filename): string
     {
         $fs = new Filesystem();
 
-        $sourceFile = __DIR__.self::FIXTURE_ICONS_DIR.$filename;
+        $sourceFile = __DIR__.'/'.self::FIXTURE_ICONS_DIR.'/'.$filename;
         $targetFile = sys_get_temp_dir().'/'.$filename;
 
         $fs->copy($sourceFile, $targetFile, true);
@@ -81,7 +85,7 @@ class TaskFixtures extends AbstractFixture implements OrderedFixtureInterface, O
 
         // Admin Tasks
         $firstAdminTask = new Task();
-        $firstAdminTask->setIcon($this->uploadDummyIcons('art.png'));
+        $firstAdminTask->setIcon($this->uploadDummyIcon('art.png'));
         $firstAdminTask->setTitle('First Admin task');
         $firstAdminTask->setDateDeadline(new DateTime('2000-09-30 20:00:00'));
         $firstAdminTask->setState('In progress');
@@ -90,7 +94,7 @@ class TaskFixtures extends AbstractFixture implements OrderedFixtureInterface, O
         $manager->persist($firstAdminTask);
 
         $secondAdminTask = new Task();
-        $secondAdminTask->setIcon($this->uploadDummyIcons('bookshelf.png'));
+        $secondAdminTask->setIcon($this->uploadDummyIcon('bookshelf.png'));
         $secondAdminTask->setTitle('Second Admin task');
         $secondAdminTask->setDateDeadline(new DateTime('2000-10-30 20:00:00'));
         $secondAdminTask->setState('In progress');
@@ -101,7 +105,7 @@ class TaskFixtures extends AbstractFixture implements OrderedFixtureInterface, O
 
         // User Tasks
         $firstUserTask = new Task();
-        $firstUserTask->setIcon($this->uploadDummyIcons('briefcase.png'));
+        $firstUserTask->setIcon($this->uploadDummyIcon('briefcase.png'));
         $firstUserTask->setTitle('First User task');
         $firstUserTask->setDateDeadline(new DateTime('2001-09-30 20:00:00'));
         $firstUserTask->setState('In progress');
@@ -110,7 +114,7 @@ class TaskFixtures extends AbstractFixture implements OrderedFixtureInterface, O
         $manager->persist($firstUserTask);
 
         $secondUserTask = new Task();
-        $secondUserTask->setIcon($this->uploadDummyIcons('brightness.png'));
+        $secondUserTask->setIcon($this->uploadDummyIcon('brightness.png'));
         $secondUserTask->setTitle('Second User task');
         $secondUserTask->setDateDeadline(new DateTime('2001-10-30 20:00:00'));
         $secondUserTask->setState('In progress');
@@ -119,7 +123,7 @@ class TaskFixtures extends AbstractFixture implements OrderedFixtureInterface, O
         $manager->persist($secondUserTask);
 
         $thirdUserTask = new Task();
-        $thirdUserTask->setIcon($this->uploadDummyIcons('brush-pencil.png'));
+        $thirdUserTask->setIcon($this->uploadDummyIcon('brush-pencil.png'));
         $thirdUserTask->setTitle('Third User task');
         $thirdUserTask->setDateDeadline(new DateTime('2001-10-30 20:00:00'));
         $thirdUserTask->setState('In progress');
