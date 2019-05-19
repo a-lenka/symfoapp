@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Service\PathKeeper;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -55,6 +56,14 @@ class Task
      * )
      */
     private $owner;
+
+    /**
+     * @ORM\Column(
+     *     type="string",
+     *     length=50
+     * )
+     */
+    private $icon;
 
 
     /**
@@ -149,6 +158,28 @@ class Task
     public function setOwner(?User $owner): self
     {
         $this->owner = $owner;
+
+        return $this;
+    }
+
+
+    /**
+     * @return string|null
+     */
+    public function getIcon(): ?string
+    {
+        return PathKeeper::UPLOADED_ICONS_DIR.'/'.$this->icon;
+    }
+
+
+    /**
+     * @param string $icon
+     *
+     * @return Task
+     */
+    public function setIcon(string $icon): self
+    {
+        $this->icon = $icon;
 
         return $this;
     }

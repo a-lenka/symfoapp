@@ -6,7 +6,6 @@ use Gedmo\Sluggable\Util\Urlizer;
 use League\Flysystem\FileExistsException;
 use League\Flysystem\FileNotFoundException;
 use League\Flysystem\FilesystemInterface;
-use Symfony\Component\Asset\Context\RequestStackContext;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -16,40 +15,18 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  */
 class FileUploader
 {
-    /** @var RequestStackContext */
-    private $requestStackContext;
 
     /** @var FilesystemInterface */
     private $filesystem;
-
-    /** @const string AVATARS_DIR */
-    public const AVATARS_DIR = 'avatars';
 
 
     /**
      * FileUploader constructor
      *
-     * @param RequestStackContext $requestStackContext
      * @param FilesystemInterface $publicUploadFilesystem
      */
-    public function __construct(
-        RequestStackContext $requestStackContext,
-        FilesystemInterface $publicUploadFilesystem
-    ) {
-        $this->requestStackContext = $requestStackContext;
-        $this->filesystem          = $publicUploadFilesystem;
-    }
-
-
-    /**
-     * @param string $fileName
-     *
-     * @return string
-     */
-    final public function getPublicPath(string $fileName): string
-    {
-        return $this->requestStackContext
-                ->getBasePath().'/uploads/'.$fileName;
+    public function __construct(FilesystemInterface $publicUploadFilesystem) {
+        $this->filesystem = $publicUploadFilesystem;
     }
 
 
@@ -61,12 +38,31 @@ class FileUploader
     final public function deleteAvatar(?string $avatarName): void
     {
         if ($avatarName) {
-            $this->filesystem->delete(self::AVATARS_DIR.'/'.$avatarName);
+            $this->filesystem->delete('/'.$avatarName);
         }
     }
 
 
     /**
+     * Delete all the files from the given directory
+     *
+     * @param string $path - System path to directory where all the files will be deleted
+     */
+    final public function clearDir($path): void
+    {
+        $files = glob($path.'/*');
+
+        foreach($files as $file) {
+            unlink($file);
+        }
+    }
+
+
+    /**
+     * Rename the uploaded file, move it to the given directory in public uploads folder,
+     * then delete existing file, which is not used anywhere else
+     *
+     * @param string      $dirname
      * @param File|null   $uploadedFile
      * @param string|null $existingFilename
      *
@@ -74,7 +70,7 @@ class FileUploader
      * @throws FileExistsException
      * @throws FileNotFoundException
      */
-    final public function uploadUserAvatar(?File $uploadedFile, ?string $existingFilename): string
+    final public function uploadEntityIcon(string $dirname, ?File $uploadedFile, ?string $existingFilename): string
     {
         if (!$uploadedFile) {
             throw new FileNotFoundException('The User avatar was not uploaded');
@@ -96,7 +92,7 @@ class FileUploader
         // Move
         $stream = fopen($uploadedFile->getPathname(), 'r');
         $this->filesystem->writeStream(
-            self::AVATARS_DIR.'/'.$newFileName,
+            $dirname.'/'.$newFileName,
             $stream
         );
 

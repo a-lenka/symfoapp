@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Task;
 use App\Form\TaskType;
+use App\Service\FileUploader;
+use App\Service\PathKeeper;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Finder\Exception\AccessDeniedException;
@@ -119,7 +121,7 @@ class TaskController extends AbstractController
      *
      * @return Response
      */
-    public function deleteMultiply(Request $request): Response
+    public function deleteMultiply(Request $request, FileUploader $uploader): Response
     {
         $repository    = $this->getDoctrine()->getRepository(Task::class);
         $entityManager = $this->getDoctrine()->getManager();
@@ -129,6 +131,10 @@ class TaskController extends AbstractController
 
         foreach((array) $ids as $id) {
             $task = $repository->findOneBy(['id' => $id]);
+
+            $iconName = $task->getIcon();
+            $uploader->deleteAvatar($iconName);
+
             $entityManager->remove($task);
         }
 
@@ -237,11 +243,12 @@ class TaskController extends AbstractController
      *     requirements={"_locale": "%app_locales%"},
      * )
      *
-     * @param Request $request
+     * @param Request      $request
+     * @param FileUploader $uploader
      *
      * @return Response
      */
-    public function createTask(Request $request): Response
+    public function createTask(Request $request, FileUploader $uploader): Response
     {
         $task = new Task();
 
@@ -256,6 +263,14 @@ class TaskController extends AbstractController
             && $form->isValid()
         ) {
             $task->setOwner($this->getUser());
+
+            $icon  = $form['icon']->getData();
+            $newName = $uploader->uploadEntityIcon(
+                PathKeeper::UPLOADED_ICONS_DIR,
+                $icon,
+                $task->getIcon()
+            );
+            $task->setIcon($newName);
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($task);
@@ -288,12 +303,13 @@ class TaskController extends AbstractController
      *     requirements={"_locale": "%app_locales%"},
      * )
      *
-     * @param Request $request
-     * @param integer $id
+     * @param Request      $request
+     * @param FileUploader $uploader
+     * @param integer      $id,
      *
      * @return Response
      */
-    public function updateTask(Request $request, int $id): Response
+    public function updateTask(Request $request, FileUploader $uploader, int $id): Response
     {
         $task = $this->getDoctrine()->getRepository(Task::class)->find($id);
 
@@ -306,6 +322,17 @@ class TaskController extends AbstractController
             && $form->isSubmitted()
             && $form->isValid()
         ) {
+            $icon = $form['icon']->getData();
+
+            if($icon) {
+                $newName = $uploader->uploadEntityIcon(
+                    PathKeeper::UPLOADED_ICONS_DIR,
+                    $icon,
+                    $task->getIcon()
+                );
+                $task->setIcon($newName);
+            }
+
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($task);
             $entityManager->flush();
@@ -366,13 +393,17 @@ class TaskController extends AbstractController
      *     requirements={"_locale": "%app_locales%"},
      * )
      *
-     * @param integer $id
+     * @param FileUploader $uploader
+     * @param integer      $id
      *
      * @return Response
      */
-    public function deleteTask(int $id): Response
+    public function deleteTask(FileUploader $uploader, int $id): Response
     {
         $task = $this->getDoctrine()->getRepository(Task::class)->find($id);
+
+        $iconName = $task->getIcon();
+        $uploader->deleteAvatar($iconName);
 
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->remove($task);

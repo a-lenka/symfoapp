@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\UserType;
 use App\Service\FileUploader;
+use App\Service\PathKeeper;
 use League\Flysystem\FileExistsException;
 use League\Flysystem\FileNotFoundException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -142,11 +143,13 @@ class UserController extends AbstractController
      *     requirements={"_locale": "%app_locales%"},
      * )
      *
-     * @param Request $request
+     * @param FileUploader $uploader
+     * @param Request      $request
      *
      * @return Response
+     * @throws FileNotFoundException
      */
-    public function deleteMultiply(Request $request): Response
+    public function deleteMultiply(Request $request, FileUploader $uploader): Response
     {
         $repository    = $this->getDoctrine()->getRepository(User::class);
         $entityManager = $this->getDoctrine()->getManager();
@@ -154,8 +157,12 @@ class UserController extends AbstractController
         $data = $request->getContent();
         $ids  = json_decode($data, false);
 
+        /** TODO: Delete avatar, when delete multiply User entities */
         foreach((array) $ids as $id) {
             $user = $repository->findOneBy(['id' => $id]);
+
+            $avatarName = $user->getAvatar();
+            $uploader->deleteAvatar($avatarName);
             $entityManager->remove($user);
         }
 
@@ -239,10 +246,15 @@ class UserController extends AbstractController
             );
             $user->setPassword($password);
 
-            $avatar  = $form['avatar']->getData();
+            $avatar = $form['avatar']->getData();
 
             if($avatar) {
-                $newName = $uploader->uploadUserAvatar($avatar, $user->getAvatar());
+                $newName = $uploader->uploadEntityIcon(
+                    PathKeeper::UPLOADED_AVATARS_DIR,
+                    $avatar,
+                    $user->getAvatar()
+                );
+
                 $user->setAvatar($newName);
             }
 
@@ -308,7 +320,11 @@ class UserController extends AbstractController
             $user->setPassword($password);
 
             $avatar  = $form['avatar']->getData();
-            $newName = $uploader->uploadUserAvatar($avatar, $user->getAvatar());
+            $newName = $uploader->uploadEntityIcon(
+                PathKeeper::UPLOADED_AVATARS_DIR,
+                $avatar,
+                $user->getAvatar()
+            );
             $user->setAvatar($newName);
 
             $entityManager = $this->getDoctrine()->getManager();

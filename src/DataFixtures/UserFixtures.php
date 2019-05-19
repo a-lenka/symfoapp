@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Service\FileUploader;
+use App\Service\PathKeeper;
 use Doctrine\Bundle\FixturesBundle\ORMFixtureInterface;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
@@ -27,39 +28,26 @@ class UserFixtures extends AbstractFixture implements OrderedFixtureInterface, O
     /** @var FileUploader */
     private $fileUploader;
 
-    /** @const string AVATARS_DIR - Avatars fixtures directory */
-    private const AVATARS_DIR = '/images/avatars/';
+    /** @var PathKeeper */
+    private $pathKeeper;
 
-    /** KernelInterface $appKernel */
-    private $appKernel;
+    /** @const string AVATARS_DIR - Avatars fixtures directory */
+    private const FIXTURE_AVATARS_DIR = 'images/avatars';
 
 
     /**
-     * @param KernelInterface              $appKernel
      * @param UserPasswordEncoderInterface $passwordEncoder
      * @param FileUploader                 $uploader
+     * @param PathKeeper                   $pathKeeper
      */
     public function __construct(
-        KernelInterface $appKernel,
         UserPasswordEncoderInterface $passwordEncoder,
-        FileUploader                 $uploader
+        FileUploader                 $uploader,
+        PathKeeper                   $pathKeeper
     ) {
         $this->passwordEncoder = $passwordEncoder;
         $this->fileUploader    = $uploader;
-        $this->appKernel       = $appKernel;
-    }
-
-
-    /**
-     * Clear directory before fixtures loading
-     */
-    private function clearDir(): void
-    {
-        $files = glob($this->appKernel->getProjectDir().'/public/uploads/avatars/*');
-
-        foreach($files as $file) {
-            unlink($file);
-        }
+        $this->pathKeeper      = $pathKeeper;
     }
 
 
@@ -74,13 +62,15 @@ class UserFixtures extends AbstractFixture implements OrderedFixtureInterface, O
     {
         $fs = new Filesystem();
 
-        $sourceFile = __DIR__.self::AVATARS_DIR.$filename;
+        $sourceFile = __DIR__.'/'.self::FIXTURE_AVATARS_DIR.'/'.$filename;
         $targetFile = sys_get_temp_dir().'/'.$filename;
 
         $fs->copy($sourceFile, $targetFile, true);
 
-        return $this->fileUploader->uploadUserAvatar(
-            new File($targetFile), null
+        return $this->fileUploader->uploadEntityIcon(
+            PathKeeper::UPLOADED_AVATARS_DIR,
+            new File($targetFile),
+            null
         );
     }
 
@@ -95,7 +85,8 @@ class UserFixtures extends AbstractFixture implements OrderedFixtureInterface, O
      */
     final public function load(ObjectManager $manager): void
     {
-        $this->clearDir();
+        $path = $this->pathKeeper->getPublicUploadsSystemPath().'/avatars';
+        $this->fileUploader->clearDir($path);
 
         // Root
         $root = new User();

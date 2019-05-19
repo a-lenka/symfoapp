@@ -1,5 +1,6 @@
 {%- if task is defined -%}
     <th scope="col">{{- 'ID'|trans -}}</th>
+    <th scope="col" class="center-align">{{- 'Icon'|trans -}}</th>
     <th scope="col">{{- 'Task title'|trans -}}</th>
     <th scope="col">{{- 'Deadline date'|trans -}}</th>
     <th scope="col">{{- 'Task state'|trans -}}</th>
@@ -23,6 +24,8 @@
 
         {{- 'ID'|trans -}}
     </th>
+
+    <th scope="col" class="center-align">{{- 'Icon'|trans -}}</th>
 
     <th scope="col">
         {%- if sort_property == 'title' and sort_order == 'asc' -%}
