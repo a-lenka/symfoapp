@@ -12,7 +12,6 @@ use League\Flysystem\FileExistsException;
 use League\Flysystem\FileNotFoundException;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use App\Entity\User;
 
@@ -160,6 +159,8 @@ class UserFixtures extends AbstractFixture implements OrderedFixtureInterface, O
         $this->addReference('admin', $admin);
         $this->addReference('user', $user);
         $this->addReference('anonymous', $anonymous);
+        $this->addReference('housewife', $housewife);
+        $this->addReference('student', $student);
     }
 
 

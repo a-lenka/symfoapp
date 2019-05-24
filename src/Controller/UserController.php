@@ -36,7 +36,7 @@ class UserController extends AbstractController
      *
      * @return Response
      */
-    public function showAll(): Response
+    final public function showAll(): Response
     {
         $users = $this->getDoctrine()->getRepository(User::class)->findAll();
 
@@ -70,7 +70,7 @@ class UserController extends AbstractController
      *
      * @return Response
      */
-    public function showSorted(Request $request, string $sort_property, string $sort_order): Response
+    final public function showSorted(Request $request, string $sort_property, string $sort_order): Response
     {
         $allUsers = $this->getDoctrine()->getRepository(User::class)->sortByProperty(
             $sort_property, $sort_order
@@ -105,7 +105,7 @@ class UserController extends AbstractController
      *
      * @return Response
      */
-    public function confirmDeleteMultiply(Request $request): Response
+    final public function confirmDeleteMultiply(Request $request): Response
     {
         $repository = $this->getDoctrine()->getRepository(User::class);
         $users = [];
@@ -149,7 +149,7 @@ class UserController extends AbstractController
      * @return Response
      * @throws FileNotFoundException
      */
-    public function deleteMultiply(Request $request, FileUploader $uploader): Response
+    final public function deleteMultiply(Request $request, FileUploader $uploader): Response
     {
         $repository    = $this->getDoctrine()->getRepository(User::class);
         $entityManager = $this->getDoctrine()->getManager();
@@ -186,7 +186,7 @@ class UserController extends AbstractController
      *
      * @return Response
      */
-    public function showDetails(Request $request, int $id): Response
+    final public function showDetails(Request $request, int $id): Response
     {
         $user = $this->getDoctrine()->getRepository(User::class)->find($id);
 
@@ -363,7 +363,7 @@ class UserController extends AbstractController
      *
      * @return Response
      */
-    public function confirmDeleteUser(Request $request, int $id): Response
+    final public function confirmDeleteUser(Request $request, int $id): Response
     {
         $user     = $this->getDoctrine()->getRepository(User::class)->find($id);
         $template = $request->isXmlHttpRequest()

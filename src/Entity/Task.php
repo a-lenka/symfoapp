@@ -69,7 +69,7 @@ class Task
     /**
      * @return int|null
      */
-    public function getId(): ?int
+    final public function getId(): ?int
     {
         return $this->id;
     }
@@ -78,7 +78,7 @@ class Task
     /**
      * @return string|null
      */
-    public function getTitle(): ?string
+    final public function getTitle(): ?string
     {
         return $this->title;
     }
@@ -89,7 +89,7 @@ class Task
      *
      * @return Task
      */
-    public function setTitle(string $title): self
+    final public function setTitle(string $title): self
     {
         $this->title = $title;
 
@@ -100,7 +100,7 @@ class Task
     /**
      * @return DateTimeInterface|null
      */
-    public function getDateDeadline(): ?DateTimeInterface
+    final public function getDateDeadline(): ?DateTimeInterface
     {
         return $this->dateDeadline;
     }
@@ -111,7 +111,7 @@ class Task
      *
      * @return Task
      */
-    public function setDateDeadline(DateTimeInterface $dateDeadline): self
+    final public function setDateDeadline(DateTimeInterface $dateDeadline): self
     {
         $this->dateDeadline = $dateDeadline;
 
@@ -122,7 +122,7 @@ class Task
     /**
      * @return string|null
      */
-    public function getState(): ?string
+    final public function getState(): ?string
     {
         return $this->state;
     }
@@ -133,7 +133,7 @@ class Task
      *
      * @return Task
      */
-    public function setState(string $state): self
+    final public function setState(string $state): self
     {
         $this->state = $state;
 
@@ -144,7 +144,7 @@ class Task
     /**
      * @return User|null
      */
-    public function getOwner(): ?User
+    final public function getOwner(): ?User
     {
         return $this->owner;
     }
@@ -155,7 +155,7 @@ class Task
      *
      * @return Task
      */
-    public function setOwner(?User $owner): self
+    final public function setOwner(?User $owner): self
     {
         $this->owner = $owner;
 
@@ -166,7 +166,7 @@ class Task
     /**
      * @return string|null
      */
-    public function getIcon(): ?string
+    final public function getIcon(): ?string
     {
         return PathKeeper::UPLOADED_ICONS_DIR.'/'.$this->icon;
     }
@@ -177,7 +177,7 @@ class Task
      *
      * @return Task
      */
-    public function setIcon(string $icon): self
+    final public function setIcon(string $icon): self
     {
         $this->icon = $icon;
 

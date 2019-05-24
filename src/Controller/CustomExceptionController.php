@@ -7,7 +7,6 @@ use Symfony\Component\Debug\Exception\FlattenException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Log\DebugLoggerInterface;
-use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
@@ -36,11 +35,14 @@ class CustomExceptionController extends ExceptionController
      * @throws RuntimeError
      * @throws SyntaxError
      */
-    public function showAction(Request $request, FlattenException $exception, DebugLoggerInterface $logger = null): Response
-    {
+    final public function showAction(
+        Request              $request,
+        FlattenException     $exception,
+        DebugLoggerInterface $logger = null
+    ): Response {
         $currentContent = $this->getAndCleanOutputBuffering($request->headers->get('X-Php-Ob-Level', -1));
         $showException  = $request->attributes->get('showException', $this->debug);
-        $code = $exception->getStatusCode();
+        $code           = $exception->getStatusCode();
 
         if($code === 403 && $request->isXmlHttpRequest()) {
             $template = 'security/_form-login.html.twig';
@@ -75,7 +77,7 @@ class CustomExceptionController extends ExceptionController
      *
      * @return string
      */
-    protected function findTemplate(Request $request, $format, $code, $showException)
+    final protected function findTemplate(Request $request, $format, $code, $showException): string
     {
         $name = $showException ? 'exception' : 'error';
 

@@ -6,6 +6,8 @@ use App\Entity\Task;
 use App\Form\TaskType;
 use App\Service\FileUploader;
 use App\Service\PathKeeper;
+use League\Flysystem\FileExistsException;
+use League\Flysystem\FileNotFoundException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Finder\Exception\AccessDeniedException;
@@ -35,7 +37,7 @@ class TaskController extends AbstractController
      *
      * @return Response
      */
-    public function showAll(): Response
+    final public function showAll(): Response
     {
         $user = $this->getUser();
 
@@ -79,7 +81,7 @@ class TaskController extends AbstractController
      *
      * @return Response
      */
-    public function confirmDeleteMultiply(Request $request): Response
+    final public function confirmDeleteMultiply(Request $request): Response
     {
         $repository = $this->getDoctrine()->getRepository(Task::class);
         $tasks = [];
@@ -117,11 +119,13 @@ class TaskController extends AbstractController
      *     requirements={"_locale": "%app_locales%"},
      * )
      *
-     * @param Request $request
+     * @param Request      $request
+     * @param FileUploader $uploader
      *
      * @return Response
+     * @throws FileNotFoundException
      */
-    public function deleteMultiply(Request $request, FileUploader $uploader): Response
+    final public function deleteMultiply(Request $request, FileUploader $uploader): Response
     {
         $repository    = $this->getDoctrine()->getRepository(Task::class);
         $entityManager = $this->getDoctrine()->getManager();
@@ -163,7 +167,7 @@ class TaskController extends AbstractController
      *
      * @return Response
      */
-    public function showSorted(Request $request, string $sort_property, string $sort_order): Response
+    final public function showSorted(Request $request, string $sort_property, string $sort_order): Response
     {
         $user = $this->getUser();
 
@@ -215,7 +219,7 @@ class TaskController extends AbstractController
      *
      * @return Response
      */
-    public function showDetails(Request $request, int $id): Response
+    final public function showDetails(Request $request, int $id): Response
     {
         $task = $this->getDoctrine()->getRepository(Task::class)->find($id);
 
@@ -247,8 +251,10 @@ class TaskController extends AbstractController
      * @param FileUploader $uploader
      *
      * @return Response
+     * @throws FileExistsException
+     * @throws FileNotFoundException
      */
-    public function createTask(Request $request, FileUploader $uploader): Response
+    final public function createTask(Request $request, FileUploader $uploader): Response
     {
         $task = new Task();
 
@@ -308,8 +314,10 @@ class TaskController extends AbstractController
      * @param integer      $id,
      *
      * @return Response
+     * @throws FileExistsException
+     * @throws FileNotFoundException
      */
-    public function updateTask(Request $request, FileUploader $uploader, int $id): Response
+    final public function updateTask(Request $request, FileUploader $uploader, int $id): Response
     {
         $task = $this->getDoctrine()->getRepository(Task::class)->find($id);
 
@@ -369,7 +377,7 @@ class TaskController extends AbstractController
      *
      * @return Response
      */
-    public function confirmDeleteTask(Request $request, int $id): Response
+    final public function confirmDeleteTask(Request $request, int $id): Response
     {
         $task     = $this->getDoctrine()->getRepository(Task::class)->find($id);
         $template = $request->isXmlHttpRequest()
@@ -397,8 +405,9 @@ class TaskController extends AbstractController
      * @param integer      $id
      *
      * @return Response
+     * @throws FileNotFoundException
      */
-    public function deleteTask(FileUploader $uploader, int $id): Response
+    final public function deleteTask(FileUploader $uploader, int $id): Response
     {
         $task = $this->getDoctrine()->getRepository(Task::class)->find($id);
 

@@ -27,11 +27,11 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
 {
     use TargetPathTrait;
 
-    /** @var EntityManagerInterface $entityManager */
+    /** @var EntityManagerInterface */
     private $entityManager;
-    /** @var UrlGeneratorInterface $urlGenerator */
+    /** @var UrlGeneratorInterface */
     private $urlGenerator;
-    /** @var CsrfTokenManagerInterface $csrfTokenManager */
+    /** @var CsrfTokenManagerInterface */
     private $csrfTokenManager;
     /** @var UserPasswordEncoderInterface  */
     private $passwordEncoder;
@@ -68,7 +68,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
      *
      * @return bool
      */
-    public function supports(Request $request): bool
+    final public function supports(Request $request): bool
     {
         return 'login' === $request->attributes->get('_route')
             && $request->isMethod('POST');
@@ -83,7 +83,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
      *
      * @return array|mixed
      */
-    public function getCredentials(Request $request): array
+    final public function getCredentials(Request $request): array
     {
         $credentials = [
             'email'      => $request->request->get('email'),
@@ -109,7 +109,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
      *
      * @return User|object|UserInterface|null
      */
-    public function getUser($credentials, UserProviderInterface $userProvider): ?User
+    final public function getUser($credentials, UserProviderInterface $userProvider): ?User
     {
         // `authenticate` can be any string but the same as has the hidden input in the Login form
         $token = new CsrfToken('authenticate', $credentials['csrf_token']);
@@ -137,7 +137,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
      *
      * @return bool
      */
-    public function checkCredentials($credentials, UserInterface $user): bool
+    final public function checkCredentials($credentials, UserInterface $user): bool
     {
         return $this->passwordEncoder->isPasswordValid($user, $credentials['password']);
     }
@@ -151,7 +151,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
      * @return RedirectResponse
      * @throws \Exception
      */
-    public function onAuthenticationSuccess(
+    final public function onAuthenticationSuccess(
         Request        $request,
         TokenInterface $token,
         $providerKey
@@ -167,7 +167,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
     /**
      * @return string
      */
-    protected function getLoginUrl(): string
+    final protected function getLoginUrl(): string
     {
         return $this->urlGenerator->generate('login');
     }

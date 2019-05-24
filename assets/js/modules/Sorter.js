@@ -1,27 +1,21 @@
 // Imports
 import AjaxSender   from '../../js/modules/AjaxSender';
-import Logger from "./Logger";
-import Materializer from "./Materializer";
+import Materializer from './Materializer';
 
 /**
  * Handle sort items events
  *
  * @module ../../js/modules/Sorter
- * @type {{}}
+ * @type {{setSortListeners}}
  */
 let Sorter = function() {
 
-    let container = {
+    let box = {
         class: 'container',
 
         get elem() {
-            console.log('Find Container for sorted items');
-
-            let containerElem = document.getElementsByClassName(container.class)[0];
-            if(!containerElem) {
-                throw new Error('Container for sorted items not found. Class is wrong');
-            }
-
+            let containerElem = document.getElementsByClassName(box.class)[0];
+            if(!containerElem) { console.warn('Container for sorted items was not found'); }
             return containerElem;
         },
     };
@@ -29,39 +23,27 @@ let Sorter = function() {
 
     let checker = {
         confirmSortEvent: function(event) {
-            Logger.logEvent(event);
-
-            let isSortEvent = event
-                && event.target.href !== undefined
+            return event && event.target.href !== undefined
                 && event.target.href.includes('sorted')
                 && event.target.parentElement.localName === 'th';
-
-            console.log('Check if it is Sort event? : ' + isSortEvent);
-            return isSortEvent;
         },
     };
 
 
     let eventManager = {
+
         listeners: {
             class: 'sort-listeners',
             tag  : 'body',
 
             get elem() {
-                console.log('Find Sort listener');
                 let listener = document.getElementsByClassName(eventManager.listeners.class)[0];
-
-                if(!listener) {
-                    throw new Error('The Sort listener was not found. The class is wrong');
-                }
-
+                if(!listener) { throw new Error('The Sort listener was not found'); }
                 return listener;
             },
         },
 
         setSortListeners: function() {
-            console.log('Set Sort listener');
-
             let sortListener = eventManager.listeners.elem;
             sortListener.addEventListener('click', requestSortedItems);
         },
@@ -69,12 +51,9 @@ let Sorter = function() {
 
 
     let requestSortedItems = function(event) {
-        console.log('Request Sorted items');
-
         if(checker.confirmSortEvent(event)) {
             event.preventDefault();
 
-            // To have path for any modals
             let path = event.target.pathname.trim();
             AjaxSender.sendGet(path, appendSortedContent);
         }
@@ -86,10 +65,8 @@ let Sorter = function() {
             throw new Error('XHR is empty');
         }
 
-        console.log('Append Sorted content');
-        let parent  = container.elem;
-        parent.innerHTML = '';
-        parent.insertAdjacentHTML('afterbegin', xhr.responseText);
+        box.elem.innerHTML = '';
+        box.elem.insertAdjacentHTML('afterbegin', xhr.responseText);
         Materializer.reInitFloatingActions();
     };
 

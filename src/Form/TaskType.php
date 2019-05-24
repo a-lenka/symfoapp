@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\Task;
 use App\Form\Fields\DateTimePickerType;
 use DateTime;
+use Exception;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -26,6 +27,8 @@ class TaskType extends AbstractType
     /**
      * @param FormBuilderInterface $builder
      * @param array                $options
+     *
+     * @throws Exception
      */
     final public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -87,7 +90,7 @@ class TaskType extends AbstractType
     /**
      * @param OptionsResolver $resolver
      */
-    public function configureOptions(OptionsResolver $resolver): void
+    final public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Task::class,

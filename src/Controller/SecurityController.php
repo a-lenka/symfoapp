@@ -34,7 +34,7 @@ class SecurityController extends AbstractController
      *
      * @return string
      */
-    private function chooseTemplate($request, $formPart): string
+    private function chooseTemplate(Request $request, string $formPart): string
     {
         return $request->isXmlHttpRequest()
             ? $formPart
@@ -55,7 +55,7 @@ class SecurityController extends AbstractController
      *
      * @return Response
      */
-    public function login(Request $request, AuthenticationUtils $authenticationUtils): Response
+    final public function login(Request $request, AuthenticationUtils $authenticationUtils): Response
     {
         // Get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
@@ -85,7 +85,7 @@ class SecurityController extends AbstractController
      *
      * @throws \Exception
      */
-    public function logout(): void
+    final public function logout(): void
     {
         throw new Exception(
             'Don\'t forget to activate logout in security.yaml'
@@ -109,7 +109,7 @@ class SecurityController extends AbstractController
      *
      * @return Response
      */
-    public function register(
+    final public function register(
         LoginFormAuthenticator $authenticator,
         GuardAuthenticatorHandler $guardHandler,
         Request $request,

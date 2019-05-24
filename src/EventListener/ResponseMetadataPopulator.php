@@ -13,7 +13,7 @@ class ResponseMetadataPopulator
     /**
      * @param FilterResponseEvent $event
      */
-    public function onKernelResponse(FilterResponseEvent $event)
+    final public function onKernelResponse(FilterResponseEvent $event): void
     {
         $response = $event->getResponse();
         $response->headers->set('X-Target-URL', $event->getRequest()->getRequestUri());

@@ -37,7 +37,7 @@ class LocaleExtension extends AbstractExtension
     /**
      * @return array
      */
-    public function getFunctions(): array
+    final public function getFunctions(): array
     {
         return [
             new TwigFunction(
@@ -55,7 +55,7 @@ class LocaleExtension extends AbstractExtension
      *
      * @return array
      */
-    public function getLocales(): array
+    final public function getLocales(): array
     {
         if (null !== $this->locales) {
             return $this->locales;
