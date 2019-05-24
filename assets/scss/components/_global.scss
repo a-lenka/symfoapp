@@ -17,7 +17,8 @@ body {
 
 // Animation for page loading
 body {
-    animation: body-opacity-change .1s ease-in-out .1s forwards;
+    transition: all 1s ease-in-out;
+    animation: body-opacity-change .15s ease-in-out .15s forwards;
     opacity: 0;
 }
 
