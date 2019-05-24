@@ -59,7 +59,7 @@ class UserController extends AbstractController
      *     defaults={"_locale"="%default_locale%"},
      *     requirements={
      *          "_locale": "%app_locales%",
-     *          "sort_property"="id|email|roles",
+     *          "sort_property"="id|email|roles|tasks",
      *          "sort_order"="asc|desc|default"
      *      },
      * )
@@ -72,9 +72,25 @@ class UserController extends AbstractController
      */
     final public function showSorted(Request $request, string $sort_property, string $sort_order): Response
     {
-        $allUsers = $this->getDoctrine()->getRepository(User::class)->sortByProperty(
-            $sort_property, $sort_order
-        );
+        if($sort_property === 'tasks') {
+            $allUsers = $this->getDoctrine()->getRepository(User::class)->findAll();
+
+            if($sort_order === 'asc') {
+                usort($allUsers, function($a, $b) {
+                    return count($a->getTasks()) > count($b->getTasks());
+                });
+            }
+
+            if($sort_order === 'desc') {
+                usort($allUsers, function($a, $b) {
+                    return count($a->getTasks()) < count($b->getTasks());
+                });
+            }
+        } else {
+            $allUsers = $this->getDoctrine()->getRepository(User::class)->sortByProperty(
+                $sort_property, $sort_order
+            );
+        }
 
         $listPart = 'user/_list.html.twig';
         $template = $request->isXmlHttpRequest()
