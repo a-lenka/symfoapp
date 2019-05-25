@@ -2,8 +2,14 @@
 
 namespace App\Controller;
 
+use App\Form\AccountPropertiesType;
+use App\Service\FileUploader;
+use App\Service\PathKeeper;
+use League\Flysystem\FileExistsException;
+use League\Flysystem\FileNotFoundException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -19,15 +25,55 @@ class AccountController extends AbstractController
     /**
      * @Route("/{_locale}/account",
      *     name="account",
-     *     methods="GET",
+     *     methods="GET|POST",
      *     defaults={"_locale"="%default_locale%"},
      *     requirements={"_locale": "%app_locales%"},
      * )
      *
+     * @param FileUploader $uploader
+     * @param PathKeeper   $pathKeeper
+     * @param Request      $request
+     *
      * @return Response
+     * @throws FileExistsException
+     * @throws FileNotFoundException
      */
-    final public function index(): Response
+    final public function index(FileUploader $uploader, PathKeeper $pathKeeper, Request $request): Response
     {
-        return $this->render('account/index.html.twig');
+        $user = $this->getUser();
+
+        $form = $this->createForm(AccountPropertiesType::class, $user, [
+            'action' => $this->generateUrl('account')
+        ]);
+        $form->handleRequest($request);
+
+        if ($request->isMethod('POST')
+            && $form->isSubmitted()
+            && $form->isValid()
+        ) {
+            $avatar = $form['avatar']->getData();
+
+            if ($avatar) {
+                $newName = $uploader->uploadEntityIcon(
+                    PathKeeper::UPLOADED_AVATARS_DIR,
+                    $avatar,
+                    $user->getAvatar()
+                );
+
+                $user->setAvatar($newName);
+            }
+
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($user);
+            $entityManager->flush();
+
+            return $this->render('account/index.html.twig', [
+                'form' => $form->createView(),
+            ]);
+        }
+
+        return $this->render('account/index.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
 }

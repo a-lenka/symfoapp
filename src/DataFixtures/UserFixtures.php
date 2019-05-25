@@ -91,6 +91,7 @@ class UserFixtures extends AbstractFixture implements OrderedFixtureInterface, O
         $root = new User();
         $root->setAvatar($this->uploadDummyAvatars('root.png'));
         $root->setEmail('root@mail.ru');
+        $root->setTheme('red lighten-2');
         $root->setRoles(['ROLE_ROOT']);
         $root->setPassword($this->passwordEncoder->encodePassword(
             $root, 'kitten'
@@ -102,6 +103,7 @@ class UserFixtures extends AbstractFixture implements OrderedFixtureInterface, O
         $admin = new User();
         $admin->setAvatar($this->uploadDummyAvatars('admin.png'));
         $admin->setEmail('admin@mail.ru');
+        $admin->setTheme('red lighten-2');
         $admin->setRoles(['ROLE_ADMIN']);
         $admin->setPassword($this->passwordEncoder->encodePassword(
             $admin, 'kitten'
@@ -113,6 +115,7 @@ class UserFixtures extends AbstractFixture implements OrderedFixtureInterface, O
         $user = new User();
         $user->setAvatar($this->uploadDummyAvatars('user.png'));
         $user->setEmail('user@mail.ru');
+        $user->setTheme('red lighten-2');
         $user->setRoles([]);
         $user->setPassword($this->passwordEncoder->encodePassword(
             $user, 'kitten'
@@ -124,6 +127,7 @@ class UserFixtures extends AbstractFixture implements OrderedFixtureInterface, O
         $anonymous = new User();
         $anonymous->setAvatar($this->uploadDummyAvatars('anonymous.png'));
         $anonymous->setEmail('anonymous@mail.ru');
+        $anonymous->setTheme('red lighten-2');
         $anonymous->setRoles([]);
         $anonymous->setPassword($this->passwordEncoder->encodePassword(
             $anonymous, 'kitten'
@@ -135,6 +139,7 @@ class UserFixtures extends AbstractFixture implements OrderedFixtureInterface, O
         $housewife = new User();
         $housewife->setAvatar($this->uploadDummyAvatars('housewife.jpeg'));
         $housewife->setEmail('housewife@mail.ru');
+        $housewife->setTheme('red lighten-2');
         $housewife->setRoles([]);
         $housewife->setPassword($this->passwordEncoder->encodePassword(
             $housewife, 'kitten'
@@ -146,6 +151,7 @@ class UserFixtures extends AbstractFixture implements OrderedFixtureInterface, O
         $student = new User();
         $student->setAvatar($this->uploadDummyAvatars('student.jpeg'));
         $student->setEmail('student@mail.ru');
+        $student->setTheme('red lighten-2');
         $student->setRoles([]);
         $student->setPassword($this->passwordEncoder->encodePassword(
             $student, 'kitten'

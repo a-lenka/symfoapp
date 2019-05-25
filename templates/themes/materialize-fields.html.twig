@@ -321,7 +321,7 @@
             {%- set hasAvatar = "avatar" in form.parent.children|keys and form.parent.vars.value.avatar != 'avatars/' -%}
             {%- set hasIcon   = "icon" in form.parent.children|keys and form.parent.vars.value.icon != 'icons/' -%}
 
-            <div class="file-field input-field col {% if hasAvatar or hasIcon %}s11{% else %}s12{% endif %}">
+            <div class="file-field input-field col {% if hasAvatar or hasIcon %}s10{% else %}s12{% endif %}">
                 <div class="btn">
                     <span>
                         <i class="material-icons">file_upload</i>
@@ -341,7 +341,7 @@
             </div>
 
             {% if hasAvatar %}
-                <div class="col s1">
+                <div class="col s2">
                     <img class="avatar-icon small" alt="user-avatar"
                          src="{{ uploaded_asset(form.parent.vars.value.avatar) }}">
                 </div>

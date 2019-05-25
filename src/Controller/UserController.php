@@ -334,6 +334,7 @@ class UserController extends AbstractController
                 $user, $user->getPassword()
             );
             $user->setPassword($password);
+            $user->setTheme('red lighten-2');
 
             $avatar  = $form['avatar']->getData();
             $newName = $uploader->uploadEntityIcon(
