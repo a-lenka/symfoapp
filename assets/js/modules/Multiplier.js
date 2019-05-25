@@ -122,7 +122,12 @@ let Multiplier = function() {
             return (event.target.pathname)
                 ? event.target.pathname.includes('list/delete')
                 : false;
-        }
+        },
+
+        confirmHidePerformedEvent: function(event) {
+            let className = eventManager.triggers.switchPerformedTasksButton.className;
+            return event.target.className.includes(className);
+        },
     };
 
 
@@ -165,6 +170,15 @@ let Multiplier = function() {
                     return document.querySelectorAll(eventManager.triggers.deletePermanentlyButton.selector)[0];
                 },
             },
+
+            switchPerformedTasksButton: {
+                className: 'btn-floating indigo darken-1',
+                selector : 'a.btn-floating.indigo.darken-1',
+
+                get elem() {
+                    return document.querySelectorAll(eventManager.triggers.switchPerformedTasksButton.selector)[0];
+                }
+            }
         },
 
         listeners: {
@@ -180,6 +194,7 @@ let Multiplier = function() {
                 eventManager.listeners.chooseItems.elem.addEventListener('click', table.switchCheckboxes);
                 eventManager.listeners.chooseItems.elem.addEventListener('click', requestCheckedItems);
                 eventManager.listeners.chooseItems.elem.addEventListener('click', deletePermanently);
+                eventManager.listeners.chooseItems.elem.addEventListener('click', switchPerformedTasks);
             }
         },
     };
@@ -211,6 +226,21 @@ let Multiplier = function() {
             AjaxSender.sendPost(path, function (xhr) {
                 ModalWidget.appendFormContent(xhr);
             }, JSON.stringify(emails));
+        }
+    };
+
+    let switchPerformedTasks = function(event) {
+        if(checker.confirmHidePerformedEvent(event)) {
+            event.preventDefault();
+            table.rows.forEach(r => {
+                if(r.innerText.includes('Done') || r.innerText.includes('Готово')) {
+                    r.classList.toggle('hide');
+                }
+            });
+
+            let icon = eventManager.triggers.switchPerformedTasksButton.elem.children[0];
+            if(icon.innerText === 'radio_button_checked') { icon.innerText = 'radio_button_unchecked'; }
+            else { icon.innerText = 'radio_button_checked' }
         }
     };
 
