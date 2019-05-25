@@ -75,6 +75,14 @@ class User implements UserInterface
      */
     private $tasks;
 
+    /**
+     * @ORM\Column(
+     *     type="string",
+     *     length=30
+     * )
+     */
+    private $theme;
+
 
     /**
      * User constructor.
@@ -258,6 +266,28 @@ class User implements UserInterface
                 $task->setOwner(null);
             }
         }
+
+        return $this;
+    }
+
+
+    /**
+     * @return string|null
+     */
+    final public function getTheme(): ?string
+    {
+        return $this->theme;
+    }
+
+
+    /**
+     * @param string $theme
+     *
+     * @return User
+     */
+    final public function setTheme(string $theme): self
+    {
+        $this->theme = $theme;
 
         return $this;
     }
