@@ -77,12 +77,12 @@ class UserFixtures extends AbstractFixture implements OrderedFixtureInterface, O
     /**
      * Loads User Fixtures into Database
      *
-     * @param ObjectManager $manager
+     * @param ObjectManager $objectManager
      *
      * @throws FileExistsException
      * @throws FileNotFoundException
      */
-    final public function load(ObjectManager $manager): void
+    final public function load(ObjectManager $objectManager): void
     {
         $path = $this->pathKeeper->getPublicUploadsSystemPath().'/avatars';
         $this->fileUploader->clearDir($path);
@@ -97,7 +97,7 @@ class UserFixtures extends AbstractFixture implements OrderedFixtureInterface, O
             $root, 'kitten'
         ));
 
-        $manager->persist($root);
+        $objectManager->persist($root);
 
         // Admin
         $admin = new User();
@@ -109,7 +109,7 @@ class UserFixtures extends AbstractFixture implements OrderedFixtureInterface, O
             $admin, 'kitten'
         ));
 
-        $manager->persist($admin);
+        $objectManager->persist($admin);
 
         // User
         $user = new User();
@@ -121,7 +121,7 @@ class UserFixtures extends AbstractFixture implements OrderedFixtureInterface, O
             $user, 'kitten'
         ));
 
-        $manager->persist($user);
+        $objectManager->persist($user);
 
         // Anonymous
         $anonymous = new User();
@@ -133,7 +133,19 @@ class UserFixtures extends AbstractFixture implements OrderedFixtureInterface, O
             $anonymous, 'kitten'
         ));
 
-        $manager->persist($anonymous);
+        $objectManager->persist($anonymous);
+
+        // Manager
+        $manager = new User();
+        $manager->setAvatar($this->uploadDummyAvatars('manager.png'));
+        $manager->setEmail('manager@mail.ru');
+        $manager->setTheme('red lighten-2');
+        $manager->setRoles([]);
+        $manager->setPassword($this->passwordEncoder->encodePassword(
+            $manager, 'kitten'
+        ));
+
+        $objectManager->persist($manager);
 
         // Housewife
         $housewife = new User();
@@ -145,7 +157,7 @@ class UserFixtures extends AbstractFixture implements OrderedFixtureInterface, O
             $housewife, 'kitten'
         ));
 
-        $manager->persist($housewife);
+        $objectManager->persist($housewife);
 
         // Student
         $student = new User();
@@ -157,14 +169,15 @@ class UserFixtures extends AbstractFixture implements OrderedFixtureInterface, O
             $student, 'kitten'
         ));
 
-        $manager->persist($student);
+        $objectManager->persist($student);
 
-        $manager->flush();
+        $objectManager->flush();
 
         $this->addReference('root', $root);
         $this->addReference('admin', $admin);
         $this->addReference('user', $user);
         $this->addReference('anonymous', $anonymous);
+        $this->addReference('manager', $manager);
         $this->addReference('housewife', $housewife);
         $this->addReference('student', $student);
     }

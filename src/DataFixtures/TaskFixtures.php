@@ -133,6 +133,80 @@ class TaskFixtures extends AbstractFixture implements OrderedFixtureInterface, O
         $manager->persist($thirdUserTask);
 
 
+        // Manager tasks
+        $cleanTheDesctop = new Task();
+        $cleanTheDesctop->setIcon($this->uploadDummyIcon('recycle.png'));
+        $cleanTheDesctop->setTitle('Clean up the desktop');
+        $cleanTheDesctop->setDateDeadline(new DateTime('tuesday next week'));
+        $cleanTheDesctop->setState('In progress');
+        $cleanTheDesctop->setOwner($this->getReference('manager'));
+
+        $manager->persist($cleanTheDesctop);
+
+        $makeCalls = new Task();
+        $makeCalls->setIcon($this->uploadDummyIcon('phone.png'));
+        $makeCalls->setTitle('Make personal calls');
+        $makeCalls->setDateDeadline((new DateTime('now'))->modify('+1 month'));
+        $makeCalls->setState('In progress');
+        $makeCalls->setOwner($this->getReference('manager'));
+
+        $manager->persist($makeCalls);
+
+        $sendEmail = new Task();
+        $sendEmail->setIcon($this->uploadDummyIcon('email.png'));
+        $sendEmail->setTitle('Send personal emails (when necessary)');
+        $sendEmail->setDateDeadline(new DateTime('yesterday noon'));
+        $sendEmail->setState('In progress');
+        $sendEmail->setOwner($this->getReference('manager'));
+
+        $manager->persist($sendEmail);
+
+        $prepareGoals = new Task();
+        $prepareGoals->setIcon($this->uploadDummyIcon('check.png'));
+        $prepareGoals->setTitle('Prepare goals for the next day');
+        $prepareGoals->setDateDeadline(new DateTime('Monday next week'));
+        $prepareGoals->setState('In progress');
+        $prepareGoals->setOwner($this->getReference('manager'));
+
+        $manager->persist($prepareGoals);
+
+        $prioritizeTasks = new Task();
+        $prioritizeTasks->setIcon($this->uploadDummyIcon('barchart.png'));
+        $prioritizeTasks->setTitle('Prioritize your tasks');
+        $prioritizeTasks->setDateDeadline(new DateTime('first day of this month'));
+        $prioritizeTasks->setState('In progress');
+        $prioritizeTasks->setOwner($this->getReference('manager'));
+
+        $manager->persist($prioritizeTasks);
+
+        $prioritizeEmails = new Task();
+        $prioritizeEmails->setIcon($this->uploadDummyIcon('pin.png'));
+        $prioritizeEmails->setTitle('Prioritize your emails');
+        $prioritizeEmails->setDateDeadline(new DateTime('last day of +1 month'));
+        $prioritizeEmails->setState('In progress');
+        $prioritizeEmails->setOwner($this->getReference('manager'));
+
+        $manager->persist($prioritizeEmails);
+
+        $reviewIdeas = new Task();
+        $reviewIdeas->setIcon($this->uploadDummyIcon('lightbulb.png'));
+        $reviewIdeas->setTitle('Review all your ideas');
+        $reviewIdeas->setDateDeadline(new DateTime('tomorrow'));
+        $reviewIdeas->setState('In progress');
+        $reviewIdeas->setOwner($this->getReference('manager'));
+
+        $manager->persist($reviewIdeas);
+
+        $readTheNews = new Task();
+        $readTheNews->setIcon($this->uploadDummyIcon('news.png'));
+        $readTheNews->setTitle('Read the news');
+        $readTheNews->setDateDeadline(new DateTime('+3 days'));
+        $readTheNews->setState('In progress');
+        $readTheNews->setOwner($this->getReference('manager'));
+
+        $manager->persist($readTheNews);
+
+
         // Housewife tasks
         $goShopping = new Task();
         $goShopping->setIcon($this->uploadDummyIcon('cart.png'));
@@ -172,24 +246,6 @@ class TaskFixtures extends AbstractFixture implements OrderedFixtureInterface, O
 
         $manager->persist($readTheBook);
 
-        $makeCalls = new Task();
-        $makeCalls->setIcon($this->uploadDummyIcon('phone.png'));
-        $makeCalls->setTitle('Make personal calls');
-        $makeCalls->setDateDeadline((new DateTime('now'))->modify('+1 month'));
-        $makeCalls->setState('In progress');
-        $makeCalls->setOwner($this->getReference('student'));
-
-        $manager->persist($makeCalls);
-
-        $sendEmail = new Task();
-        $sendEmail->setIcon($this->uploadDummyIcon('email.png'));
-        $sendEmail->setTitle('Send personal emails (when necessary)');
-        $sendEmail->setDateDeadline(new DateTime('yesterday noon'));
-        $sendEmail->setState('In progress');
-        $sendEmail->setOwner($this->getReference('student'));
-
-        $manager->persist($sendEmail);
-
         $getExercises = new Task();
         $getExercises->setIcon($this->uploadDummyIcon('star.png'));
         $getExercises->setTitle('Get some exercises');
@@ -207,51 +263,6 @@ class TaskFixtures extends AbstractFixture implements OrderedFixtureInterface, O
         $winTheMillion->setOwner($this->getReference('student'));
 
         $manager->persist($winTheMillion);
-
-        $prepareGoals = new Task();
-        $prepareGoals->setIcon($this->uploadDummyIcon('check.png'));
-        $prepareGoals->setTitle('Prepare goals for the next day');
-        $prepareGoals->setDateDeadline(new DateTime('Monday next week'));
-        $prepareGoals->setState('In progress');
-        $prepareGoals->setOwner($this->getReference('student'));
-
-        $manager->persist($prepareGoals);
-
-        $prioritizeTasks = new Task();
-        $prioritizeTasks->setIcon($this->uploadDummyIcon('barchart.png'));
-        $prioritizeTasks->setTitle('Prioritize your tasks');
-        $prioritizeTasks->setDateDeadline(new DateTime('first day of this month'));
-        $prioritizeTasks->setState('In progress');
-        $prioritizeTasks->setOwner($this->getReference('student'));
-
-        $manager->persist($prioritizeTasks);
-
-        $prioritizeEmails = new Task();
-        $prioritizeEmails->setIcon($this->uploadDummyIcon('pin.png'));
-        $prioritizeEmails->setTitle('Prioritize your emails');
-        $prioritizeEmails->setDateDeadline(new DateTime('last day of +1 month'));
-        $prioritizeEmails->setState('In progress');
-        $prioritizeEmails->setOwner($this->getReference('student'));
-
-        $manager->persist($prioritizeEmails);
-
-        $reviewIdeas = new Task();
-        $reviewIdeas->setIcon($this->uploadDummyIcon('lightbulb.png'));
-        $reviewIdeas->setTitle('Review all your ideas');
-        $reviewIdeas->setDateDeadline(new DateTime('tomorrow'));
-        $reviewIdeas->setState('In progress');
-        $reviewIdeas->setOwner($this->getReference('student'));
-
-        $manager->persist($reviewIdeas);
-
-        $readTheNews = new Task();
-        $readTheNews->setIcon($this->uploadDummyIcon('news.png'));
-        $readTheNews->setTitle('Read the news');
-        $readTheNews->setDateDeadline(new DateTime('+3 days'));
-        $readTheNews->setState('In progress');
-        $readTheNews->setOwner($this->getReference('student'));
-
-        $manager->persist($readTheNews);
 
         $writeArticle = new Task();
         $writeArticle->setIcon($this->uploadDummyIcon('compose.png'));
