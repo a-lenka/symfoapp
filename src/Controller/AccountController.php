@@ -36,6 +36,13 @@ class AccountController extends AbstractController
     {
         $user = $this->getUser();
 
+        if(!$user->getTasks()[0]) {
+            $this->addFlash(
+                'notice',
+                'Create a task to see your progress'
+            );
+        }
+
         $form = $this->createForm(AccountPropertiesType::class, $user, [
             'action' => $this->generateUrl('account_submit')
         ]);

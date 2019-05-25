@@ -70,10 +70,8 @@ class TaskWidgetController extends AbstractController
     final public function renderDoneTasksPieChart(): Response
     {
         $user = $this->getUser();
-
         if(!$user) {
             throw new AccessDeniedException(
-            /** TODO: Secure the link from non authenticated Users instead */
                 'Login please. You can access this page only from your account.', 403
             );
         }
@@ -108,7 +106,6 @@ class TaskWidgetController extends AbstractController
 
         if(!$user) {
             throw new AccessDeniedException(
-            /** TODO: Secure the link from non authenticated Users instead */
                 'Login please. You can access this page only from your account.', 403
             );
         }

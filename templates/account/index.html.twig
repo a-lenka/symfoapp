@@ -8,6 +8,8 @@
     <h1>{{ app.user.email }}</h1>
 
     <div class="row">
+        {% include('_flash-messages.html.twig') %}
+
         <div class = "col s5">
             {{ form_start(form) }}
                 <div>

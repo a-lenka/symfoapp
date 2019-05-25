@@ -43,7 +43,6 @@ class TaskController extends AbstractController
 
         if(!$user) {
             throw new AccessDeniedException(
-                /** TODO: Secure the link from non authenticated Users instead */
                 'Login please. You can access this page only from your account.', 403
             );
         }
@@ -173,7 +172,6 @@ class TaskController extends AbstractController
 
         if(!$user) {
             throw new AccessDeniedException(
-                /** TODO: Secure the link from non authenticated Users instead */
                 'Login please. You can access this page only from your account.', 403
             );
         }
@@ -184,7 +182,6 @@ class TaskController extends AbstractController
 
         if(!$userTasks[0]) {
             throw new NotFoundHttpException(
-                /** TODO: Show some template instead. User is not obliged to have tasks */
                 'It seems there are no tasks found. Do you want to create the new one?'
             );
         }
