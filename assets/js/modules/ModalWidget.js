@@ -205,6 +205,8 @@ let ModalWidget = function() {
     return {
         setRequestListeners   : eventManager.setRequestFormListeners,
         setCancelModalListener: eventManager.setCancelModalListener,
+        // Used in Multiplier
+        appendFormContent     : appendFormContent,
     };
 }();
 
