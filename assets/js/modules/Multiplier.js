@@ -10,13 +10,6 @@ import ModalWidget from '../../js/modules/ModalWidget';
  */
 let Multiplier = function() {
 
-    let helper = {
-        getCurrentLocale: function() {
-            return document.getElementsByTagName('html')[0].getAttribute('lang');
-        },
-    };
-
-
     let checkbox = {
         html    : `<label><input type="checkbox"><span></span></label>`,
         selector: 'input[type="checkbox"]',
@@ -232,6 +225,8 @@ let Multiplier = function() {
     let switchPerformedTasks = function(event) {
         if(checker.confirmHidePerformedEvent(event)) {
             event.preventDefault();
+
+            /** TODO Replace this to Table component? */
             table.rows.forEach(r => {
                 if(r.innerText.includes('Done') || r.innerText.includes('Готово')) {
                     r.classList.toggle('hide');

@@ -35,7 +35,7 @@
         {# Top Menu content #}
         <div>
             {# Hide on small screens #}
-            <ul class="right hide-on-med-and-down">
+            <ul class="right hide-on-med-and-down right">
                 <li>
                     <a href="{{ path('home_index') }}">{{ 'Home'|trans }}</a>
                 </li>
@@ -144,6 +144,10 @@
                 {% endif %}
             </div>
         </li>
+
+        {% if 'list' in app.request.uri %}
+            {% include('_sidenav-search.html.twig') %}
+        {% endif %}
 
         <li>
             <a href="{{ path('home_index') }}" class="waves-effect">

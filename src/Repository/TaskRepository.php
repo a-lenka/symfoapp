@@ -49,6 +49,24 @@ class TaskRepository extends ServiceEntityRepository
         ;
     }
 
+
+    /**
+     * @param int    $ownerId
+     * @param string $query
+     *
+     * @return array
+     */
+    final public function searchByQuery(int $ownerId, string $query): array
+    {
+        return $this->createQueryBuilder('t')
+            ->where("t.owner = $ownerId")
+            ->andWhere('t.title LIKE :query')
+            ->setParameter('query', "%${query}%")
+            ->getQuery()
+            ->getResult();
+    }
+
+
     // /**
     //  * @return Task[] Returns an array of Task objects
     //  */

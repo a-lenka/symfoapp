@@ -73,6 +73,7 @@ let Sorter = function() {
 
     return {
         setSortListeners: eventManager.setSortListeners,
+        appendSortedContent: appendSortedContent,
     };
 }();
 

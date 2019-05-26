@@ -52,7 +52,7 @@ class TaskController extends AbstractController
         if(!$userTasks[0]) {
             $this->addFlash(
                 'notice',
-                'It seems there are no tasks found'
+                'It looks like you have no tasks yet'
             );
         }
 
@@ -197,6 +197,52 @@ class TaskController extends AbstractController
             'list_part' => $listPart,
             'sort_property' => $sort_property,
             'sort_order'    => $sort_order,
+        ]);
+    }
+
+
+    /**
+     * Show list of all Task entities
+     *
+     * @Route("/{_locale}/task/list/search/{search_query}",
+     *     name="task_search",
+     *     methods="GET",
+     *     defaults={"_locale"="%default_locale%"},
+     *     requirements={"_locale": "%app_locales%"},
+     * )
+     *
+     * @param string  $search_query
+     * @param Request $request
+     *
+     * @return Response
+     */
+    final public function search(Request $request, string $search_query): Response
+    {
+        $owner      = $this->getUser();
+        $repository = $this->getDoctrine()->getRepository(Task::class);
+
+        if($search_query === 'empty_request') {
+            return $this->redirectToRoute('task_list_all');
+        }
+
+        $result = $repository->searchByQuery($owner->getId(), $search_query);
+
+        if(!$result) {
+            $this->addFlash(
+                'notice',
+                'It seems there are no tasks found'
+            );
+        }
+
+        $listPart = 'task/_list.html.twig';
+        $template = $request->isXmlHttpRequest()
+            ? $listPart
+            : 'list.html.twig';
+
+        return $this->render($template, [
+            'tasks'     => $result,
+            'title'     => 'Tasks',
+            'list_part' => $listPart,
         ]);
     }
 

@@ -277,14 +277,11 @@ textarea.materialize-textarea {
     display: block;
     line-height: inherit;
     transition: .3s background-color;
-
-    .nav-wrapper & {
-        height: inherit;
-        padding-left: 4rem;
-        width: calc(100% - 4rem);
-        border: 0;
-        box-shadow: none;
-    }
+    height: inherit;
+    padding-left: 4rem;
+    width: calc(100% - 4rem);
+    border: 0;
+    box-shadow: none;
 
     &:focus:not(.browser-default) {
         background-color: $input-background;
@@ -301,13 +298,15 @@ textarea.materialize-textarea {
 
     & + .label-icon {
         transform: none;
+        top: .7rem;
         left: 1rem;
+        cursor: pointer;
     }
 
     & ~ .mdi-navigation-close,
     & ~ .material-icons {
         position: absolute;
-        top: 0;
+        top: .7rem;
         right: 1rem;
         color: transparent;
         cursor: pointer;

@@ -2,8 +2,10 @@
 .material-icons {
     text-rendering: optimizeLegibility;
     font-feature-settings: 'liga';
+
     // Click Event from the icon does not have path for Ajax Requests
-    pointer-events: none;
+    // But label in Search form has no reaction on click event
+    &:not(.search) { pointer-events: none; }
 }
 
 

@@ -24,6 +24,7 @@ import ModalWidget  from '../js/modules/ModalWidget.js';
 import Sorter       from '../js/modules/Sorter.js';
 import Multiplier   from '../js/modules/Multiplier.js';
 import Flasher      from '../js/modules/Flasher.js';
+import Searcher     from '../js/modules/Searcher.js';
 
 // Events
 document.addEventListener('DOMContentLoaded', function() {
@@ -32,6 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
     Sorter.setSortListeners();
     Multiplier.setMultiplyListeners();
     Flasher.send();
+    Searcher.setSearchListeners();
 });
 
 // Allow using history navigation in browser

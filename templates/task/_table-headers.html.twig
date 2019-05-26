@@ -4,6 +4,12 @@
     <th scope="col">{{- 'Task title'|trans -}}</th>
     <th scope="col">{{- 'Deadline date'|trans -}}</th>
     <th scope="col">{{- 'Task state'|trans -}}</th>
+{%- elseif tasks is defined and sort_property is not defined and sort_order is not defined -%}
+    <th scope="col">{{- 'ID'|trans -}}</th>
+    <th scope="col" class="center-align">{{- 'Icon'|trans -}}</th>
+    <th scope="col">{{- 'Task title'|trans -}}</th>
+    <th scope="col">{{- 'Deadline date'|trans -}}</th>
+    <th scope="col">{{- 'Task state'|trans -}}</th>
 {%- elseif tasks is defined and sort_property is defined and sort_order is defined -%}
     <th scope="col">
         {%- if sort_property == 'id' and sort_order == 'asc' -%}
