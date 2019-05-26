@@ -54,7 +54,7 @@ let Multiplier = function() {
 
         confirmHidePerformedEvent: function(event) {
             let className = eventManager.triggers.switchPerformedTasksButton.className;
-            return event.target.className.includes(className);
+            return event.target.className.includes(className) && !window.location.href.includes('user');
         },
     };
 

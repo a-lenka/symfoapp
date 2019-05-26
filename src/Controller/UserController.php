@@ -188,6 +188,51 @@ class UserController extends AbstractController
 
 
     /**
+     * Show founded users
+     *
+     * @Route("/{_locale}/user/list/search/{search_query}",
+     *     name="user_search",
+     *     methods="GET",
+     *     defaults={"_locale"="%default_locale%"},
+     *     requirements={"_locale": "%app_locales%"},
+     * )
+     *
+     * @param string  $search_query
+     * @param Request $request
+     *
+     * @return Response
+     */
+    final public function search(Request $request, string $search_query): Response
+    {
+        $repository = $this->getDoctrine()->getRepository(User::class);
+
+        if($search_query === 'empty_request') {
+            return $this->redirectToRoute('user_list_all');
+        }
+
+        $result = $repository->searchByQuery($search_query);
+
+        if(!$result) {
+            $this->addFlash(
+                'notice',
+                'It seems there are no users found'
+            );
+        }
+
+        $listPart = 'user/_list.html.twig';
+        $template = $request->isXmlHttpRequest()
+            ? $listPart
+            : 'list.html.twig';
+
+        return $this->render($template, [
+            'users'     => $result,
+            'title'     => 'Users',
+            'list_part' => $listPart,
+        ]);
+    }
+
+
+    /**
      * Show details page for one separate User
      *
      * @Route("/{_locale}/user/{id}/details",

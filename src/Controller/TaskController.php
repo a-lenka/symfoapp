@@ -202,7 +202,7 @@ class TaskController extends AbstractController
 
 
     /**
-     * Show list of all Task entities
+     * Show founded tasks
      *
      * @Route("/{_locale}/task/list/search/{search_query}",
      *     name="task_search",

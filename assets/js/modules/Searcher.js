@@ -59,7 +59,9 @@ let Searcher = function() {
                 },
 
                 get icon() {
-                    return eventManager.triggers.switchPerformedTasksButton.elem.children[0];
+                    if(eventManager.triggers.switchPerformedTasksButton.elem) {
+                        return eventManager.triggers.switchPerformedTasksButton.elem.children[0];
+                    }
                 },
             },
         },
@@ -79,10 +81,12 @@ let Searcher = function() {
 
 
     let searchItems = function(event) {
-        let path = `http://symfoapp/${Helper.getCurrentLocale()}/task/list/search/empty_request`;
+        let locale = Helper.getCurrentLocale();
+        let entity = (window.location.href.includes('task')) ? 'task' : 'user';
+        let path = `http://symfoapp/${locale}/${entity}/list/search/empty_request`;
 
         if(searchInput.elem.value.length > 1) {
-            path = `http://symfoapp/${Helper.getCurrentLocale()}/task/list/search/${searchInput.elem.value}`;
+            path = `http://symfoapp/${locale}/${entity}/list/search/${searchInput.elem.value}`;
         }
 
         AjaxSender.sendGet(path, function(xhr) {
@@ -99,7 +103,7 @@ let Searcher = function() {
 
             // Switch icon to 'show performed tasks'
             let icon = eventManager.triggers.switchPerformedTasksButton.icon;
-            icon.innerText = 'radio_button_checked'
+            if(icon) { icon.innerText = 'radio_button_checked'; }
         });
     };
 
