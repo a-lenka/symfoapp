@@ -25,7 +25,29 @@ class AccountController extends AbstractController
     /**
      * @Route("/{_locale}/account",
      *     name="account",
-     *     methods="GET|POST",
+     *     methods="GET",
+     *     defaults={"_locale"="%default_locale%"},
+     *     requirements={"_locale": "%app_locales%"},
+     * )
+     *
+     * @return Response
+     */
+    final public function index(): Response
+    {
+        $user = $this->getUser();
+
+        $form = $this->createForm(AccountPropertiesType::class, $user, [
+            'action' => $this->generateUrl('account_submit')
+        ]);
+
+        return $this->render('account/index.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+    /**
+     * @Route("/{_locale}/account/submit",
+     *     name="account_submit",
+     *     methods="POST",
      *     defaults={"_locale"="%default_locale%"},
      *     requirements={"_locale": "%app_locales%"},
      * )
@@ -38,12 +60,12 @@ class AccountController extends AbstractController
      * @throws FileExistsException
      * @throws FileNotFoundException
      */
-    final public function index(FileUploader $uploader, PathKeeper $pathKeeper, Request $request): Response
+    final public function indexSubmit(FileUploader $uploader, PathKeeper $pathKeeper, Request $request): Response
     {
         $user = $this->getUser();
 
         $form = $this->createForm(AccountPropertiesType::class, $user, [
-            'action' => $this->generateUrl('account')
+            'action' => $this->generateUrl('account_submit')
         ]);
         $form->handleRequest($request);
 
@@ -67,9 +89,7 @@ class AccountController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
 
-            return $this->render('account/index.html.twig', [
-                'form' => $form->createView(),
-            ]);
+            return $this->redirectToRoute('account');
         }
 
         return $this->render('account/index.html.twig', [

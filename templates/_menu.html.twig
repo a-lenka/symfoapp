@@ -82,10 +82,7 @@
 <ul id="dropdown-security" class="dropdown-content">
     {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
         <li>
-            <a href="{{ path('account') }}" class="modal-trigger"
-               data-target="materialize-modal">
-                {{ 'Account'|trans }}
-            </a>
+            <a href="{{ path('account') }}">{{ 'Account'|trans }}</a>
         </li>
 
         <li>
@@ -125,7 +122,7 @@
                     <img src="{{ asset('build/images/menu_bg.png') }}" style="width: 100%">
                 </div>
 
-                <a href="#user">
+                <a href="#">
                     {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
                         <img class="circle" src="{{- uploaded_asset(app.user.avatar) -}}">
                     {% else %}
@@ -133,19 +130,18 @@
                     {% endif %}
                 </a>
 
-                <a href="#name">
-                    {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+                {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+                    <a href="{{ path('account') }}">
                         <span class="white-text name">{{ app.user.email }}</span>
-                        <span class="white-text email">{{ app.user.email }}</span>
-                    {% else %}
+                        <span class="white-text email">{{ "Account"|trans }}</span>
+                    </a>
+                {% else %}
+                    <a href="{{ path('login') }}" class="modal-trigger"
+                       data-target="materialize-modal">
                         <span class="white-text name">{{ "Guest"|trans }}</span>
-                        <span class="white-text email">{{ "Empty"|trans }}</span>
-                    {% endif %}
-
-                </a>
-                <a href="#email">
-
-                </a>
+                        <span class="white-text email has-no-events">{{ "Login"|trans }}</span>
+                    </a>
+                {% endif %}
             </div>
         </li>
 

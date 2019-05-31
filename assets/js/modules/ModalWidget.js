@@ -84,10 +84,10 @@ let ModalWidget = function() {
             let attrName  = eventManager.triggers.form.attrName;
             let attrValue = eventManager.triggers.form.attrValue;
 
-            let hasModalAttributes  = event.target.getAttribute(attrName)   === attrValue;
-            let hasClassBtnFloating = event.target.outerHTML.indexOf('red') === -1;
+            let hasModalAttributes    = event.target.getAttribute(attrName)   === attrValue;
+            let hasNoClassBtnFloating = event.target.outerHTML.indexOf('red') === -1;
 
-            return event && hasModalAttributes && hasClassBtnFloating;
+            return event && hasModalAttributes && hasNoClassBtnFloating;
         },
 
         confirmFullPageInResponse: function(xhr) {
@@ -95,9 +95,9 @@ let ModalWidget = function() {
         },
 
         confirmModalForForm: function(xhr) {
-            let path        = xhr.getResponseHeader('X-Target-URL');
-            return path.indexOf('details') === 1
-                || path.indexOf('confirm') === 1;
+            let path = xhr.getResponseHeader('X-Target-URL');
+            return path.indexOf('details') !== -1
+                || path.indexOf('confirm') !== -1;
         },
 
         confirmFormIsAppended: function(event) {
@@ -120,10 +120,7 @@ let ModalWidget = function() {
 
                 get elem() {
                     let listener = document.getElementsByClassName(eventManager.listeners.requestForm.class)[0];
-                    if(!listener) {
-                        throw new Error('The Request form listener was not found. The class is wrong');
-                    }
-
+                    if(!listener) { throw new Error('The Request form listener was not found'); }
                     return listener;
                 },
             },
