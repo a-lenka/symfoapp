@@ -42,15 +42,16 @@ class UserType extends AbstractType
                 'multiple' => true,
                 'required' => false,
                 'label'    => 'User roles',
+                'data'     => ['ROLE_USER'],
                 'choices'  => [
                     'Root'  => 'ROLE_ROOT',
                     'Admin' => 'ROLE_ADMIN',
                     'User'  => 'ROLE_USER'
-                ],'choice_attr' => array(
+                ],'choice_attr' => [
                     'User' => [
                         'disabled' => true,
                     ],
-                ),
+                ],
             ])
             ->add('password', PasswordType::class, [
                 'help'  => 'User password',

@@ -1,15 +1,23 @@
 {% if tasks is defined %}
-    <table class="responsive-table highlight">
-        <tbody>
-        {% for task in tasks %}
-            <tr>
-                {{ include('task/_table-row.html.twig') }}
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    <div class="modal-body">
+        <table class="responsive-table highlight">
+            <thead>
+                <tr>
+                    {{ include('task/_table-headers.html.twig') }}
+                </tr>
+            </thead>
 
-    <div class="row modal-footer">
+            <tbody>
+                {% for task in tasks %}
+                    <tr>
+                        {{ include('task/_table-row.html.twig') }}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="modal-footer">
         <a href="{{ path('task_list_delete') }}"
            class="btn waves-effect waves-light red">
             {{ 'Delete permanently'|trans }}

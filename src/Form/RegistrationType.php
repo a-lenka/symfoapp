@@ -6,12 +6,15 @@ use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Image;
 use Symfony\Component\Validator\Constraints\IsTrue;
+use Symfony\Component\Validator\Constraints\NotNull;
 
 /**
  * Form is used to register the new Users
@@ -46,6 +49,20 @@ class RegistrationType extends AbstractType
                 'mapped'      => false,
                 'constraints' => new IsTrue(),
                 'label'       => 'Terms accepted',
+            ])
+            ->add('avatar', FileType::class, [
+                'help'  => 'User avatar',
+                'label' => 'User avatar',
+                'mapped'   => false,
+                'required' => false,
+                'constraints' => [
+                    new Image([
+                        'maxSize' => '5M'
+                    ]),
+                    new NotNull([
+                        'message' => 'Please upload an image',
+                    ])
+                ]
             ])
             ->add('submit', SubmitType::class, [
                 'label' => 'Register'

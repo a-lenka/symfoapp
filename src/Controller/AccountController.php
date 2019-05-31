@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Form\AccountPropertiesType;
 use App\Service\FileUploader;
-use App\Service\PathKeeper;
+use App\Service\Forms\UserFormHandler;
 use League\Flysystem\FileExistsException;
 use League\Flysystem\FileNotFoundException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -36,12 +36,8 @@ class AccountController extends AbstractController
     {
         $user = $this->getUser();
 
-        if(!$user->getTasks()[0]) {
-            $this->addFlash(
-                'notice',
-                'Create a task to see your progress'
-            );
-        }
+        $notice = 'Create a task to see your progress';
+        if(!$user->getTasks()[0]) {$this->addFlash('notice', $notice); }
 
         $form = $this->createForm(AccountPropertiesType::class, $user, [
             'action' => $this->generateUrl('account_submit')
@@ -51,6 +47,8 @@ class AccountController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+
+
     /**
      * @Route("/{_locale}/account/submit",
      *     name="account_submit",
@@ -59,43 +57,28 @@ class AccountController extends AbstractController
      *     requirements={"_locale": "%app_locales%"},
      * )
      *
-     * @param FileUploader $uploader
-     * @param PathKeeper   $pathKeeper
-     * @param Request      $request
+     * @param FileUploader    $fileUploader
+     * @param UserFormHandler $formHandler
+     * @param Request         $request
      *
      * @return Response
      * @throws FileExistsException
      * @throws FileNotFoundException
      */
-    final public function indexSubmit(FileUploader $uploader, PathKeeper $pathKeeper, Request $request): Response
-    {
+    final public function indexSubmit(
+        FileUploader    $fileUploader,
+        UserFormHandler $formHandler,
+        Request         $request
+    ): Response {
         $user = $this->getUser();
 
         $form = $this->createForm(AccountPropertiesType::class, $user, [
             'action' => $this->generateUrl('account_submit')
         ]);
-        $form->handleRequest($request);
 
-        if ($request->isMethod('POST')
-            && $form->isSubmitted()
-            && $form->isValid()
+        if($formHandler->handle(
+            $request, $form, $fileUploader, $user)
         ) {
-            $avatar = $form['avatar']->getData();
-
-            if ($avatar) {
-                $newName = $uploader->uploadEntityIcon(
-                    PathKeeper::UPLOADED_AVATARS_DIR,
-                    $avatar,
-                    $user->getAvatar()
-                );
-
-                $user->setAvatar($newName);
-            }
-
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($user);
-            $entityManager->flush();
-
             return $this->redirectToRoute('account');
         }
 

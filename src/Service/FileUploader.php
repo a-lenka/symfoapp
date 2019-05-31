@@ -6,6 +6,7 @@ use Gedmo\Sluggable\Util\Urlizer;
 use League\Flysystem\FileExistsException;
 use League\Flysystem\FileNotFoundException;
 use League\Flysystem\FilesystemInterface;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -15,18 +16,22 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  */
 class FileUploader
 {
-
     /** @var FilesystemInterface */
     private $filesystem;
+
+    /** @var PathKeeper */
+    private $pathKeeper;
 
 
     /**
      * FileUploader constructor
      *
      * @param FilesystemInterface $publicUploadFilesystem
+     * @param PathKeeper          $pathKeeper
      */
-    public function __construct(FilesystemInterface $publicUploadFilesystem) {
+    public function __construct(FilesystemInterface $publicUploadFilesystem, PathKeeper $pathKeeper) {
         $this->filesystem = $publicUploadFilesystem;
+        $this->pathKeeper = $pathKeeper;
     }
 
 
@@ -48,7 +53,7 @@ class FileUploader
      *
      * @param string $path - System path to directory where all the files will be deleted
      */
-    final public function clearDir($path): void
+    final public function clearDir(string $path): void
     {
         $files = glob($path.'/*');
 
@@ -70,8 +75,11 @@ class FileUploader
      * @throws FileExistsException
      * @throws FileNotFoundException
      */
-    final public function uploadEntityIcon(string $dirname, ?File $uploadedFile, ?string $existingFilename): string
-    {
+    final public function uploadEntityIcon(
+        string  $dirname,
+        ?File   $uploadedFile,
+        ?string $existingFilename
+    ): string {
         if (!$uploadedFile) {
             throw new FileNotFoundException('The User avatar was not uploaded');
         }
@@ -103,5 +111,33 @@ class FileUploader
         $this->deleteAvatar($existingFilename);
 
         return $newFileName;
+    }
+
+
+    /**
+     * Get `anonymous` icon from the public uploads directory
+     * replace it to temporary directory and then uploads it as usually
+     *
+     * @return string|null           - New file name
+     * @throws FileExistsException
+     * @throws FileNotFoundException
+     */
+    final public function uploadAnonymous(): string
+    {
+        $fs = new Filesystem();
+
+        $sourceFile = $this->pathKeeper->getPublicSystemPath().
+            '/'.$this->pathKeeper::BUILD_IMAGES_DIR.
+            '/'.$this->pathKeeper::ANONYMOUS_ICON_NAME;
+
+        $targetFile = sys_get_temp_dir().'/'.$this->pathKeeper::ANONYMOUS_ICON_NAME;
+
+        $fs->copy($sourceFile, $targetFile, true);
+
+        return $this->uploadEntityIcon(
+            $this->pathKeeper::UPLOADED_AVATARS_DIR,
+            new File($targetFile),
+            null
+        );
     }
 }

@@ -2,10 +2,10 @@
 
 namespace App\Controller;
 
+use App\DomainManager\UserManager;
 use App\Entity\User;
 use App\Form\UserType;
-use App\Service\FileUploader;
-use App\Service\PathKeeper;
+use App\Service\Forms\UserFormHandler;
 use League\Flysystem\FileExistsException;
 use League\Flysystem\FileNotFoundException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -13,7 +13,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
  * Manage User Entities
@@ -24,6 +23,42 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
  */
 class UserController extends AbstractController
 {
+    /** @var UserManager */
+    private $userManager;
+
+    /** @var UserFormHandler */
+    private $formHandler;
+
+    /**
+     * UserController constructor
+     *
+     * @param UserManager     $userManager
+     * @param UserFormHandler $formHandler
+     */
+    public function __construct(UserManager $userManager, UserFormHandler $formHandler)
+    {
+        $this->userManager = $userManager;
+        $this->formHandler = $formHandler;
+    }
+
+    /**
+     * Returns only part of a template with a form
+     * to be inserted into a modal window (for Ajax Requests),
+     * or an entire page with a form inside
+     * to redirect or navigate through browser history
+     *
+     * @param Request $request
+     * @param string  $page
+     * @param string  $part
+     *
+     * @return string
+     */
+    private function chooseTemplate(Request $request, string $page, string $part): string
+    {
+        return $request->isXmlHttpRequest() ? $part : $page;
+    }
+
+
     /**
      * Show list of all User entities
      *
@@ -38,7 +73,7 @@ class UserController extends AbstractController
      */
     final public function showAll(): Response
     {
-        $users = $this->getDoctrine()->getRepository(User::class)->findAll();
+        $users = $this->userManager->findAll();
 
         return $this->render('list.html.twig', [
             'users'     => $users,
@@ -70,37 +105,33 @@ class UserController extends AbstractController
      *
      * @return Response
      */
-    final public function showSorted(Request $request, string $sort_property, string $sort_order): Response
-    {
+    final public function showSorted(
+        Request $request,
+        string  $sort_property,
+        string  $sort_order
+    ): Response {
         if($sort_property === 'tasks') {
-            $allUsers = $this->getDoctrine()->getRepository(User::class)->findAll();
+            $allUsers = $this->userManager->findAll();
 
             if($sort_order === 'asc') {
-                usort($allUsers, function($a, $b) {
-                    return count($a->getTasks()) > count($b->getTasks());
-                });
+                $allUsers = $this->userManager->sortAscByNumberOfTasks($allUsers);
             }
 
             if($sort_order === 'desc') {
-                usort($allUsers, function($a, $b) {
-                    return count($a->getTasks()) < count($b->getTasks());
-                });
+                $allUsers = $this->userManager->sortDescByNumberOfTasks($allUsers);
             }
         } else {
-            $allUsers = $this->getDoctrine()->getRepository(User::class)->sortByProperty(
-                $sort_property, $sort_order
-            );
+            $allUsers = $this->userManager->sortByProperty($sort_property, $sort_order);
         }
 
-        $listPart = 'user/_list.html.twig';
-        $template = $request->isXmlHttpRequest()
-            ? $listPart
-            : 'list.html.twig';
+        $page = 'list.html.twig';
+        $part = 'user/_list.html.twig';
+        $template = $this->chooseTemplate($request, $page, $part);
 
         return $this->render($template, [
             'users'     => $allUsers,
             'title'     => 'Users',
-            'list_part' => $listPart,
+            'list_part' => $part,
             'sort_property' => $sort_property,
             'sort_order'    => $sort_order,
         ]);
@@ -123,28 +154,19 @@ class UserController extends AbstractController
      */
     final public function confirmDeleteMultiply(Request $request): Response
     {
-        $repository = $this->getDoctrine()->getRepository(User::class);
-        $users = [];
-
         $data = $request->getContent();
         $ids  = json_decode($data, true);
 
-        foreach((array)$ids as $id) {
-            $user    = $repository->findOneBy(['id' => $id]);
-            $users[] = $user;
-        }
+        $users = $this->userManager->findMultiplyById($ids);
 
-        $confirm_part = 'user/_confirm-delete.html.twig';
-        $template = $request->isXmlHttpRequest()
-            ? $confirm_part
-            : 'confirm.html.twig';
+        $page = 'confirm.html.twig';
+        $part = 'user/_confirm-delete.html.twig';
+        $template = $this->chooseTemplate($request, $page, $part);
 
         return $this->render($template, [
             'users'     => $users,
             'title'     => 'Users',
-            'confirm_part'  => $confirm_part,
-            'sort_property' => 'default',
-            'sort_order'    => 'default',
+            'confirm_part'  => $part,
         ]);
     }
 
@@ -159,30 +181,18 @@ class UserController extends AbstractController
      *     requirements={"_locale": "%app_locales%"},
      * )
      *
-     * @param FileUploader $uploader
-     * @param Request      $request
+     * @param Request $request
      *
      * @return Response
      * @throws FileNotFoundException
      */
-    final public function deleteMultiply(Request $request, FileUploader $uploader): Response
+    final public function deleteMultiply(Request $request): Response
     {
-        $repository    = $this->getDoctrine()->getRepository(User::class);
-        $entityManager = $this->getDoctrine()->getManager();
-
         $data = $request->getContent();
         $ids  = json_decode($data, false);
 
-        /** TODO: Delete avatar, when delete multiply User entities */
-        foreach((array) $ids as $id) {
-            $user = $repository->findOneBy(['id' => $id]);
+        $this->userManager->deleteMultiplyById($ids);
 
-            $avatarName = $user->getAvatar();
-            $uploader->deleteAvatar($avatarName);
-            $entityManager->remove($user);
-        }
-
-        $entityManager->flush();
         return $this->redirectToRoute('user_list_all');
     }
 
@@ -204,30 +214,23 @@ class UserController extends AbstractController
      */
     final public function search(Request $request, string $search_query): Response
     {
-        $repository = $this->getDoctrine()->getRepository(User::class);
-
         if($search_query === 'empty_request') {
             return $this->redirectToRoute('user_list_all');
         }
 
-        $result = $repository->searchByQuery($search_query);
+        $result = $this->userManager->search($search_query);
 
-        if(!$result) {
-            $this->addFlash(
-                'notice',
-                'It seems there are no users found'
-            );
-        }
+        $notice = 'It seems there are no users found';
+        if(!$result) { $this->addFlash('notice', $notice); }
 
-        $listPart = 'user/_list.html.twig';
-        $template = $request->isXmlHttpRequest()
-            ? $listPart
-            : 'list.html.twig';
+        $page = 'list.html.twig';
+        $part = 'user/_list.html.twig';
+        $template = $this->chooseTemplate($request, $page, $part);
 
         return $this->render($template, [
             'users'     => $result,
             'title'     => 'Users',
-            'list_part' => $listPart,
+            'list_part' => $part,
         ]);
     }
 
@@ -243,24 +246,23 @@ class UserController extends AbstractController
      * )
      *
      * @param Request $request
-     * @param integer $id - User id from request params
+     * @param integer $id      - User id from request params
      *
      * @return Response
      */
     final public function showDetails(Request $request, int $id): Response
     {
-        $user = $this->getDoctrine()->getRepository(User::class)->find($id);
+        $user = $this->userManager->findOneById($id);
 
-        $details_part = 'user/_details.html.twig';
-        $template     = $request->isXmlHttpRequest()
-            ? $details_part
-            : 'details.html.twig';
+        $page = 'details.html.twig';
+        $part = 'user/_details.html.twig';
+        $template = $this->chooseTemplate($request, $page, $part);
 
         return $this->render($template, [
             'user'      => $user,
             'entity'    => $user, // For common `details`
             'title'     => 'User',
-            'details_part' => $details_part,
+            'details_part' => $part,
         ]);
     }
 
@@ -277,64 +279,31 @@ class UserController extends AbstractController
      *
      * @param integer $id
      * @param Request $request
-     * @param UserPasswordEncoderInterface $passwordEncoder
-     * @param FileUploader $uploader
      *
      * @return Response
-     * @throws FileNotFoundException
      * @throws FileExistsException
+     * @throws FileNotFoundException
      */
-    final public function updateUser(
-        int $id,
-        Request $request,
-        UserPasswordEncoderInterface $passwordEncoder,
-        FileUploader $uploader
-    ): Response {
-
-        $user = $this->getDoctrine()->getRepository(User::class)->find($id);
+    final public function updateUser(Request $request, int $id): Response
+    {
+        $user = $this->userManager->findOneById($id);
 
         $form = $this->createForm(UserType::class, $user, [
             'action' => $this->generateUrl('user_update', ['id' => $id]),
         ]);
-        $form->handleRequest($request);
 
-        if ($request->isMethod('POST')
-            && $form->isSubmitted()
-            && $form->isValid()
-        ) {
-            $password = $passwordEncoder->encodePassword(
-                $user, $user->getPassword()
-            );
-            $user->setPassword($password);
-
-            $avatar = $form['avatar']->getData();
-
-            if($avatar) {
-                $newName = $uploader->uploadEntityIcon(
-                    PathKeeper::UPLOADED_AVATARS_DIR,
-                    $avatar,
-                    $user->getAvatar()
-                );
-
-                $user->setAvatar($newName);
-            }
-
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($user);
-            $entityManager->flush();
-
+        if($this->formHandler->handle($request, $form, $user)) {
             return $this->redirectToRoute('user_list_all');
         }
 
-        $formPart = 'user/_form.html.twig';
-        $template = $request->isXmlHttpRequest()
-            ? $formPart
-            : 'form.html.twig';
+        $page = 'form.html.twig';
+        $part = 'user/_form.html.twig';
+        $template = $this->chooseTemplate($request, $page, $part);
 
         return $this->render($template, [
             'user' => $user,
             'form' => $form->createView(),
-            'form_part' => $formPart,
+            'form_part' => $part,
             'title' => 'Update user',
         ]);
     }
@@ -350,62 +319,34 @@ class UserController extends AbstractController
      *     requirements={"_locale": "%app_locales%"},
      * )
      *
-     * @param Request                      $request
-     * @param UserPasswordEncoderInterface $passwordEncoder
-     * @param FileUploader                 $uploader
+     * @param Request $request
      *
      * @return Response
-     * @throws FileNotFoundException
      * @throws FileExistsException
+     * @throws FileNotFoundException
      */
-    final public function createUser(
-        Request $request,
-        UserPasswordEncoderInterface $passwordEncoder,
-        FileUploader $uploader
-    ): Response {
-
+    final public function createUser(Request $request): Response
+    {
         $user = new User();
+        $user->setTheme($this->userManager::DEFAULT_THEME);
 
         $form = $this->createForm(UserType::class, $user, [
             'action' => $this->generateUrl('user_create'),
         ]);
-        $form->handleRequest($request);
 
-        if ($request->isMethod('POST')
-            && $form->isSubmitted()
-            && $form->isValid()
-        ) {
-            $password = $passwordEncoder->encodePassword(
-                $user, $user->getPassword()
-            );
-            $user->setPassword($password);
-            $user->setTheme('red lighten-2');
-
-            $avatar  = $form['avatar']->getData();
-            $newName = $uploader->uploadEntityIcon(
-                PathKeeper::UPLOADED_AVATARS_DIR,
-                $avatar,
-                $user->getAvatar()
-            );
-            $user->setAvatar($newName);
-
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($user);
-            $entityManager->flush();
-
+        if($this->formHandler->handle($request, $form, $user)) {
             return $this->redirectToRoute('user_list_all');
         }
 
-        $formPart = 'user/_form.html.twig';
-        $template = $request->isXmlHttpRequest()
-            ? $formPart
-            : 'form.html.twig';
+        $page = 'form.html.twig';
+        $part = 'user/_form.html.twig';
+        $template = $this->chooseTemplate($request, $page, $part);
 
         return $this->render($template, [
             'user' => $user,
             'form' => $form->createView(),
-            'form_part' => $formPart,
-            'title' => 'Create user'
+            'form_part' => $part,
+            'title'     => 'Create user'
         ]);
     }
 
@@ -427,14 +368,15 @@ class UserController extends AbstractController
      */
     final public function confirmDeleteUser(Request $request, int $id): Response
     {
-        $user     = $this->getDoctrine()->getRepository(User::class)->find($id);
-        $template = $request->isXmlHttpRequest()
-            ? 'user/_confirm-delete.html.twig'
-            : 'confirm.html.twig';
+        $user = $this->userManager->findOneById($id);
+
+        $page = 'confirm.html.twig';
+        $part = 'user/_confirm-delete.html.twig';
+        $template = $this->chooseTemplate($request, $page, $part);
 
         return $this->render($template, [
             'user' => $user,
-            'confirm_part' => 'user/_confirm-delete.html.twig',
+            'confirm_part' => $part,
         ]);
     }
 
@@ -449,22 +391,14 @@ class UserController extends AbstractController
      *     requirements={"_locale": "%app_locales%"},
      * )
      *
-     * @param FileUploader $uploader
      * @param integer $id
      *
      * @return Response
      * @throws FileNotFoundException
      */
-    final public function deleteUser(FileUploader $uploader, int $id): Response
+    final public function deleteUser(int $id): Response
     {
-        $user = $this->getDoctrine()->getRepository(User::class)->find($id);
-
-        $avatarName = $user->getAvatar();
-        $uploader->deleteAvatar($avatarName);
-
-        $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->remove($user);
-        $entityManager->flush();
+        $this->userManager->deleteOneById($id);
 
         return $this->redirectToRoute('user_list_all');
     }

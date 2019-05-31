@@ -20,6 +20,9 @@ class PathKeeper
     /** @const string PUBLIC_DIR */
     public const PUBLIC_DIR = 'public';
 
+    /** @const string BUILD_IMAGES_DIR */
+    public const BUILD_IMAGES_DIR = 'build/images';
+
     /** @const string PUBLIC_UPLOADS_DIR */
     public const PUBLIC_UPLOADS_DIR = 'uploads';
 
@@ -28,6 +31,9 @@ class PathKeeper
 
     /** @var string UPLOADED_ICONS_DIR */
     public const UPLOADED_ICONS_DIR = 'icons';
+
+    /** @const string ANONYMOUS_ICON_NAME */
+    public const ANONYMOUS_ICON_NAME = "anonymous.png";
 
 
     /**
@@ -67,12 +73,23 @@ class PathKeeper
 
 
     /**
+     * Returns absolute path to public folder
+     *
+     * @return string
+     */
+    final public function getPublicSystemPath(): string
+    {
+        return $this->getProjectSystemPath().'/'.self::PUBLIC_DIR;
+    }
+
+
+    /**
      * Returns system path to public uploads folder
      *
-     * @return string "/uploads"
+     * @return string
      */
     final public function getPublicUploadsSystemPath(): string
     {
-        return $this->getProjectSystemPath().'/'.self::PUBLIC_DIR.'/'.self::PUBLIC_UPLOADS_DIR;
+        return $this->getPublicSystemPath().'/'.self::PUBLIC_UPLOADS_DIR;
     }
 }

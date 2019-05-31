@@ -10,7 +10,7 @@
     <div class="row">
         {% include('_flash-messages.html.twig') %}
 
-        <div class = "col s5">
+        <div class = "col s12 m5">
             {{ form_start(form) }}
                 <div>
                     {{ form_row(form.avatar) }}
@@ -24,13 +24,13 @@
         </div>
 
         {% if app.user.tasks|length > 0 %}
-            <div class="col s3 offset-s1">
+            <div class="col s12 m3 offset-m1">
                 {{ render(controller(
                     'App\\Controller\\TaskWidgetController::renderDoneTasksPieChart'
                 )) }}
             </div>
 
-            <div class="col s3">
+            <div class="col s12 m3">
                 {{ render(controller(
                     'App\\Controller\\TaskWidgetController::renderOverdueTasksDonutChart'
                 )) }}

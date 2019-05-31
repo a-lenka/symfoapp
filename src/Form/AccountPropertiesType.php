@@ -53,7 +53,9 @@ class AccountPropertiesType extends AbstractType
 
 
         if (!$isEdit || !$user->getTheme()) {
-            $imageConstraints[] = new NotNull();
+            $imageConstraints[] = new NotNull([
+                'message' => 'Please choose the theme',
+            ]);
         }
 
 

@@ -40,12 +40,8 @@ let ModalWidget = function() {
 
     let form = {
         get elem() {
-            let forms = document.forms;
-            if(forms.length > 1) { console.log('Here are more than one form'); }
-
-            let form  = forms[0];
-            if(!form) { console.log('There are no form found'); }
-            return form;
+            let forms = Array.from(document.forms);
+            return forms.find(f => f.parentElement.className.includes('modal-content'));
         },
 
         get actionAttr() {

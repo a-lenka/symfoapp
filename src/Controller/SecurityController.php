@@ -6,7 +6,11 @@ use App\Entity\User;
 use App\Form\RegistrationType;
 use App\Form\ResetPasswordType;
 use App\Security\LoginFormAuthenticator;
+use App\Service\FileUploader;
+use App\Service\Forms\UserFormHandler;
 use Exception;
+use League\Flysystem\FileExistsException;
+use League\Flysystem\FileNotFoundException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Finder\Exception\AccessDeniedException;
@@ -23,22 +27,22 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
  */
 class SecurityController extends AbstractController
 {
+
     /**
      * Returns only part of a template with a form
      * to be inserted into a modal window (for Ajax Requests),
      * or an entire page with a form inside
      * to redirect or navigate through browser history
      *
-     * @param Request   $request
-     * @param $formPart $string
+     * @param Request $request
+     * @param string  $page
+     * @param string  $part
      *
      * @return string
      */
-    private function chooseTemplate(Request $request, string $formPart): string
+    private function chooseTemplate(Request $request, string $page, string $part): string
     {
-        return $request->isXmlHttpRequest()
-            ? $formPart
-            : 'form.html.twig';
+        return $request->isXmlHttpRequest() ? $part : $page;
     }
 
 
@@ -63,11 +67,12 @@ class SecurityController extends AbstractController
         // Last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
 
-        $formPart = 'security/_form-login.html.twig';
-        $template = $this->chooseTemplate($request, $formPart);
+        $page = 'form.html.twig';
+        $part = 'security/_form-login.html.twig';
+        $template = $this->chooseTemplate($request, $page, $part);
 
         return $this->render($template, [
-            'form_part'     => $formPart,
+            'form_part'     => $part,
             'last_username' => $lastUsername,
             'error'         => $error,
         ]);
@@ -102,32 +107,31 @@ class SecurityController extends AbstractController
      *     requirements={"_locale": "%app_locales%"}
      * )
      *
-     * @param GuardAuthenticatorHandler    $guardHandler
-     * @param LoginFormAuthenticator       $authenticator
-     * @param Request                      $request
-     * @param UserPasswordEncoderInterface $passwordEncoder
+     * @param Request                   $request
+     * @param LoginFormAuthenticator    $authenticator
+     * @param GuardAuthenticatorHandler $guardHandler
+     * @param UserFormHandler           $formHandler
+     * @param FileUploader              $fileUploader
      *
      * @return Response
+     * @throws FileExistsException
+     * @throws FileNotFoundException
      */
     final public function register(
-        LoginFormAuthenticator $authenticator,
+        Request                   $request,
+        LoginFormAuthenticator    $authenticator,
         GuardAuthenticatorHandler $guardHandler,
-        Request $request,
-        UserPasswordEncoderInterface $passwordEncoder
+        UserFormHandler           $formHandler,
+        FileUploader              $fileUploader
     ): Response {
         $user = new User();
+        $user->setTheme('red lighten-2');
+
         $form = $this->createForm(RegistrationType::class, $user);
 
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $password = $passwordEncoder->encodePassword($user, $user->getPassword());
-            $user->setPassword($password);
-
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($user);
-            $entityManager->flush();
-
+        if($formHandler->handle(
+            $request, $form, $fileUploader, $user)
+        ) {
             return $guardHandler->authenticateUserAndHandleSuccess(
                 $user,
                 $request,
@@ -136,11 +140,12 @@ class SecurityController extends AbstractController
             );
         }
 
-        $formPart = 'security/_form-register.html.twig';
-        $template = $this->chooseTemplate($request, $formPart);
+        $page = 'form.html.twig';
+        $part = 'security/_form-register.html.twig';
+        $template = $this->chooseTemplate($request, $page, $part);
 
         return $this->render($template, [
-            'form_part' => $formPart,
+            'form_part' => $part,
             'form'      => $form->createView(),
         ]);
     }
@@ -167,17 +172,13 @@ class SecurityController extends AbstractController
     ): Response {
         $user = $this->getUser();
 
-        if(!$user) {
-            throw new AccessDeniedException(
-            /** TODO: Secure the link from non authenticated Users instead */
-                'Login please. You can access this page only from your account.', 403
-            );
-        }
+        $accessMsg = 'Login please. You can access this page only from your account';
+        if(!$user) { throw new AccessDeniedException($accessMsg, 403); }
 
         $form = $this->createForm(ResetPasswordType::class);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if($form->isSubmitted() && $form->isValid()) {
 
             $user->setPassword(
                 $encoder->encodePassword(
@@ -191,11 +192,12 @@ class SecurityController extends AbstractController
             return $this->redirectToRoute('logout');
         }
 
-        $formPart = 'security/_form-reset.html.twig';
-        $template = $this->chooseTemplate($request, $formPart);
+        $page = 'form.html.twig';
+        $part = 'security/_form-reset.html.twig';
+        $template = $this->chooseTemplate($request, $page, $part);
 
         return $this->render($template, [
-            'form_part' => $formPart,
+            'form_part' => $part,
             'form'      => $form->createView(),
         ]);
     }

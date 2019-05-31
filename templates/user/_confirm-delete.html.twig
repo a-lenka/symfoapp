@@ -1,15 +1,23 @@
 {% if users is defined %}
-    <table class="responsive-table highlight">
-        <tbody>
-            {% for user in users %}
+    <div class="modal-body">
+        <table class="responsive-table highlight">
+            <thead>
                 <tr>
-                    {{ include('user/_table-row.html.twig') }}
+                    {{ include('user/_table-headers.html.twig') }}
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </thead>
 
-    <div class="row modal-footer">
+            <tbody>
+                {% for user in users %}
+                    <tr>
+                        {{ include('user/_table-row.html.twig') }}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="modal-footer">
         <a href="{{ path('user_list_delete') }}"
            class="btn waves-effect waves-light red">
             {{ 'Delete permanently'|trans }}
