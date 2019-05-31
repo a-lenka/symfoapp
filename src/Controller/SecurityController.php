@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Event\RegistrationEvent;
 use App\Form\RegistrationType;
 use App\Form\ResetPasswordType;
 use App\Security\LoginFormAuthenticator;
@@ -14,6 +15,7 @@ use League\Flysystem\FileExistsException;
 use League\Flysystem\FileNotFoundException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -34,14 +36,21 @@ class SecurityController extends AbstractController
     /** @var TemplateRenderer */
     private $renderer;
 
+    /** @var EventDispatcherInterface */
+    private $eventDispatcher;
+
     /**
      * HomeController constructor
      *
-     * @param TemplateRenderer $templateRenderer
+     * @param EventDispatcherInterface $eventDispatcher
+     * @param TemplateRenderer         $templateRenderer
      */
-    public function __construct(TemplateRenderer $templateRenderer)
-    {
-        $this->renderer = $templateRenderer;
+    public function __construct(
+        EventDispatcherInterface $eventDispatcher,
+        TemplateRenderer         $templateRenderer
+    ) {
+        $this->eventDispatcher = $eventDispatcher;
+        $this->renderer        = $templateRenderer;
     }
 
 
@@ -130,7 +139,11 @@ class SecurityController extends AbstractController
         $form = $this->createForm(RegistrationType::class, $user);
 
         if($formHandler->handle($request, $form, $user)) {
-            $mailSender->sendMailOnRegister($user);
+
+            $this->eventDispatcher->dispatch(
+                RegistrationEvent::NAME,
+                new RegistrationEvent($user)
+            );
 
             return $guardHandler->authenticateUserAndHandleSuccess(
                 $user,

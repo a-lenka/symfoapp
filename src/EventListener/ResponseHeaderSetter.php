@@ -5,10 +5,10 @@ namespace App\EventListener;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 
 /**
- * Class ResponseMetadataPopulator
+ * Class ResponseHeaderSetter
  * @package App\EventListener
  */
-class ResponseMetadataPopulator
+class ResponseHeaderSetter
 {
     /**
      * @param FilterResponseEvent $event

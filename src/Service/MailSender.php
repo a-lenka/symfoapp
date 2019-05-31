@@ -47,15 +47,33 @@ class MailSender
      */
     final public function sendMailOnRegister(User $user): void
     {
-        $message = (new Swift_Message('Welcome to Symfoapp'))
+        $this->send(
+            $user,
+            'Welcome to Symfoapp',
+            'emails/registration.html.twig'
+        );
+    }
+
+
+    /**
+     * @param User   $user
+     * @param string $subject
+     * @param string $template
+     *
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     */
+    private function send(User $user, string $subject, string $template): void
+    {
+        $message = (new Swift_Message($subject))
             ->setFrom(self::SENDER_EMAIL)
             ->setTo($user->getEmail())
             ->setBody(
-                $this->twig->render(
-                    'emails/registration.html.twig'
-                ),
+                $this->twig->render($template),
                 'text/html'
-            );
+            )
+        ;
 
         $this->mailer->send($message);
     }
