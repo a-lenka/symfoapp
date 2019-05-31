@@ -59,19 +59,22 @@
 
 {# Top Menu content #}
 
-{# Start Locale Switcher content #}
-{% set route        = app.request.attributes.get('_route') %}
-{% set route_params = app.request.attributes.get('_route_params') %}
-{% set params       = route_params|merge(app.request.query.all) %}
 
+{# Start Locale Switcher content #}
 <ul id="dropdown-locales" class="dropdown-content">
-    {% for locale in locales() %}
-        <li>
-            <a href="{{ path(route, params|merge({ _locale: locale.code })) }}">
-                {{ locale.name|capitalize }}
-            </a>
-        </li>
-    {% endfor %}
+    {% if app.request.attributes.get('_route_params') %}
+        {% set route        = app.request.attributes.get('_route') %}
+        {% set route_params = app.request.attributes.get('_route_params') %}
+        {% set params       = route_params|merge(app.request.query.all) %}
+
+        {% for locale in locales() %}
+            <li>
+                <a href="{{ path(route, params|merge({ _locale: locale.code })) }}">
+                    {{ locale.name|capitalize }}
+                </a>
+            </li>
+        {% endfor %}
+    {% endif %}
 </ul>
 {# End Locale Switcher content #}
 
