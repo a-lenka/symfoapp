@@ -6,8 +6,8 @@ use App\Entity\User;
 use App\Form\RegistrationType;
 use App\Form\ResetPasswordType;
 use App\Security\LoginFormAuthenticator;
-use App\Service\FileUploader;
 use App\Service\Forms\UserFormHandler;
+use App\Service\MailSender;
 use Exception;
 use League\Flysystem\FileExistsException;
 use League\Flysystem\FileNotFoundException;
@@ -20,6 +20,9 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Guard\GuardAuthenticatorHandler;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 
 /**
  * Class SecurityController
@@ -111,27 +114,30 @@ class SecurityController extends AbstractController
      * @param LoginFormAuthenticator    $authenticator
      * @param GuardAuthenticatorHandler $guardHandler
      * @param UserFormHandler           $formHandler
-     * @param FileUploader              $fileUploader
+     * @param MailSender                $mailSender
      *
      * @return Response
      * @throws FileExistsException
      * @throws FileNotFoundException
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     final public function register(
         Request                   $request,
         LoginFormAuthenticator    $authenticator,
         GuardAuthenticatorHandler $guardHandler,
         UserFormHandler           $formHandler,
-        FileUploader              $fileUploader
+        MailSender                $mailSender
     ): Response {
         $user = new User();
         $user->setTheme('red lighten-2');
 
         $form = $this->createForm(RegistrationType::class, $user);
 
-        if($formHandler->handle(
-            $request, $form, $fileUploader, $user)
-        ) {
+        if($formHandler->handle($request, $form, $user)) {
+            $mailSender->sendMailOnRegister($user);
+
             return $guardHandler->authenticateUserAndHandleSuccess(
                 $user,
                 $request,
