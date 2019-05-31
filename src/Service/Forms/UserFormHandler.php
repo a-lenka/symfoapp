@@ -18,16 +18,13 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
  * Class TaskFormHandler
  * @package App\Service\Forms
  */
-class UserFormHandler
+class UserFormHandler extends FormHandler
 {
     /** @var ObjectManager */
     private $entityManager;
 
     /** @var UserPasswordEncoderInterface */
     private $passwordEncoder;
-
-    /** @var FileUploader */
-    private $fileUploader;
 
     /**
      * UserFormHandler constructor
@@ -41,9 +38,10 @@ class UserFormHandler
         ObjectManager                $entityManager,
         FileUploader                 $fileUploader
     ) {
+        parent::__construct($fileUploader);
+
         $this->entityManager   = $entityManager;
         $this->passwordEncoder = $passwordEncoder;
-        $this->fileUploader    = $fileUploader;
     }
 
 
@@ -70,7 +68,7 @@ class UserFormHandler
             && $form->isValid()
         ) {
             $password = $this->passwordEncoder->encodePassword(
-                $user, $user->getPassword()
+                $user, $form['password']->getData()
             );
 
             $user->setPassword($password);

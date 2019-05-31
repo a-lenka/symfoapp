@@ -2,7 +2,7 @@
 
 namespace App\Service\Forms;
 
-use App\DomainManager\TaskManager;
+use App\DomainManager\TaskDomainManager;
 use App\Entity\Task;
 use App\Entity\User;
 use App\Service\FileUploader;
@@ -18,23 +18,21 @@ use Symfony\Component\HttpFoundation\Request;
  * Class TaskFormHandler
  * @package App\Service\Forms
  */
-class TaskFormHandler
+class TaskFormHandler extends FormHandler
 {
-    /** @var TaskManager */
+    /** @var TaskDomainManager */
     private $taskManager;
-
-    /** @var FileUploader */
-    private $fileUploader;
 
     /**
      * TaskFormHandler constructor
      *
-     * @param TaskManager  $taskManager
-     * @param FileUploader $fileUploader
+     * @param TaskDomainManager $taskManager
+     * @param FileUploader      $fileUploader
      */
-    public function __construct(TaskManager $taskManager, FileUploader $fileUploader) {
-        $this->taskManager  = $taskManager;
-        $this->fileUploader = $fileUploader;
+    public function __construct(TaskDomainManager $taskManager, FileUploader $fileUploader) {
+        parent::__construct($fileUploader);
+
+        $this->taskManager = $taskManager;
     }
 
 

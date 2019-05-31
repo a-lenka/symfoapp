@@ -3,12 +3,16 @@
 namespace App\Controller;
 
 use App\Entity\Task;
+use App\Service\TemplateRenderer;
 use DateTime;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Response;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 
 /**
  * Manage Task Widgets
@@ -19,6 +23,20 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class TaskWidgetController extends AbstractController
 {
+    /** @var TemplateRenderer */
+    private $renderer;
+
+    /**
+     * AccountController constructor
+     *
+     * @param TemplateRenderer  $templateRenderer
+     */
+    public function __construct(TemplateRenderer $templateRenderer)
+    {
+        $this->renderer = $templateRenderer;
+    }
+
+
     /**
      * @param string $property
      * @param string $value
@@ -28,12 +46,12 @@ class TaskWidgetController extends AbstractController
     private function getTasksByProperty(string $property, string $value): array
     {
         $Property  = strtoupper($property);
-        $getProp   = "get$Property";
+        $method    = "get$Property";
         $tasks     = $this->getUser()->getTasks()->toArray();
         $filtered  = [];
 
         foreach($tasks as $task) {
-            if($task->$getProp() === $value) {
+            if($task->$method() === $value) {
                 $filtered[] = $task;
             }
         }
@@ -66,6 +84,9 @@ class TaskWidgetController extends AbstractController
 
     /**
      * @return Response
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     final public function renderDoneTasksPieChart(): Response
     {
@@ -74,22 +95,23 @@ class TaskWidgetController extends AbstractController
         $accessMessage = 'Login please. You can access this page only from your account';
         if(!$user) { throw new AccessDeniedException($accessMessage, 403); }
 
-        $tasks      = $this->getUser()->getTasks()->toArray();
-        $part       = 100 / count($tasks);
-        $doneTasks  = $this->getTasksByProperty('state', 'Done');
-        $doneTasksPart   = count($doneTasks) * $part;
+        $tasks     = $this->getUser()->getTasks()->toArray();
+        $part      = 100 / count($tasks);
+        $doneTasks = $this->getTasksByProperty('state', 'Done');
         $inProgressTasks = $this->getTasksByProperty('state', 'In progress');
-        $inProgressTasksPart  = count($inProgressTasks) * $part;
 
-        return $this->render(
-            'widgets/_done_tasks_pie.html.twig', [
-                'tasks'       => $tasks,
-                'part'        => $part,
-                'done_tasks'  => $doneTasks,
-                'done_tasks_part'   => $doneTasksPart,
-                'in_progress_tasks' => $inProgressTasks,
-                'in_progress_tasks_part'  => $inProgressTasksPart,
-            ]
+        $props = [
+            'page'  => 'widgets/_done_tasks_pie.html.twig',
+            'tasks' => $tasks,
+            'part'  => $part,
+            'done_tasks'      => $doneTasks,
+            'done_tasks_part' => count($doneTasks) * $part,
+            'in_progress_tasks'      => $inProgressTasks,
+            'in_progress_tasks_part' => count($inProgressTasks) * $part,
+        ];
+
+        return new Response(
+            $this->renderer->renderTemplate($props)
         );
     }
 
@@ -112,15 +134,18 @@ class TaskWidgetController extends AbstractController
         $inProgressTasks = $this->getTasksByProperty('state', 'In progress');
         $inProgressTasksPart = count($inProgressTasks) * $part;
 
-        return $this->render(
-            'widgets/_overdue_tasks_donut.html.twig', [
+        $props = [
+                'page'        => 'widgets/_overdue_tasks_donut.html.twig',
                 'tasks'       => $tasks,
                 'part'        => $part,
                 'overdue_tasks'     => $overdueTasks,
                 'overdue_tasks_part'=> $overdueTasksPart,
                 'in_progress_tasks' => $inProgressTasks,
-                'in_progress_tasks_part'  => $inProgressTasksPart,
-            ]
+                'in_progress_tasks_part' => $inProgressTasksPart,
+        ];
+
+        return new Response(
+            $this->renderer->renderTemplate($props)
         );
     }
 }

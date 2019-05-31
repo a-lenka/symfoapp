@@ -1,6 +1,8 @@
 {% extends 'base.html.twig' %}
 
 {% block content %}
+    {% set confirm_part = part %}
+
     <thead>
         <tr>
             {{ include('user/_table-headers.html.twig') }}

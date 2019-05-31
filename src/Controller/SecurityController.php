@@ -8,6 +8,7 @@ use App\Form\ResetPasswordType;
 use App\Security\LoginFormAuthenticator;
 use App\Service\Forms\UserFormHandler;
 use App\Service\MailSender;
+use App\Service\TemplateRenderer;
 use Exception;
 use League\Flysystem\FileExistsException;
 use League\Flysystem\FileNotFoundException;
@@ -30,22 +31,17 @@ use Twig\Error\SyntaxError;
  */
 class SecurityController extends AbstractController
 {
+    /** @var TemplateRenderer */
+    private $renderer;
 
     /**
-     * Returns only part of a template with a form
-     * to be inserted into a modal window (for Ajax Requests),
-     * or an entire page with a form inside
-     * to redirect or navigate through browser history
+     * HomeController constructor
      *
-     * @param Request $request
-     * @param string  $page
-     * @param string  $part
-     *
-     * @return string
+     * @param TemplateRenderer $templateRenderer
      */
-    private function chooseTemplate(Request $request, string $page, string $part): string
+    public function __construct(TemplateRenderer $templateRenderer)
     {
-        return $request->isXmlHttpRequest() ? $part : $page;
+        $this->renderer = $templateRenderer;
     }
 
 
@@ -57,28 +53,26 @@ class SecurityController extends AbstractController
      *     requirements={"_locale": "%app_locales%"},
      * )
      *
-     * @param Request $request
+     * @param Request             $request
      * @param AuthenticationUtils $authenticationUtils
      *
      * @return Response
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     final public function login(Request $request, AuthenticationUtils $authenticationUtils): Response
     {
-        // Get the login error if there is one
-        $error = $authenticationUtils->getLastAuthenticationError();
+        $props = [
+            'page'          => $this->renderer::FORM_PAGE,
+            'part'          => 'security/_form-login.html.twig',
+            'last_username' => $authenticationUtils->getLastUsername(),
+            'error'         => $authenticationUtils->getLastAuthenticationError(),
+        ];
 
-        // Last username entered by the user
-        $lastUsername = $authenticationUtils->getLastUsername();
-
-        $page = 'form.html.twig';
-        $part = 'security/_form-login.html.twig';
-        $template = $this->chooseTemplate($request, $page, $part);
-
-        return $this->render($template, [
-            'form_part'     => $part,
-            'last_username' => $lastUsername,
-            'error'         => $error,
-        ]);
+        return new Response(
+            $this->renderer->renderTemplate($props, $request)
+        );
     }
 
 
@@ -146,14 +140,15 @@ class SecurityController extends AbstractController
             );
         }
 
-        $page = 'form.html.twig';
-        $part = 'security/_form-register.html.twig';
-        $template = $this->chooseTemplate($request, $page, $part);
+        $props = [
+            'page' => $this->renderer::FORM_PAGE,
+            'part' => 'security/_form-register.html.twig',
+            'form' => $form->createView(),
+        ];
 
-        return $this->render($template, [
-            'form_part' => $part,
-            'form'      => $form->createView(),
-        ]);
+        return new Response(
+            $this->renderer->renderTemplate($props, $request)
+        );
     }
 
 
@@ -171,6 +166,9 @@ class SecurityController extends AbstractController
      * @param UserPasswordEncoderInterface $encoder
      *
      * @return Response
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     final public function resetPassword(
         Request $request,
@@ -198,13 +196,14 @@ class SecurityController extends AbstractController
             return $this->redirectToRoute('logout');
         }
 
-        $page = 'form.html.twig';
-        $part = 'security/_form-reset.html.twig';
-        $template = $this->chooseTemplate($request, $page, $part);
+        $props = [
+            'page' => $this->renderer::FORM_PAGE,
+            'part' => 'security/_form-reset.html.twig',
+            'form' => $form->createView(),
+        ];
 
-        return $this->render($template, [
-            'form_part' => $part,
-            'form'      => $form->createView(),
-        ]);
+        return new Response(
+            $this->renderer->renderTemplate($props, $request)
+        );
     }
 }

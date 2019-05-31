@@ -3,8 +3,9 @@
 namespace App\Controller;
 
 use App\Form\AccountPropertiesType;
-use App\Service\FileUploader;
+use App\Service\FlashSender;
 use App\Service\Forms\UserFormHandler;
+use App\Service\TemplateRenderer;
 use League\Flysystem\FileExistsException;
 use League\Flysystem\FileNotFoundException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -12,6 +13,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 
 /**
  * Manage User's account page
@@ -22,6 +26,27 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class AccountController extends AbstractController
 {
+    /** @var TemplateRenderer */
+    private $renderer;
+
+    /** @var FlashSender */
+    private $flashSender;
+
+    /**
+     * AccountController constructor
+     *
+     * @param TemplateRenderer $templateRenderer
+     * @param FlashSender      $flashSender
+     */
+    public function __construct(
+        TemplateRenderer $templateRenderer,
+        FlashSender      $flashSender
+    ) {
+        $this->renderer    = $templateRenderer;
+        $this->flashSender = $flashSender;
+    }
+
+
     /**
      * @Route("/{_locale}/account",
      *     name="account",
@@ -31,21 +56,32 @@ class AccountController extends AbstractController
      * )
      *
      * @return Response
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     final public function index(): Response
     {
         $user = $this->getUser();
 
-        $notice = 'Create a task to see your progress';
-        if(!$user->getTasks()[0]) {$this->addFlash('notice', $notice); }
+        if(!$user->getTasks()[0]) {
+            $this->flashSender->sendNotice(
+                'Create a task to see your progress'
+            );
+        }
 
         $form = $this->createForm(AccountPropertiesType::class, $user, [
             'action' => $this->generateUrl('account_submit')
         ]);
 
-        return $this->render('account/index.html.twig', [
+        $props = [
+            'page' => $this->renderer::ACCOUNT_PAGE,
             'form' => $form->createView(),
-        ]);
+        ];
+
+        return new Response(
+            $this->renderer->renderTemplate($props)
+        );
     }
 
 
@@ -57,16 +93,17 @@ class AccountController extends AbstractController
      *     requirements={"_locale": "%app_locales%"},
      * )
      *
-     * @param FileUploader    $fileUploader
      * @param UserFormHandler $formHandler
      * @param Request         $request
      *
      * @return Response
      * @throws FileExistsException
      * @throws FileNotFoundException
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     final public function indexSubmit(
-        FileUploader    $fileUploader,
         UserFormHandler $formHandler,
         Request         $request
     ): Response {
@@ -77,13 +114,18 @@ class AccountController extends AbstractController
         ]);
 
         if($formHandler->handle(
-            $request, $form, $fileUploader, $user)
+            $request, $form, $user)
         ) {
             return $this->redirectToRoute('account');
         }
 
-        return $this->render('account/index.html.twig', [
+        $props = [
+            'page' => $this->renderer::ACCOUNT_PAGE,
             'form' => $form->createView(),
-        ]);
+        ];
+
+        return new Response(
+            $this->renderer->renderTemplate($props)
+        );
     }
 }

@@ -2,10 +2,12 @@
 
 namespace App\Controller;
 
-use App\DomainManager\UserManager;
+use App\DomainManager\UserDomainManager;
 use App\Entity\User;
 use App\Form\UserType;
+use App\Service\FlashSender;
 use App\Service\Forms\UserFormHandler;
+use App\Service\TemplateRenderer;
 use League\Flysystem\FileExistsException;
 use League\Flysystem\FileNotFoundException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -13,6 +15,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 
 /**
  * Manage User Entities
@@ -23,39 +28,36 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class UserController extends AbstractController
 {
-    /** @var UserManager */
+    /** @var UserDomainManager */
     private $userManager;
 
     /** @var UserFormHandler */
     private $formHandler;
 
+    /** @var TemplateRenderer */
+    private $renderer;
+
+    /** @var FlashSender */
+    private $flashSender;
+
     /**
      * UserController constructor
      *
-     * @param UserManager     $userManager
-     * @param UserFormHandler $formHandler
+     * @param UserDomainManager $userManager
+     * @param UserFormHandler   $formHandler
+     * @param TemplateRenderer  $templateRenderer
+     * @param FlashSender       $flashSender
      */
-    public function __construct(UserManager $userManager, UserFormHandler $formHandler)
-    {
+    public function __construct(
+        UserDomainManager $userManager,
+        UserFormHandler   $formHandler,
+        TemplateRenderer  $templateRenderer,
+        FlashSender       $flashSender
+    ) {
         $this->userManager = $userManager;
         $this->formHandler = $formHandler;
-    }
-
-    /**
-     * Returns only part of a template with a form
-     * to be inserted into a modal window (for Ajax Requests),
-     * or an entire page with a form inside
-     * to redirect or navigate through browser history
-     *
-     * @param Request $request
-     * @param string  $page
-     * @param string  $part
-     *
-     * @return string
-     */
-    private function chooseTemplate(Request $request, string $page, string $part): string
-    {
-        return $request->isXmlHttpRequest() ? $part : $page;
+        $this->renderer    = $templateRenderer;
+        $this->flashSender = $flashSender;
     }
 
 
@@ -70,18 +72,24 @@ class UserController extends AbstractController
      * )
      *
      * @return Response
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     final public function showAll(): Response
     {
-        $users = $this->userManager->findAll();
-
-        return $this->render('list.html.twig', [
-            'users'     => $users,
+        $props = [
+            'page'      => $this->renderer::LIST_PAGE,
+            'users'     => $this->userManager->findAll(),
             'title'     => 'Users',
-            'list_part' => 'user/_list.html.twig',
+            'part'          => 'user/_list.html.twig',
             'sort_property' => 'default',
             'sort_order'    => 'default',
-        ]);
+        ];
+
+        return new Response(
+            $this->renderer->renderTemplate($props)
+        );
     }
 
 
@@ -104,6 +112,9 @@ class UserController extends AbstractController
      * @param string  $sort_order    - Sorting order
      *
      * @return Response
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     final public function showSorted(
         Request $request,
@@ -124,17 +135,18 @@ class UserController extends AbstractController
             $allUsers = $this->userManager->sortByProperty($sort_property, $sort_order);
         }
 
-        $page = 'list.html.twig';
-        $part = 'user/_list.html.twig';
-        $template = $this->chooseTemplate($request, $page, $part);
-
-        return $this->render($template, [
+        $props = [
+            'page' => $this->renderer::LIST_PAGE,
+            'part' => 'user/_list.html.twig',
             'users'     => $allUsers,
             'title'     => 'Users',
-            'list_part' => $part,
             'sort_property' => $sort_property,
             'sort_order'    => $sort_order,
-        ]);
+        ];
+
+        return new Response(
+            $this->renderer->renderTemplate($props, $request)
+        );
     }
 
 
@@ -151,23 +163,25 @@ class UserController extends AbstractController
      * @param Request $request
      *
      * @return Response
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     final public function confirmDeleteMultiply(Request $request): Response
     {
         $data = $request->getContent();
         $ids  = json_decode($data, true);
 
-        $users = $this->userManager->findMultiplyById($ids);
+        $props = [
+            'page'  => $this->renderer::CONFIRM_PAGE,
+            'users' => $this->userManager->findMultiplyById($ids),
+            'title' => 'Users',
+            'part'  => 'user/_confirm-delete.html.twig',
+        ];
 
-        $page = 'confirm.html.twig';
-        $part = 'user/_confirm-delete.html.twig';
-        $template = $this->chooseTemplate($request, $page, $part);
-
-        return $this->render($template, [
-            'users'     => $users,
-            'title'     => 'Users',
-            'confirm_part'  => $part,
-        ]);
+        return new Response(
+            $this->renderer->renderTemplate($props, $request)
+        );
     }
 
 
@@ -211,6 +225,9 @@ class UserController extends AbstractController
      * @param Request $request
      *
      * @return Response
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     final public function search(Request $request, string $search_query): Response
     {
@@ -220,18 +237,22 @@ class UserController extends AbstractController
 
         $result = $this->userManager->search($search_query);
 
-        $notice = 'It seems there are no users found';
-        if(!$result) { $this->addFlash('notice', $notice); }
+        if(!$result) {
+            $this->flashSender->sendNotice(
+                'It seems there are no users found'
+            );
+        }
 
-        $page = 'list.html.twig';
-        $part = 'user/_list.html.twig';
-        $template = $this->chooseTemplate($request, $page, $part);
+        $props = [
+            'page'  => $this->renderer::LIST_PAGE,
+            'part'  => 'user/_list.html.twig',
+            'users' => $result,
+            'title' => 'Users',
+        ];
 
-        return $this->render($template, [
-            'users'     => $result,
-            'title'     => 'Users',
-            'list_part' => $part,
-        ]);
+        return new Response(
+            $this->renderer->renderTemplate($props, $request)
+        );
     }
 
 
@@ -249,21 +270,22 @@ class UserController extends AbstractController
      * @param integer $id      - User id from request params
      *
      * @return Response
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     final public function showDetails(Request $request, int $id): Response
     {
-        $user = $this->userManager->findOneById($id);
+        $props = [
+            'page'  => $this->renderer::DETAILS_PAGE,
+            'user'  => $this->userManager->findOneById($id),
+            'title' => 'User',
+            'part'  => 'user/_details.html.twig',
+        ];
 
-        $page = 'details.html.twig';
-        $part = 'user/_details.html.twig';
-        $template = $this->chooseTemplate($request, $page, $part);
-
-        return $this->render($template, [
-            'user'      => $user,
-            'entity'    => $user, // For common `details`
-            'title'     => 'User',
-            'details_part' => $part,
-        ]);
+        return new Response(
+            $this->renderer->renderTemplate($props, $request)
+        );
     }
 
 
@@ -283,6 +305,9 @@ class UserController extends AbstractController
      * @return Response
      * @throws FileExistsException
      * @throws FileNotFoundException
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     final public function updateUser(Request $request, int $id): Response
     {
@@ -296,16 +321,17 @@ class UserController extends AbstractController
             return $this->redirectToRoute('user_list_all');
         }
 
-        $page = 'form.html.twig';
-        $part = 'user/_form.html.twig';
-        $template = $this->chooseTemplate($request, $page, $part);
-
-        return $this->render($template, [
-            'user' => $user,
-            'form' => $form->createView(),
-            'form_part' => $part,
+        $props = [
+            'page'  => $this->renderer::FORM_PAGE,
+            'user'  => $user,
+            'form'  => $form->createView(),
+            'part'  => 'user/_form.html.twig',
             'title' => 'Update user',
-        ]);
+        ];
+
+        return new Response(
+            $this->renderer->renderTemplate($props, $request)
+        );
     }
 
 
@@ -324,6 +350,9 @@ class UserController extends AbstractController
      * @return Response
      * @throws FileExistsException
      * @throws FileNotFoundException
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     final public function createUser(Request $request): Response
     {
@@ -338,16 +367,17 @@ class UserController extends AbstractController
             return $this->redirectToRoute('user_list_all');
         }
 
-        $page = 'form.html.twig';
-        $part = 'user/_form.html.twig';
-        $template = $this->chooseTemplate($request, $page, $part);
+        $props = [
+            'page'  => $this->renderer::FORM_PAGE,
+            'user'  => $user,
+            'form'  => $form->createView(),
+            'part'  => 'user/_form.html.twig',
+            'title' => 'Create user'
+        ];
 
-        return $this->render($template, [
-            'user' => $user,
-            'form' => $form->createView(),
-            'form_part' => $part,
-            'title'     => 'Create user'
-        ]);
+        return new Response(
+            $this->renderer->renderTemplate($props, $request)
+        );
     }
 
 
@@ -364,20 +394,23 @@ class UserController extends AbstractController
      * @param Request $request
      * @param integer $id
      *
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     *
      * @return Response
      */
     final public function confirmDeleteUser(Request $request, int $id): Response
     {
-        $user = $this->userManager->findOneById($id);
+        $props = [
+            'page' => $this->renderer::CONFIRM_PAGE,
+            'part' => 'user/_confirm-delete.html.twig',
+            'user' => $this->userManager->findOneById($id),
+        ];
 
-        $page = 'confirm.html.twig';
-        $part = 'user/_confirm-delete.html.twig';
-        $template = $this->chooseTemplate($request, $page, $part);
-
-        return $this->render($template, [
-            'user' => $user,
-            'confirm_part' => $part,
-        ]);
+        return new Response(
+            $this->renderer->renderTemplate($props, $request)
+        );
     }
 
 

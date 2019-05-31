@@ -3,6 +3,8 @@
 {% block title %}{{ title|trans }}{% endblock title %}
 
 {% block content %}
+    {% set list_part = part %}
+
     {% include('_flash-messages.html.twig') %}
 
     <div class="row">

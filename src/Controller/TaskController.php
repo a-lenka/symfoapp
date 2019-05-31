@@ -2,10 +2,12 @@
 
 namespace App\Controller;
 
-use App\DomainManager\TaskManager;
+use App\DomainManager\TaskDomainManager;
 use App\Entity\Task;
 use App\Form\TaskType;
+use App\Service\FlashSender;
 use App\Service\Forms\TaskFormHandler;
+use App\Service\TemplateRenderer;
 use League\Flysystem\FileExistsException;
 use League\Flysystem\FileNotFoundException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -15,6 +17,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 
 /**
  * Manage Task Entities
@@ -25,34 +30,29 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class TaskController extends AbstractController
 {
-    /** @var TaskManager */
+    /** @var TaskDomainManager */
     private $taskManager;
+
+    /** @var TemplateRenderer */
+    private $renderer;
+
+    /** @var FlashSender */
+    private $flashSender;
 
     /**
      * TaskController constructor
      *
-     * @param TaskManager $taskManager
+     * @param TaskDomainManager $taskManager
+     * @param TemplateRenderer  $templateRenderer
      */
-    public function __construct(TaskManager $taskManager)
-    {
+    public function __construct(
+        TaskDomainManager $taskManager,
+        TemplateRenderer  $templateRenderer,
+        FlashSender       $flashSender
+    ) {
         $this->taskManager = $taskManager;
-    }
-
-    /**
-     * Returns only part of a template with a form
-     * to be inserted into a modal window (for Ajax Requests),
-     * or an entire page with a form inside
-     * to redirect or navigate through browser history
-     *
-     * @param Request $request
-     * @param string  $page
-     * @param string  $part
-     *
-     * @return string
-     */
-    private function chooseTemplate(Request $request, string $page, string $part): string
-    {
-        return $request->isXmlHttpRequest() ? $part : $page;
+        $this->renderer    = $templateRenderer;
+        $this->flashSender = $flashSender;
     }
 
 
@@ -67,8 +67,11 @@ class TaskController extends AbstractController
      * )
      *
      * @return Response
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
-    final public function showAll(): Response
+    final public function showTaskList(): Response
     {
         $user = $this->getUser();
 
@@ -77,16 +80,121 @@ class TaskController extends AbstractController
 
         $userTasks = $user->getTasks();
 
-        $notice = 'It looks like you have no tasks yet';
-        if(!$userTasks[0]) { $this->addFlash('notice', $notice); }
+        if(!$userTasks[0]) {
+            $this->flashSender->sendNotice('It looks like you have no tasks yet');
+        }
 
-        return $this->render('list.html.twig', [
-            'tasks'     => $userTasks,
-            'title'     => 'Tasks',
-            'list_part' => 'task/_list.html.twig',
+        $props = [
+            'page'  => $this->renderer::LIST_PAGE,
+            'part'  => 'task/_list.html.twig',
+            'tasks' => $userTasks,
+            'title' => 'Tasks',
             'sort_property' => 'default',
             'sort_order'    => 'default',
-        ]);
+        ];
+
+        return new Response(
+            $this->renderer->renderTemplate($props)
+        );
+    }
+
+
+    /**
+     * Show sorted Task entities
+     *
+     * @Route("/{_locale}/task/list/all/sorted/{sort_property}/{sort_order}",
+     *     name="task_list_sorted",
+     *     methods="GET",
+     *     defaults={"_locale"="%default_locale%"},
+     *     requirements={
+     *          "_locale": "%app_locales%",
+     *          "sort_property"="id|title|dateDeadline|state",
+     *          "sort_order"="asc|desc|default"
+     *      },
+     * )
+     *
+     * @param Request $request
+     * @param string  $sort_property - Property to sort
+     * @param string  $sort_order    - Sorting order
+     *
+     * @return Response
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     */
+    final public function showTaskListSorted(
+        Request $request,
+        string  $sort_property,
+        string  $sort_order
+    ): Response {
+        $user = $this->getUser();
+
+        $accessMsg = 'Login please. You can access this page only from your account';
+        if(!$user) { throw new AccessDeniedException($accessMsg, 403); }
+
+        $userTasks = $this->taskManager->sort(
+            $user, $sort_property, $sort_order
+        );
+
+        $notFoundMsg = 'It seems there are no tasks found. Do you want to create the new one?';
+        if(empty($userTasks)) { throw new NotFoundHttpException($notFoundMsg); }
+
+        $props = [
+            'page'   => $this->renderer::LIST_PAGE,
+            'part'   => 'task/_list.html.twig',
+            'tasks'  => $userTasks,
+            'title'  => 'Tasks',
+            'sort_property' => $sort_property,
+            'sort_order'    => $sort_order,
+        ];
+
+        return new Response(
+            $this->renderer->renderTemplate($props, $request)
+        );
+    }
+
+
+    /**
+     * Show founded tasks
+     *
+     * @Route("/{_locale}/task/list/search/{search_query}",
+     *     name="task_search",
+     *     methods="GET",
+     *     defaults={"_locale"="%default_locale%"},
+     *     requirements={"_locale": "%app_locales%"},
+     * )
+     *
+     * @param Request $request
+     * @param string  $search_query
+     *
+     * @return Response
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     */
+    final public function search(Request $request, string $search_query): Response {
+        if($search_query === 'empty_request') {
+            return $this->redirectToRoute('task_list_all');
+        }
+
+        $result = $this->taskManager->search($this->getUser(), $search_query);
+
+        if(!$result) {
+            $this->flashSender->sendNotice(
+                'It seems there are no tasks found'
+            );
+        }
+
+        $props = [
+            'page'  => $this->renderer::LIST_PAGE,
+            'part'  => 'task/_list.html.twig',
+            'tasks' => $result,
+            'title' => 'Tasks',
+        ];
+
+        return new Response(
+            $this->renderer->renderTemplate($props, $request)
+        );
     }
 
 
@@ -103,6 +211,9 @@ class TaskController extends AbstractController
      * @param Request $request
      *
      * @return Response
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     final public function confirmDeleteMultiply(Request $request): Response
     {
@@ -111,15 +222,16 @@ class TaskController extends AbstractController
 
         $tasks = $this->taskManager->findMultiplyById($ids);
 
-        $page = 'confirm.html.twig';
-        $part = 'task/_confirm-delete.html.twig';
-        $template = $this->chooseTemplate($request, $page, $part);
+        $props = [
+            'page'  => $this->renderer::CONFIRM_PAGE,
+            'part'  => 'task/_confirm-delete.html.twig',
+            'tasks' => $tasks,
+            'title' => 'Tasks',
+        ];
 
-        return $this->render($template, [
-            'tasks'     => $tasks,
-            'title'     => 'Tasks',
-            'confirm_part'  => $part,
-        ]);
+        return new Response(
+            $this->renderer->renderTemplate($props, $request)
+        );
     }
 
 
@@ -150,94 +262,6 @@ class TaskController extends AbstractController
 
 
     /**
-     * Show sorted Task entities
-     *
-     * @Route("/{_locale}/task/list/all/sorted/{sort_property}/{sort_order}",
-     *     name="task_list_sorted",
-     *     methods="GET",
-     *     defaults={"_locale"="%default_locale%"},
-     *     requirements={
-     *          "_locale": "%app_locales%",
-     *          "sort_property"="id|title|dateDeadline|state",
-     *          "sort_order"="asc|desc|default"
-     *      },
-     * )
-     *
-     * @param Request $request
-     * @param string  $sort_property - Property to sort
-     * @param string  $sort_order    - Sorting order
-     *
-     * @return Response
-     */
-    final public function showSorted(
-        Request $request,
-        string  $sort_property,
-        string  $sort_order
-    ): Response {
-        $user = $this->getUser();
-
-        $accessMsg = 'Login please. You can access this page only from your account';
-        if(!$user) { throw new AccessDeniedException($accessMsg, 403); }
-
-        $userTasks = $this->taskManager->sort(
-            $user, $sort_property, $sort_order
-        );
-
-        $notFoundMsg = 'It seems there are no tasks found. Do you want to create the new one?';
-        if(empty($userTasks)) { throw new NotFoundHttpException($notFoundMsg); }
-
-        $page = 'list.html.twig';
-        $part = 'task/_list.html.twig';
-        $template = $this->chooseTemplate($request, $page, $part);
-
-        return $this->render($template, [
-            'tasks'     => $userTasks,
-            'title'     => 'Tasks',
-            'list_part' => $part,
-            'sort_property' => $sort_property,
-            'sort_order'    => $sort_order,
-        ]);
-    }
-
-
-    /**
-     * Show founded tasks
-     *
-     * @Route("/{_locale}/task/list/search/{search_query}",
-     *     name="task_search",
-     *     methods="GET",
-     *     defaults={"_locale"="%default_locale%"},
-     *     requirements={"_locale": "%app_locales%"},
-     * )
-     *
-     * @param Request $request
-     * @param string  $search_query
-     *
-     * @return Response
-     */
-    final public function search(Request $request, string $search_query): Response {
-        if($search_query === 'empty_request') {
-            return $this->redirectToRoute('task_list_all');
-        }
-
-        $result = $this->taskManager->search($this->getUser(), $search_query);
-
-        $notice = 'It seems there are no tasks found';
-        if(!$result) { $this->addFlash('notice', $notice); }
-
-        $page = 'list.html.twig';
-        $part = 'task/_list.html.twig';
-        $template = $this->chooseTemplate($request, $page, $part);
-
-        return $this->render($template, [
-            'tasks'     => $result,
-            'title'     => 'Tasks',
-            'list_part' => $part,
-        ]);
-    }
-
-
-    /**
      * Show details page for one separate Task
      *
      * @Route("/{_locale}/task/{id}/details",
@@ -251,21 +275,24 @@ class TaskController extends AbstractController
      * @param integer $id      - Task id from request params
      *
      * @return Response
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     final public function showDetails(Request $request, int $id): Response
     {
         $task = $this->taskManager->findOneById($id);
 
-        $page = 'details.html.twig';
-        $part = 'task/_details.html.twig';
-        $template = $this->chooseTemplate($request, $page, $part);
-
-        return $this->render($template, [
+        $props = [
+            'page'   => $this->renderer::DETAILS_PAGE,
+            'part'   => 'task/_details.html.twig',
             'task'   => $task,
-            'entity' => $task, // For common `details`
             'title'  => 'Task',
-            'details_part' => $part,
-        ]);
+        ];
+
+        return new Response(
+            $this->renderer->renderTemplate($props, $request)
+        );
     }
 
 
@@ -285,6 +312,9 @@ class TaskController extends AbstractController
      * @return Response
      * @throws FileExistsException
      * @throws FileNotFoundException
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     final public function createTask(Request $request, TaskFormHandler $formHandler): Response {
         $task = new Task();
@@ -299,16 +329,17 @@ class TaskController extends AbstractController
             return $this->redirectToRoute('task_list_all');
         }
 
-        $page = 'form.html.twig';
-        $part = 'task/_form.html.twig';
-        $template = $this->chooseTemplate($request, $page, $part);
+        $props = [
+            'page'  => $this->renderer::FORM_PAGE,
+            'part'  => 'task/_form.html.twig',
+            'task'  => $task,
+            'form'  => $form->createView(),
+            'title' => 'Create task',
+        ];
 
-        return $this->render($template, [
-            'task'      => $task,
-            'title'     => 'Create task',
-            'form'      => $form->createView(),
-            'form_part' => $part,
-        ]);
+        return new Response(
+            $this->renderer->renderTemplate($props, $request)
+        );
     }
 
 
@@ -329,6 +360,9 @@ class TaskController extends AbstractController
      * @return Response
      * @throws FileExistsException
      * @throws FileNotFoundException
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     final public function updateTask(
         Request         $request,
@@ -350,16 +384,17 @@ class TaskController extends AbstractController
             return $this->redirectToRoute('task_list_all');
         }
 
-        $page = 'form.html.twig';
-        $part = 'task/_form.html.twig';
-        $template = $this->chooseTemplate($request, $page, $part);
+        $props = [
+            'page'  => $this->renderer::FORM_PAGE,
+            'part'  => 'task/_form.html.twig',
+            'task'  => $task,
+            'form'  => $form->createView(),
+            'title' => 'Create task',
+        ];
 
-        return $this->render($template, [
-            'task' => $task,
-            'form' => $form->createView(),
-            'form_part' => $part,
-            'title'     => 'Update task',
-        ]);
+        return new Response(
+            $this->renderer->renderTemplate($props, $request)
+        );
     }
 
 
@@ -377,19 +412,23 @@ class TaskController extends AbstractController
      * @param integer $id
      *
      * @return Response
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
-    final public function confirmDeleteTask(Request $request, int $id): Response
+    final public function confirmDeleteOneTask(Request $request, int $id): Response
     {
         $task = $this->taskManager->findOneById($id);
 
-        $page = 'confirm.html.twig';
-        $part = 'task/_confirm-delete.html.twig';
-        $template = $this->chooseTemplate($request, $page, $part);
+        $props = [
+            'page' => $this->renderer::CONFIRM_PAGE,
+            'task' => $task,
+            'part' => 'task/_confirm-delete.html.twig',
+        ];
 
-        return $this->render($template, [
-            'task'         => $task,
-            'confirm_part' => $part,
-        ]);
+        return new Response(
+            $this->renderer->renderTemplate($props, $request)
+        );
     }
 
 

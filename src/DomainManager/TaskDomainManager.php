@@ -10,22 +10,16 @@ use Doctrine\Common\Persistence\ObjectManager;
 use League\Flysystem\FileNotFoundException;
 
 /**
- * Class TaskManager
+ * Class TaskDomainManager
  * @package App\DomainManager
  */
-class TaskManager
+class TaskDomainManager extends DomainManager
 {
-    /** @var ObjectManager */
-    private $entityManager;
-
     /** @var TaskRepository */
     private $repository;
 
-    /** @var FileUploader */
-    private $fileUploader;
-
     /**
-     * TaskManager constructor
+     * TaskDomainManager constructor
      *
      * @param ObjectManager  $entityManager
      * @param TaskRepository $repository
@@ -36,9 +30,9 @@ class TaskManager
         TaskRepository $repository,
         FileUploader   $fileUploader
     ) {
-        $this->entityManager = $entityManager;
-        $this->repository    = $repository;
-        $this->fileUploader  = $fileUploader;
+        parent::__construct($entityManager, $fileUploader);
+
+        $this->repository = $repository;
     }
 
 
@@ -55,6 +49,7 @@ class TaskManager
 
     /**
      * @param array $ids
+     *
      * @return array
      */
     final public function findMultiplyById(array $ids): array
@@ -62,7 +57,8 @@ class TaskManager
         $tasks = [];
 
         foreach($ids as $id) {
-            $task    = $this->repository->findOneBy(['id' => $id]);
+            $idx     = is_int($id) ? $id : $id[0];
+            $task    = $this->findOneById($idx);
             $tasks[] = $task;
         }
 
@@ -101,17 +97,36 @@ class TaskManager
 
 
     /**
+     * Remove the given Task Entity with the icon,
+     * and flush to the Database
+     *
      * @param int $id
      *
      * @throws FileNotFoundException
      */
     final public function deleteOneById(int $id): void
     {
-        $task = $this->findOneById($id);
+        $idx  = is_int($id) ? $id : $id[0];
+        $task = $this->findOneById($idx);
         $this->fileUploader->deleteAvatar($task->getIcon());
 
-        $this->entityManager->remove($task);
-        $this->entityManager->flush();
+        $this->appEntityManager->remove($task);
+        $this->appEntityManager->flush();
+    }
+
+
+    /**
+     * Remove the given Task Entity with the icon,
+     * but not flush to the Database
+     *
+     * @param Task $task
+     *
+     * @throws FileNotFoundException
+     */
+    final public function removeTask(Task $task): void
+    {
+        $this->fileUploader->deleteAvatar($task->getIcon());
+        $this->appEntityManager->remove($task);
     }
 
 
@@ -123,12 +138,12 @@ class TaskManager
     final public function deleteMultiplyById(array $ids): void
     {
         foreach($ids as $id) {
-            $task = $this->repository->findOneBy(['id' => $id]);
-            $this->fileUploader->deleteAvatar($task->getIcon());
-            $this->entityManager->remove($task);
+            $idx  = is_int($id) ? $id : $id[0];
+            $task = $this->findOneById($idx);
+            $this->removeTask($task);
         }
 
-        $this->entityManager->flush();
+        $this->appEntityManager->flush();
     }
 
 
@@ -139,8 +154,7 @@ class TaskManager
      */
     final public function flushTask(Task $task): void
     {
-        $this->entityManager->persist($task);
-        $this->entityManager->flush();
+        $this->appEntityManager->persist($task);
+        $this->appEntityManager->flush();
     }
-
 }

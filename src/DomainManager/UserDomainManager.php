@@ -9,38 +9,32 @@ use Doctrine\Common\Persistence\ObjectManager;
 use League\Flysystem\FileNotFoundException;
 
 /**
- * Class UserManager
+ * Class UserDomainManager
  * @package App\DomainManager
  */
-class UserManager
+class UserDomainManager extends DomainManager
 {
-    /** @var ObjectManager */
-    private $entityManager;
-
     /** @var UserRepository */
     private $repository;
-
-    /** @var FileUploader */
-    private $fileUploader;
 
     /** @var string DEFAULT_THEME */
     public const DEFAULT_THEME = 'red lighten-2';
 
     /**
-     * UserManager constructor
+     * UserDomainManager constructor
      *
-     * @param ObjectManager  $entityManager
+     * @param ObjectManager  $objectManager
      * @param UserRepository $repository
      * @param FileUploader   $fileUploader
      */
     public function __construct(
-        ObjectManager  $entityManager,
+        ObjectManager  $objectManager,
         UserRepository $repository,
         FileUploader   $fileUploader
     ) {
-        $this->entityManager = $entityManager;
-        $this->repository    = $repository;
-        $this->fileUploader  = $fileUploader;
+        parent::__construct($objectManager, $fileUploader);
+
+        $this->repository = $repository;
     }
 
 
@@ -74,7 +68,8 @@ class UserManager
         $users = [];
 
         foreach($ids as $id) {
-            $user    = $this->repository->findOneBy(['id' => $id]);
+            $idx     = is_int($id) ? $id : $id[0];
+            $user    = $this->findOneById($idx);
             $users[] = $user;
         }
 
@@ -142,11 +137,27 @@ class UserManager
      */
     final public function deleteOneById(int $id): void
     {
-        $user = $this->findOneById($id);
+        $idx  = is_int($id) ? $id : $id[0];
+        $user = $this->findOneById($idx);
         $this->fileUploader->deleteAvatar($user->getAvatar());
 
-        $this->entityManager->remove($user);
-        $this->entityManager->flush();
+        $this->appEntityManager->remove($user);
+        $this->appEntityManager->flush();
+    }
+
+
+    /**
+     * Remove the given User Entity with the icon,
+     * but not flush to the Database
+     *
+     * @param User $user
+     *
+     * @throws FileNotFoundException
+     */
+    final public function removeUser(User $user): void
+    {
+        $this->fileUploader->deleteAvatar($user->getAvatar());
+        $this->appEntityManager->remove($user);
     }
 
 
@@ -158,11 +169,11 @@ class UserManager
     final public function deleteMultiplyById(array $ids): void
     {
         foreach($ids as $id) {
-            $user = $this->repository->findOneBy(['id' => $id]);
-            $this->fileUploader->deleteAvatar($user->getAvatar());
-            $this->entityManager->remove($user);
+            $idx  = is_int($id) ? $id : $id[0];
+            $user = $this->findOneById($idx);
+            $this->removeUser($user);
         }
 
-        $this->entityManager->flush();
+        $this->appEntityManager->flush();
     }
 }

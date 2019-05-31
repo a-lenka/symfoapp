@@ -3,5 +3,7 @@
 {% block title %}{{ title|trans }}: {{ entity.id }}{% endblock title %}
 
 {% block content %}
+    {% set details_part = part %}
+
     {% include details_part %}
 {% endblock content %}

@@ -33,7 +33,7 @@ class PathKeeper
     public const UPLOADED_ICONS_DIR = 'icons';
 
     /** @const string ANONYMOUS_ICON_NAME */
-    public const ANONYMOUS_ICON_NAME = "anonymous.png";
+    public const ANONYMOUS_ICON_NAME = 'anonymous.png';
 
 
     /**
