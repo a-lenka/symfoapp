@@ -1,5 +1,5 @@
 // Imports
-import Logger from '../../js/modules/Logger.js';
+import Logger from '../modules/Logger.js';
 
 /**
  * Send Ajax Requests

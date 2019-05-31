@@ -1,5 +1,4 @@
 // Imports
-
 import * as M from 'materialize-css';
 
 /**

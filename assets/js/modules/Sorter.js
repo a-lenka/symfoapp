@@ -1,5 +1,5 @@
 // Imports
-import AjaxSender   from '../../js/modules/AjaxSender';
+import AjaxSender   from '../utils/AjaxSender';
 import Materializer from './Materializer';
 
 /**

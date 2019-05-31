@@ -1,3 +1,4 @@
+// Imports
 import * as M from 'materialize-css';
 
 /**
@@ -37,7 +38,7 @@ let Materializer = function() {
      */
     let reInitDropdowns = function() {
         let dropdowns = document.querySelectorAll('.dropdown-trigger');
-        M.Dropdown.init(dropdowns, {'constrainWidth': false});
+        return M.Dropdown.init(dropdowns, {'constrainWidth': false});
 
     };
 
@@ -47,7 +48,7 @@ let Materializer = function() {
      */
     let reInitDatePickers = function() {
         let datepickers = document.querySelectorAll('.datepicker');
-        let instances = M.Datepicker.init(datepickers, {
+        return M.Datepicker.init(datepickers, {
             'format': 'yyyy-mm-dd',
             'autoClose': true,
             'firstDay': 1,
@@ -62,7 +63,7 @@ let Materializer = function() {
      */
     let reInitTimePickers = function() {
         let timepickers = document.querySelectorAll('.timepicker');
-        let instances = M.Timepicker.init(timepickers, {
+        return M.Timepicker.init(timepickers, {
             'twelveHour': false,
             'autoClose': true,
         });
@@ -74,7 +75,7 @@ let Materializer = function() {
      */
     let reInitSelects = function() {
         let selects   = document.querySelectorAll('select');
-        let instances = M.FormSelect.init(selects, {
+        return M.FormSelect.init(selects, {
             'dropdownOptions': {'constrainWidth': false},
         });
     };
@@ -85,7 +86,7 @@ let Materializer = function() {
      */
     let reInitFloatingActions = function() {
         let buttons   = document.querySelectorAll('.fixed-action-btn');
-        let instances = M.FloatingActionButton.init(buttons, {});
+        return M.FloatingActionButton.init(buttons, {});
     };
 
 

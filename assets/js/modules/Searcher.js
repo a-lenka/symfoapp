@@ -1,7 +1,9 @@
 // Imports
 import * as M from 'materialize-css';
-import AjaxSender   from '../../js/modules/AjaxSender';
-import Sorter       from './Sorter';
+import AjaxSender from '../utils/AjaxSender';
+import Sorter     from './Sorter';
+import TableList  from './TableList';
+import Helper     from '../../js/utils/Helper';
 
 /**
  * Handle search events
@@ -10,12 +12,6 @@ import Sorter       from './Sorter';
  * @type {{setSearchListeners}}
  */
 let Searcher = function() {
-
-    let helper = {
-        getCurrentLocale: function() {
-            return document.getElementsByTagName('html')[0].getAttribute('lang');
-        },
-    };
 
     let box = {
         class: 'search-field',
@@ -35,30 +31,8 @@ let Searcher = function() {
         },
     };
 
-    let table = {
-        class: 'table.responsive-table.highlight',
-
-        get elem() {
-            let tableElem = document.querySelectorAll(table.class)[0];
-
-            if(tableElem) {
-                return tableElem;
-            }
-        },
-
-        get rows() {
-            let elem = table.elem;
-            let tbodyRows = elem.children[1].rows;
-
-            if(!tbodyRows) {
-                throw new Error('There are no rows in the table');
-            }
-
-            return tbodyRows;
-        },
-    };
-
     let eventManager = {
+
         triggers: {
             clearIcon: {
                 selector: 'div.search-field > i',
@@ -81,7 +55,11 @@ let Searcher = function() {
                 selector : 'a.btn-floating.indigo.darken-1',
 
                 get elem() {
-                    return document.querySelectorAll(eventManager.triggers.switchPerformedTasksButton.selector)[0];
+                    return document.querySelector(eventManager.triggers.switchPerformedTasksButton.selector);
+                },
+
+                get icon() {
+                    return eventManager.triggers.switchPerformedTasksButton.elem.children[0];
                 },
             },
         },
@@ -96,34 +74,31 @@ let Searcher = function() {
 
 
     let clearText = function(event) {
-        searchInput.value = '';
+        searchInput.elem.value = '';
     };
 
 
     let searchItems = function(event) {
-        let path = `http://symfoapp/${helper.getCurrentLocale()}/task/list/search/empty_request`;
+        let path = `http://symfoapp/${Helper.getCurrentLocale()}/task/list/search/empty_request`;
 
         if(searchInput.elem.value.length > 1) {
-            path = `http://symfoapp/${helper.getCurrentLocale()}/task/list/search/${searchInput.elem.value}`;
+            path = `http://symfoapp/${Helper.getCurrentLocale()}/task/list/search/${searchInput.elem.value}`;
         }
 
         AjaxSender.sendGet(path, function(xhr) {
+            // Close sidenav
             let sidenav  = document.querySelector('.sidenav');
             let instance = M.Sidenav.getInstance(sidenav);
             instance.close();
 
-
+            // Insert Table with search result
             Sorter.appendSortedContent(xhr);
 
-            /** TODO Replace this to Table component? */
-            table.rows.forEach(r => {
-                if(r.innerText.includes('Done') || r.innerText.includes('Готово')) {
-                    r.classList.remove('hide');
-                }
-            });
+            // Show performed tasks
+            TableList.table.showPerformedTasks();
 
-
-            let icon = eventManager.triggers.switchPerformedTasksButton.elem.children[0];
+            // Switch icon to 'show performed tasks'
+            let icon = eventManager.triggers.switchPerformedTasksButton.icon;
             icon.innerText = 'radio_button_checked'
         });
     };

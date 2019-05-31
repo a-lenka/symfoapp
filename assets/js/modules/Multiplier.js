@@ -1,6 +1,7 @@
 // Imports
-import AjaxSender  from '../../js/modules/AjaxSender';
+import AjaxSender  from '../utils/AjaxSender';
 import ModalWidget from '../../js/modules/ModalWidget';
+import TableList   from '../../js/modules/TableList';
 
 /**
  * Handle multiply actions
@@ -10,93 +11,27 @@ import ModalWidget from '../../js/modules/ModalWidget';
  */
 let Multiplier = function() {
 
-    let checkbox = {
-        html    : `<label><input type="checkbox"><span></span></label>`,
-        selector: 'input[type="checkbox"]',
+    let switchCheckboxes = function(event) {
 
-        get elems() {
-            return document.querySelectorAll(checkbox.selector);
-        },
-    };
+        if (checker.confirmAppendCheckboxEvent(event)) {
+            let checkboxes = TableList.checkbox.getElemsAsArray();
+            let rows       = TableList.table.rows;
 
+            if(checkboxes.length === 0) {
+                TableList.table.replaceIdsWithCheckboxes();
+                eventManager.triggers.confirmButton.activate();
+            } else {
+                rows.forEach(function(row) {
+                    let idCell     = row.children[0];
+                    let actionCell = row.children[row.children.length - 1];
+                    let actionLink = actionCell.children[0];
 
-    let table = {
-        class: 'table.responsive-table.highlight',
+                    idCell.innerHTML = actionLink.href.match(/\d+/);
+                });
 
-        get elem() {
-            let tableElem = document.querySelectorAll(table.class)[0];
-
-            if(tableElem) { return tableElem; }
-        },
-
-        get rows() {
-            let elem      = table.elem;
-            let tbodyRows = elem.children[1].rows;
-
-            if(!tbodyRows) { throw new Error('There are no rows in the table'); }
-
-            return tbodyRows;
-        },
-
-        getIdCellsArray() {
-            let tableElem = table.elem;
-            let tableRows = table.rows;
-
-            return Array.from(tableRows, row => row.children[0]);
-        },
-
-        getAllCheckboxes: function() {
-            return Object.values(checkbox.elems);
-        },
-
-        getCheckedCheckboxes: function() {
-            let checkboxes = table.getAllCheckboxes();
-            return checkboxes.filter(checkbox => checkbox.checked === true);
-        },
-
-        extractIdFromChecked: function(checkbox) {
-            let label    = checkbox.parentElement;
-            let td       = label.parentElement;
-            let row      = td.parentElement;
-            let targetTd = row.children[row.children.length - 1];
-            let link     = targetTd.children[0];
-            return link.href.match(/\d+/);
-        },
-
-        extractAllIdsInArray: function() {
-            let checked = table.getCheckedCheckboxes();
-            return Array.from(checked, checkbox => table.extractIdFromChecked(checkbox));
-        },
-
-        appendCheckboxes: function() {
-            let rows = table.rows;
-
-            rows.forEach(function(row) {
-                row.children[0].innerHTML = checkbox.html;
-            });
-        },
-
-        switchCheckboxes: function(event) {
-            if (checker.confirmAppendCheckboxEvent(event)) {
-                let checkboxes = table.getAllCheckboxes();
-                let rows       = table.rows;
-
-                if(checkboxes.length === 0) {
-                    table.appendCheckboxes();
-                    eventManager.triggers.confirmButton.activate();
-                } else {
-                    rows.forEach(function(row) {
-                        let idCell     = row.children[0];
-                        let actionCell = row.children[row.children.length - 1];
-                        let actionLink = actionCell.children[0];
-
-                        idCell.innerHTML = actionLink.href.match(/\d+/);
-                    });
-
-                    eventManager.triggers.confirmButton.deactivate();
-                }
+                eventManager.triggers.confirmButton.deactivate();
             }
-        },
+        }
     };
 
 
@@ -125,6 +60,7 @@ let Multiplier = function() {
 
 
     let eventManager = {
+
         triggers: {
             checkboxButton: {
                 className: 'btn-floating orange darken-1',
@@ -183,8 +119,8 @@ let Multiplier = function() {
         },
 
         setMultiplyListeners: function() {
-            if(table.elem) {
-                eventManager.listeners.chooseItems.elem.addEventListener('click', table.switchCheckboxes);
+            if(TableList.table.elem) {
+                eventManager.listeners.chooseItems.elem.addEventListener('click', switchCheckboxes);
                 eventManager.listeners.chooseItems.elem.addEventListener('click', requestCheckedItems);
                 eventManager.listeners.chooseItems.elem.addEventListener('click', deletePermanently);
                 eventManager.listeners.chooseItems.elem.addEventListener('click', switchPerformedTasks);
@@ -198,7 +134,7 @@ let Multiplier = function() {
             event.preventDefault();
 
             let path = eventManager.triggers.confirmButton.elem.getAttribute('href');
-            let ids  = table.extractAllIdsInArray();
+            let ids  = TableList.table.extractIdsAsArray();
 
             eventManager.triggers.confirmButton.deactivate();
 
@@ -214,7 +150,7 @@ let Multiplier = function() {
             event.preventDefault();
 
             let path   = eventManager.triggers.deletePermanentlyButton.elem.getAttribute('href');
-            let emails = table.extractAllIdsInArray();
+            let emails = TableList.table.extractIdsAsArray();
 
             AjaxSender.sendPost(path, function (xhr) {
                 ModalWidget.appendFormContent(xhr);
@@ -226,8 +162,7 @@ let Multiplier = function() {
         if(checker.confirmHidePerformedEvent(event)) {
             event.preventDefault();
 
-            /** TODO Replace this to Table component? */
-            table.rows.forEach(r => {
+            TableList.table.rows.forEach(r => {
                 if(r.innerText.includes('Done') || r.innerText.includes('Готово')) {
                     r.classList.toggle('hide');
                 }
