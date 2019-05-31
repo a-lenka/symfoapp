@@ -117,11 +117,59 @@
 <div>
     <ul id="sidenav-content" class="sidenav">
         <li>
+            <div class="user-view">
+                <div class="background">
+                    <img src="{{ asset('build/images/menu_bg.png') }}" style="width: 100%">
+                </div>
+
+                <a href="#user">
+                    {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+                        <img class="circle" src="{{- uploaded_asset(app.user.avatar) -}}">
+                    {% else %}
+                        <img class="circle" src="{{- asset('build/images/anonymous.png') -}}">
+                    {% endif %}
+                </a>
+
+                <a href="#name">
+                    {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+                        <span class="white-text name">{{ app.user.email }}</span>
+                        <span class="white-text email">{{ app.user.email }}</span>
+                    {% else %}
+                        <span class="white-text name">{{ "Guest"|trans }}</span>
+                        <span class="white-text email">{{ "Empty"|trans }}</span>
+                    {% endif %}
+
+                </a>
+                <a href="#email">
+
+                </a>
+            </div>
+        </li>
+
+        <li>
             <a href="{{ path('home_index') }}" class="waves-effect">
                 <i class="material-icons">home</i>
                 {{ 'Home'|trans }}
             </a>
         </li>
+
+        {% if is_granted('ROLE_ROOT') %}
+            <li>
+                <a href="{{ path('user_list_all') }}">
+                    <i class="material-icons">list</i>
+                    {{ 'Users'|trans }}
+                </a>
+            </li>
+        {% endif %}
+
+        {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+            <li>
+                <a href="{{ path('task_list_all') }}">
+                    <i class="material-icons">list</i>
+                    {{ 'Tasks'|trans }}
+                </a>
+            </li>
+        {% endif %}
     </ul>
 </div>
 {# End SideNav content #}
