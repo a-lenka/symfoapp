@@ -88,7 +88,11 @@ let Multiplier = function() {
 
                 deactivate: function() {
                     let btn = eventManager.triggers.confirmButton.elem;
-                    btn.setAttribute('disabled', true);
+
+                    if(TableList.checkbox.elems.length === 0) {
+                        btn.setAttribute('disabled', true);
+                    }
+
                 },
             },
 
