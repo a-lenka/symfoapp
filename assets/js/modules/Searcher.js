@@ -52,7 +52,7 @@ let Searcher = function() {
 
             switchPerformedTasksButton: {
                 className: 'btn-floating indigo darken-1',
-                selector : 'a.btn-floating.indigo.darken-1',
+                selector: 'a.btn-floating.indigo.darken-1',
 
                 get elem() {
                     return document.querySelector(eventManager.triggers.switchPerformedTasksButton.selector);
@@ -70,8 +70,14 @@ let Searcher = function() {
             if(box.elem) {
                 eventManager.triggers.clearIcon.elem.addEventListener('click', clearText);
                 eventManager.triggers.searchIcon.elem.addEventListener('click', searchItems);
+                searchInput.elem.addEventListener('keydown', function(event) {
+                    if(event.keyCode === 13) {
+                        event.preventDefault();
+                        searchItems(event);
+                    }
+                });
             }
-        },
+        }
     };
 
 
@@ -81,9 +87,10 @@ let Searcher = function() {
 
 
     let searchItems = function(event) {
+
         let locale = Helper.getCurrentLocale();
         let entity = (window.location.href.includes('task')) ? 'task' : 'user';
-        let path = `http://symfoapp/${locale}/${entity}/list/search/empty_request`;
+        let path   = `http://symfoapp/${locale}/${entity}/list/search/empty_request`;
 
         if(searchInput.elem.value.length > 1) {
             path = `http://symfoapp/${locale}/${entity}/list/search/${searchInput.elem.value}`;
@@ -97,6 +104,7 @@ let Searcher = function() {
 
             // Insert Table with search result
             Sorter.appendSortedContent(xhr);
+            window.history.back();
 
             // Show performed tasks
             TableList.table.showPerformedTasks();
