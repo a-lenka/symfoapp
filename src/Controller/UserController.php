@@ -231,9 +231,7 @@ class UserController extends AbstractController
         $result = $this->userManager->search($search_query);
 
         if(!$result) {
-            $this->flashSender->sendNotice(
-                'It seems there are no users found'
-            );
+            $this->flashSender->sendNoUsersFound();
         }
 
         return new Response(

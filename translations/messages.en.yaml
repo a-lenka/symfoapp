@@ -52,6 +52,7 @@
 'My name is Lena, and I am the creator of this application. I am glad that you decided to try it and really hope that Symfoapp will help you to plan your personal and working time more efficiently':
     'My name is Lena, and I am the creator of this application. I am glad that you decided to try it and really hope that Symfoapp will help you to plan your personal and working time more efficiently'
 'New password': 'New password'
+"Nobody's here": "Nobody's here"
 'Not Found': 'Page not found'
 'Ok': 'Ok'
 'Oops': 'Oops'
@@ -100,6 +101,8 @@
 'Welcome to your app': 'Welcome to your app'
 'What to do': 'What to do'
 'When to do': 'When to do'
+'Will we do something?': 'Will we do something?'
+'You have no any task yet': 'You have no any tasks yet'
 'Your password': 'Your password'
 '(he)will be deleted permanently': 'will be deleted permanently'
 '(she)will be deleted permanently': 'will be deleted permanently'

@@ -93,9 +93,7 @@ class TaskController extends AbstractController
         $tasks = $user->getTasks();
 
         if(!$tasks[0]) {
-            $this->flashSender->sendNotice(
-                'It looks like you have no tasks yet'
-            );
+            $this->flashSender->sendNoTasksFound();
         }
 
         return new Response(
@@ -202,9 +200,7 @@ class TaskController extends AbstractController
         );
 
         if(!$founded) {
-            $this->flashSender->sendNotice(
-                'It seems there are no tasks found'
-            );
+            $this->flashSender->sendNoTasksFound();
         }
 
         return new Response(

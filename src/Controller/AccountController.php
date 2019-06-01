@@ -76,9 +76,7 @@ class AccountController extends AbstractController
         $model = new AccountPropertiesModel($user);
 
         if(!$user->getTasks()[0]) {
-            $this->flashSender->sendNotice(
-                'Create a task to see your progress'
-            );
+            $this->flashSender->sendNoTasksFound();
         }
 
         if(!$request->attributes->get('form')) {
