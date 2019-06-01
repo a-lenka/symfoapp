@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\User;
+use App\Form\Models\UserTypeModel;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -30,7 +31,7 @@ class UserType extends AbstractType
     {
         $user   = $options['data'] ?? null;
         assert($user instanceof User);
-        $isEdit = $user && $user->getId();
+        $isEdit = $user && $user->getEmail();
 
         $builder
             ->add('email', EmailType::class, [
@@ -69,7 +70,7 @@ class UserType extends AbstractType
         ];
 
 
-        if (!$isEdit || !$user->getAvatar()) {
+        if(!$isEdit || !$user->getAvatar()) {
             $imageConstraints[] = new NotNull([
                 'message' => 'Please upload an image',
             ]);
@@ -94,7 +95,7 @@ class UserType extends AbstractType
     final public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => User::class,
+            'data_class' => UserTypeModel::class,
         ]);
     }
 }

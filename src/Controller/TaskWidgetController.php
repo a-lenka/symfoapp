@@ -92,26 +92,28 @@ class TaskWidgetController extends AbstractController
     {
         $user = $this->getUser();
 
-        $accessMessage = 'Login please. You can access this page only from your account';
-        if(!$user) { throw new AccessDeniedException($accessMessage, 403); }
+        if(!$user) {
+            throw new AccessDeniedException(
+                'Login please. You can access this page only from your account',
+                403
+            );
+        }
 
-        $tasks     = $this->getUser()->getTasks()->toArray();
+        $tasks     = $user->getTasks()->toArray();
         $part      = 100 / count($tasks);
         $doneTasks = $this->getTasksByProperty('state', 'Done');
         $inProgressTasks = $this->getTasksByProperty('state', 'In progress');
 
-        $props = [
-            'page'  => 'widgets/_done_tasks_pie.html.twig',
-            'tasks' => $tasks,
-            'part'  => $part,
-            'done_tasks'      => $doneTasks,
-            'done_tasks_part' => count($doneTasks) * $part,
-            'in_progress_tasks'      => $inProgressTasks,
-            'in_progress_tasks_part' => count($inProgressTasks) * $part,
-        ];
-
         return new Response(
-            $this->renderer->renderTemplate($props)
+            $this->renderer->renderTemplate([
+                'page'  => 'widgets/_done_tasks_pie.html.twig',
+                'tasks' => $tasks,
+                'part'  => $part,
+                'done_tasks'      => $doneTasks,
+                'done_tasks_part' => count($doneTasks) * $part,
+                'in_progress_tasks'      => $inProgressTasks,
+                'in_progress_tasks_part' => count($inProgressTasks) * $part,
+            ])
         );
     }
 
@@ -124,17 +126,22 @@ class TaskWidgetController extends AbstractController
     {
         $user = $this->getUser();
 
-        $accessMessage = 'Login please. You can access this page only from your account';
-        if(!$user) { throw new AccessDeniedException($accessMessage, 403); }
+        if(!$user) {
+            throw new AccessDeniedException(
+                'Login please. You can access this page only from your account',
+                403
+            );
+        }
 
-        $tasks = $this->getUser()->getTasks()->toArray();
+        $tasks = $user->getTasks()->toArray();
         $part  = 100 / count($tasks);
         $overdueTasks    = $this->getOverdueTasks();
         $overdueTasksPart= count($overdueTasks) * $part;
         $inProgressTasks = $this->getTasksByProperty('state', 'In progress');
         $inProgressTasksPart = count($inProgressTasks) * $part;
 
-        $props = [
+        return new Response(
+            $this->renderer->renderTemplate( [
                 'page'        => 'widgets/_overdue_tasks_donut.html.twig',
                 'tasks'       => $tasks,
                 'part'        => $part,
@@ -142,10 +149,7 @@ class TaskWidgetController extends AbstractController
                 'overdue_tasks_part'=> $overdueTasksPart,
                 'in_progress_tasks' => $inProgressTasks,
                 'in_progress_tasks_part' => $inProgressTasksPart,
-        ];
-
-        return new Response(
-            $this->renderer->renderTemplate($props)
+            ])
         );
     }
 }

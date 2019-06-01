@@ -21,7 +21,6 @@ class PublicAssetExtension extends AbstractExtension implements ServiceSubscribe
     /** @var ContainerInterface */
     private $container;
 
-
     /**
      * AssetsExtension constructor
      *

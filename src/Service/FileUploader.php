@@ -29,7 +29,10 @@ class FileUploader
      * @param FilesystemInterface $publicUploadFilesystem
      * @param PathKeeper          $pathKeeper
      */
-    public function __construct(FilesystemInterface $publicUploadFilesystem, PathKeeper $pathKeeper) {
+    public function __construct(
+        FilesystemInterface $publicUploadFilesystem,
+        PathKeeper          $pathKeeper
+    ) {
         $this->filesystem = $publicUploadFilesystem;
         $this->pathKeeper = $pathKeeper;
     }
@@ -42,7 +45,7 @@ class FileUploader
      */
     final public function deleteAvatar(?string $avatarName): void
     {
-        if ($avatarName) {
+        if($avatarName) {
             $this->filesystem->delete('/'.$avatarName);
         }
     }
@@ -80,12 +83,14 @@ class FileUploader
         ?File   $uploadedFile,
         ?string $existingFilename
     ): string {
-        if (!$uploadedFile) {
-            throw new FileNotFoundException('The User avatar was not uploaded');
+        if(!$uploadedFile) {
+            throw new FileNotFoundException(
+                'The User avatar was not uploaded'
+            );
         }
 
         // Old filename
-        if ($uploadedFile instanceof UploadedFile) {
+        if($uploadedFile instanceof UploadedFile) {
             $oldFileName = $uploadedFile->getClientOriginalName();
         } else {
             $oldFileName = $uploadedFile->getFileName();
@@ -104,7 +109,7 @@ class FileUploader
             $stream
         );
 
-        if (is_resource($stream)) {
+        if(is_resource($stream)) {
             fclose($stream);
         }
 

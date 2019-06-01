@@ -16,6 +16,17 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 class User implements UserInterface
 {
+    /** @const string DEFAULT_THEME */
+    public const DEFAULT_THEME = 'red lighten-2';
+
+    /** @var array THEMES */
+    public const THEMES = [
+        'Default' => 'red lighten-2',
+        'Purple'  => 'purple lighten-2',
+        'Indigo'  => 'indigo lighten-2',
+        'Black'   => 'black',
+    ];
+
     /**
      * @var int|null $id - User unique ID in the Database
      *

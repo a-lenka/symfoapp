@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Service\Forms;
+namespace App\Form\Handlers;
 
 use App\Service\FileUploader;
 
 /**
  * Class FormHandler
- * @package App\Service\Forms
+ * @package App\Form\Handlers
  */
 class FormHandler
 {

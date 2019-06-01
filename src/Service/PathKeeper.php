@@ -42,8 +42,10 @@ class PathKeeper
      * @param KernelInterface     $appKernel
      * @param RequestStackContext $requestStackContext
      */
-    public function __construct(KernelInterface $appKernel, RequestStackContext $requestStackContext)
-    {
+    public function __construct(
+        KernelInterface     $appKernel,
+        RequestStackContext $requestStackContext
+    ) {
         $this->appKernel           = $appKernel;
         $this->requestStackContext = $requestStackContext;
     }

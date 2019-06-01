@@ -25,10 +25,10 @@ class DateTimePickerType extends AbstractType
     final public function buildView(FormView $view, FormInterface $form, array $options): void
     {
         // Only for old browsers
-        $task = $form->getData();
+        $data = $form->getData();
 
-        if($task) {
-            $view->vars['value'] = $task->format('Y-m-d\TH:i:s');
+        if($data) {
+            $view->vars['value'] = $data->format('Y-m-d\TH:i:s');
         }
     }
 
@@ -39,7 +39,7 @@ class DateTimePickerType extends AbstractType
     final public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'html5'  => false,
+            'html5'       => false,
             'date_widget' => 'single_text',
             'time_widget' => 'single_text',
         ]);

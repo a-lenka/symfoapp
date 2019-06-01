@@ -7,6 +7,7 @@ use App\Repository\UserRepository;
 use App\Service\FileUploader;
 use Doctrine\Common\Persistence\ObjectManager;
 use League\Flysystem\FileNotFoundException;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
  * Class UserDomainManager
@@ -14,27 +15,45 @@ use League\Flysystem\FileNotFoundException;
  */
 class UserDomainManager extends DomainManager
 {
+    /** @var UserPasswordEncoderInterface */
+    private $encoder;
+
     /** @var UserRepository */
     private $repository;
-
-    /** @var string DEFAULT_THEME */
-    public const DEFAULT_THEME = 'red lighten-2';
 
     /**
      * UserDomainManager constructor
      *
-     * @param ObjectManager  $objectManager
-     * @param UserRepository $repository
-     * @param FileUploader   $fileUploader
+     * @param UserPasswordEncoderInterface $passwordEncoder
+     * @param ObjectManager                $objectManager
+     * @param UserRepository               $repository
+     * @param FileUploader                 $fileUploader
      */
     public function __construct(
-        ObjectManager  $objectManager,
-        UserRepository $repository,
-        FileUploader   $fileUploader
+        UserPasswordEncoderInterface $passwordEncoder,
+        ObjectManager                $objectManager,
+        UserRepository               $repository,
+        FileUploader                 $fileUploader
     ) {
         parent::__construct($objectManager, $fileUploader);
 
+        $this->encoder    = $passwordEncoder;
         $this->repository = $repository;
+    }
+
+
+    /**
+     * @param User   $user
+     * @param string $password
+     *
+     * @return User
+     */
+    final public function setUserPassword(User $user, string $password): User
+    {
+        return $user->setPassword(
+            $this->encoder->encodePassword($user, $password)
+        );
+
     }
 
 
@@ -131,6 +150,9 @@ class UserDomainManager extends DomainManager
 
 
     /**
+     * Find User Entity by the given ID, deletes avatar,
+     * then remove and flush founded User Entity
+     *
      * @param int $id
      *
      * @throws FileNotFoundException
@@ -162,6 +184,9 @@ class UserDomainManager extends DomainManager
 
 
     /**
+     * Remove multiply User entities,
+     * then flushes them to the Database
+     *
      * @param array $ids
      *
      * @throws FileNotFoundException
@@ -174,6 +199,18 @@ class UserDomainManager extends DomainManager
             $this->removeUser($user);
         }
 
+        $this->appEntityManager->flush();
+    }
+
+
+    /**
+     * Persists and flush User Entity
+     *
+     * @param User $user
+     */
+    final public function flushUser(User $user): void
+    {
+        $this->appEntityManager->persist($user);
         $this->appEntityManager->flush();
     }
 }

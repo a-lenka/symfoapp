@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Task;
 use App\Form\Fields\DateTimePickerType;
+use App\Form\Models\TaskTypeModel;
 use DateTime;
 use Exception;
 use Symfony\Component\Form\AbstractType;
@@ -34,7 +35,7 @@ class TaskType extends AbstractType
     {
         $task   = $options['data'] ?? null;
         assert($task instanceof Task);
-        $isEdit = $task && $task->getId();
+        $isEdit = $task && $task->getTitle();
 
         $builder
             ->add('title', TextType::class, [
@@ -93,7 +94,7 @@ class TaskType extends AbstractType
     final public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Task::class,
+            'data_class' => TaskTypeModel::class,
         ]);
     }
 }

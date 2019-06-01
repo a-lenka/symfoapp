@@ -2,9 +2,11 @@
 
 namespace App\Controller;
 
+use App\DomainManager\UserDomainManager;
 use App\Form\AccountPropertiesType;
+use App\Form\Handlers\UserFormHandler;
+use App\Form\Models\AccountPropertiesModel;
 use App\Service\FlashSender;
-use App\Service\Forms\UserFormHandler;
 use App\Service\TemplateRenderer;
 use League\Flysystem\FileExistsException;
 use League\Flysystem\FileNotFoundException;
@@ -26,6 +28,9 @@ use Twig\Error\SyntaxError;
  */
 class AccountController extends AbstractController
 {
+    /** @var UserDomainManager */
+    private $userManager;
+
     /** @var TemplateRenderer */
     private $renderer;
 
@@ -35,13 +40,16 @@ class AccountController extends AbstractController
     /**
      * AccountController constructor
      *
-     * @param TemplateRenderer $templateRenderer
-     * @param FlashSender      $flashSender
+     * @param UserDomainManager $userManager
+     * @param TemplateRenderer  $templateRenderer
+     * @param FlashSender       $flashSender
      */
     public function __construct(
-        TemplateRenderer $templateRenderer,
-        FlashSender      $flashSender
+        UserDomainManager $userManager,
+        TemplateRenderer  $templateRenderer,
+        FlashSender       $flashSender
     ) {
+        $this->userManager = $userManager;
         $this->renderer    = $templateRenderer;
         $this->flashSender = $flashSender;
     }
@@ -55,14 +63,17 @@ class AccountController extends AbstractController
      *     requirements={"_locale": "%app_locales%"},
      * )
      *
+     * @param Request $request
+     *
      * @return Response
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
      */
-    final public function index(): Response
+    final public function index(Request $request): Response
     {
-        $user = $this->getUser();
+        $user  = $this->getUser();
+        $model = new AccountPropertiesModel($user);
 
         if(!$user->getTasks()[0]) {
             $this->flashSender->sendNotice(
@@ -70,13 +81,17 @@ class AccountController extends AbstractController
             );
         }
 
-        $form = $this->createForm(AccountPropertiesType::class, $user, [
-            'action' => $this->generateUrl('account_submit')
-        ]);
+        if(!$request->attributes->get('form')) {
+            $form = $this->createForm(AccountPropertiesType::class, $model, [
+                'action' => $this->generateUrl('account_submit')
+            ])->createView();
+        } else {
+            $form = $request->attributes->get('form');
+        }
 
         $props = [
             'page' => $this->renderer::ACCOUNT_PAGE,
-            'form' => $form->createView(),
+            'form' => $form,
         ];
 
         return new Response(
@@ -103,29 +118,30 @@ class AccountController extends AbstractController
      * @throws RuntimeError
      * @throws SyntaxError
      */
-    final public function indexSubmit(
-        UserFormHandler $formHandler,
-        Request         $request
-    ): Response {
-        $user = $this->getUser();
+    final public function indexSubmit(UserFormHandler $formHandler, Request $request): Response
+    {
+        $user  = $this->getUser();
+        $model = new AccountPropertiesModel($user);
 
-        $form = $this->createForm(AccountPropertiesType::class, $user, [
+        $form = $this->createForm(AccountPropertiesType::class, $model, [
             'action' => $this->generateUrl('account_submit')
         ]);
 
-        if($formHandler->handle(
-            $request, $form, $user)
-        ) {
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()) {
+            $user = $formHandler->setAccountFormData($form, $user);
+
+            $this->userManager->flushUser($user);
+
             return $this->redirectToRoute('account');
         }
 
-        $props = [
-            'page' => $this->renderer::ACCOUNT_PAGE,
-            'form' => $form->createView(),
-        ];
-
         return new Response(
-            $this->renderer->renderTemplate($props)
+            $this->renderer->renderTemplate([
+                'page' => $this->renderer::ACCOUNT_PAGE,
+                'form' => $form->createView(),
+            ])
         );
     }
 }

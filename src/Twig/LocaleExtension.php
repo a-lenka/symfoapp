@@ -57,7 +57,7 @@ class LocaleExtension extends AbstractExtension
      */
     final public function getLocales(): array
     {
-        if (null !== $this->locales) {
+        if(null !== $this->locales) {
             return $this->locales;
         }
 

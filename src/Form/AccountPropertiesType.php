@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\User;
+use App\Form\Models\AccountPropertiesModel;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -10,13 +11,14 @@ use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
 use Symfony\Component\Validator\Constraints\Image;
 use Symfony\Component\Validator\Constraints\NotNull;
 
 /**
- * Defines the form used to create and manipulate User Entities
+ * Defines the form used to change User properties
  *
- * Class UserType
+ * Class AccountPropertiesType
  * @package App\Form
  */
 class AccountPropertiesType extends AbstractType
@@ -27,14 +29,24 @@ class AccountPropertiesType extends AbstractType
      */
     final public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $user   = $options['data'] ?? null;
-        assert($user instanceof User);
-        $isEdit = $user && $user->getId();
+        $model   = $options['data'] ?? null;
+        assert($model instanceof AccountPropertiesModel);
+        $isEdit = $model && $model->getTheme();
 
         $builder
             ->add('password', PasswordType::class, [
+                'constraints' => [
+                    new UserPassword(),
+                ],
                 'help'  => 'Your password',
                 'label' => 'Your password',
+            ])
+            ->add('theme', ChoiceType::class, [
+                'expanded'    => false,
+                'constraints' => new NotNull([
+                    'message' => 'Please choose the theme',
+                ]),
+                'choices' => User::THEMES,
             ])
             ->add('submit', SubmitType::class, [
                 'label' => 'Save'
@@ -47,22 +59,12 @@ class AccountPropertiesType extends AbstractType
             ])
         ];
 
-        $themeConstraints = [];
 
-
-        if (!$isEdit || !$user->getAvatar()) {
-            $themeConstraints[] = new NotNull([
-                'message' => 'Please upload an image',
-            ]);
-        }
-
-
-        if (!$isEdit || !$user->getTheme()) {
+        if (!$isEdit || !$model->getTheme()) {
             $imageConstraints[] = new NotNull([
-                'message' => 'Please choose the theme',
+                'message' => 'Please upload an icon',
             ]);
         }
-
 
         $builder
             ->add('avatar', FileType::class, [
@@ -71,16 +73,6 @@ class AccountPropertiesType extends AbstractType
                 'mapped'   => false,
                 'required' => false,
                 'constraints' => $imageConstraints
-            ])
-            ->add('theme', ChoiceType::class, [
-                'expanded'    => false,
-                'constraints' => $themeConstraints,
-                'choices'  => [
-                    'Default' => 'red lighten-2',
-                    'Purple'  => 'purple lighten-2',
-                    'Indigo'  => 'indigo lighten-2',
-                    'Black'   => 'black',
-                ],
             ])
         ;
     }
@@ -92,7 +84,7 @@ class AccountPropertiesType extends AbstractType
     final public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => User::class,
+            'data_class' => AccountPropertiesModel::class,
         ]);
     }
 }

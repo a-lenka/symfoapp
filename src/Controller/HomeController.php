@@ -46,12 +46,10 @@ class HomeController extends AbstractController
      */
     final public function index(): Response
     {
-        $props = [
-            'page' => $this->renderer::HOME_PAGE,
-        ];
-
         return new Response(
-            $this->renderer->renderTemplate($props)
+            $this->renderer->renderTemplate([
+                'page' => $this->renderer::HOME_PAGE,
+            ])
         );
     }
 }

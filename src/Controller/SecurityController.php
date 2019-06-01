@@ -2,13 +2,14 @@
 
 namespace App\Controller;
 
+use App\DomainManager\UserDomainManager;
 use App\Entity\User;
 use App\Event\RegistrationEvent;
+use App\Form\Handlers\UserFormHandler;
+use App\Form\Models\RegistrationModel;
 use App\Form\RegistrationType;
 use App\Form\ResetPasswordType;
 use App\Security\LoginFormAuthenticator;
-use App\Service\Forms\UserFormHandler;
-use App\Service\MailSender;
 use App\Service\TemplateRenderer;
 use Exception;
 use League\Flysystem\FileExistsException;
@@ -20,7 +21,6 @@ use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Guard\GuardAuthenticatorHandler;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Twig\Error\LoaderError;
@@ -33,6 +33,9 @@ use Twig\Error\SyntaxError;
  */
 class SecurityController extends AbstractController
 {
+    /** @var UserDomainManager */
+    private $userManager;
+
     /** @var TemplateRenderer */
     private $renderer;
 
@@ -42,13 +45,16 @@ class SecurityController extends AbstractController
     /**
      * HomeController constructor
      *
+     * @param UserDomainManager        $userManager
      * @param EventDispatcherInterface $eventDispatcher
      * @param TemplateRenderer         $templateRenderer
      */
     public function __construct(
+        UserDomainManager        $userManager,
         EventDispatcherInterface $eventDispatcher,
         TemplateRenderer         $templateRenderer
     ) {
+        $this->userManager     = $userManager;
         $this->eventDispatcher = $eventDispatcher;
         $this->renderer        = $templateRenderer;
     }
@@ -70,17 +76,18 @@ class SecurityController extends AbstractController
      * @throws RuntimeError
      * @throws SyntaxError
      */
-    final public function login(Request $request, AuthenticationUtils $authenticationUtils): Response
-    {
-        $props = [
-            'page'          => $this->renderer::FORM_PAGE,
-            'part'          => 'security/_form-login.html.twig',
-            'last_username' => $authenticationUtils->getLastUsername(),
-            'error'         => $authenticationUtils->getLastAuthenticationError(),
-        ];
+    final public function login(
+        Request             $request,
+        AuthenticationUtils $authenticationUtils
+    ): Response {
 
         return new Response(
-            $this->renderer->renderTemplate($props, $request)
+            $this->renderer->renderTemplate([
+                'page'          => $this->renderer::FORM_PAGE,
+                'part'          => 'security/_form-login.html.twig',
+                'last_username' => $authenticationUtils->getLastUsername(),
+                'error'         => $authenticationUtils->getLastAuthenticationError(),
+            ], $request)
         );
     }
 
@@ -94,7 +101,7 @@ class SecurityController extends AbstractController
      *     requirements={"_locale": "%app_locales%"}
      * )
      *
-     * @throws \Exception
+     * @throws Exception
      */
     final public function logout(): void
     {
@@ -117,7 +124,6 @@ class SecurityController extends AbstractController
      * @param LoginFormAuthenticator    $authenticator
      * @param GuardAuthenticatorHandler $guardHandler
      * @param UserFormHandler           $formHandler
-     * @param MailSender                $mailSender
      *
      * @return Response
      * @throws FileExistsException
@@ -130,15 +136,19 @@ class SecurityController extends AbstractController
         Request                   $request,
         LoginFormAuthenticator    $authenticator,
         GuardAuthenticatorHandler $guardHandler,
-        UserFormHandler           $formHandler,
-        MailSender                $mailSender
+        UserFormHandler           $formHandler
     ): Response {
-        $user = new User();
-        $user->setTheme('red lighten-2');
+        $user  = new User();
+        $model = new RegistrationModel($user);
 
-        $form = $this->createForm(RegistrationType::class, $user);
+        $form = $this->createForm(RegistrationType::class, $model);
 
-        if($formHandler->handle($request, $form, $user)) {
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()) {
+            $user = $formHandler->setRegisterFormData($form, $user);
+
+            $this->userManager->flushUser($user);
 
             $this->eventDispatcher->dispatch(
                 RegistrationEvent::NAME,
@@ -153,14 +163,12 @@ class SecurityController extends AbstractController
             );
         }
 
-        $props = [
-            'page' => $this->renderer::FORM_PAGE,
-            'part' => 'security/_form-register.html.twig',
-            'form' => $form->createView(),
-        ];
-
         return new Response(
-            $this->renderer->renderTemplate($props, $request)
+            $this->renderer->renderTemplate([
+                'page' => $this->renderer::FORM_PAGE,
+                'part' => 'security/_form-register.html.twig',
+                'form' => $form->createView(),
+            ], $request)
         );
     }
 
@@ -175,48 +183,41 @@ class SecurityController extends AbstractController
      *     requirements={"_locale": "%app_locales%"}
      * )
      *
-     * @param Request                      $request
-     * @param UserPasswordEncoderInterface $encoder
+     * @param Request $request
      *
      * @return Response
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
      */
-    final public function resetPassword(
-        Request $request,
-        UserPasswordEncoderInterface $encoder
-    ): Response {
+    final public function resetPassword(Request $request): Response {
         $user = $this->getUser();
 
         $accessMsg = 'Login please. You can access this page only from your account';
         if(!$user) { throw new AccessDeniedException($accessMsg, 403); }
 
         $form = $this->createForm(ResetPasswordType::class);
+
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()) {
 
-            $user->setPassword(
-                $encoder->encodePassword(
-                    $user,
-                    $form->get('newPassword')->getData()
-                )
+            $user = $this->userManager->setUserPassword(
+                $user,
+                $form['newPassword']->getData()
             );
 
-            $this->getDoctrine()->getManager()->flush();
+            $this->userManager->flushUser($user);
 
             return $this->redirectToRoute('logout');
         }
 
-        $props = [
-            'page' => $this->renderer::FORM_PAGE,
-            'part' => 'security/_form-reset.html.twig',
-            'form' => $form->createView(),
-        ];
-
         return new Response(
-            $this->renderer->renderTemplate($props, $request)
+            $this->renderer->renderTemplate([
+                'page' => $this->renderer::FORM_PAGE,
+                'part' => 'security/_form-reset.html.twig',
+                'form' => $form->createView(),
+            ], $request)
         );
     }
 }
