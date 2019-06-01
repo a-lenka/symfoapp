@@ -50,6 +50,8 @@
 'My name is Lena, and I am the creator of this application. I am glad that you decided to try it and really hope that Symfoapp will help you to plan your personal and working time more efficiently':
     'Меня зовут Лена, и я создатель этого приложения. Я рада, что вы решили его попробовать и очень надеюсь на то, что Symfoapp поможет вам более эффективно планировать ваше рабочее или личное время'
 'New password': 'Новый пароль'
+'No tasks selected': 'Задачи не были выбраны'
+'No users selected': 'Пользователи не выбраны'
 'Ok': 'Ok'
 'Oops': 'Упс'
 'Overdue tasks': 'Просрочено'

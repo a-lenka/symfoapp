@@ -1,4 +1,4 @@
-{% if tasks is defined %}
+{% if tasks is defined and tasks|length > 0 %}
     <div class="modal-body">
         <table class="responsive-table highlight">
             <thead>
@@ -24,6 +24,8 @@
             <i class="material-icons right">delete_forever</i>
         </a>
     </div>
+{% elseif tasks is defined and tasks|length == 0 %}
+    <h5>{{- "No tasks selected"|trans -}}</h5>
 {% elseif task is defined %}
     <div class="modal-header">
         <h5>{{ 'Task'|trans ~ ' "' ~ task.title ~ '" ' ~ '(she)will be deleted permanently'|trans }}</h5>

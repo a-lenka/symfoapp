@@ -1,4 +1,4 @@
-{% if users is defined %}
+{% if users is defined and users|length > 0 %}
     <div class="modal-body">
         <table class="responsive-table highlight">
             <thead>
@@ -24,6 +24,8 @@
             <i class="material-icons right">delete_forever</i>
         </a>
     </div>
+{% elseif users is defined and users|length == 0 %}
+    <h5>{{- "No users selected"|trans -}}</h5>
 {% elseif user is defined %}
     <div class="modal-header">
         <h5>{{- 'User'|trans ~ ' "' ~ user.email ~ '" ' ~ '(he)will be deleted permanently'|trans -}}</h5>
