@@ -7,4 +7,5 @@ twig:
 
     globals:
         app_name: 'Symfoapp'
+        default_nickname: 'Guest'
         default_theme: 'red lighten-2'

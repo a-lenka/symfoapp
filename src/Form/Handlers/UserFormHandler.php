@@ -117,6 +117,7 @@ class UserFormHandler extends FormHandler
         $user = $this->setDefaults($form, $user);
 
         $user->setEmail($form['email']->getData());
+        $user->setNickname($user::DEFAULT_NICKNAME);
         $user->setTheme($user::DEFAULT_THEME);
 
         return $user;
@@ -137,6 +138,7 @@ class UserFormHandler extends FormHandler
     {
         $user = $this->setDefaults($form, $user);
 
+        $user->setNickname($form['nickname']->getData());
         $user->setTheme($form['theme']->getData());
 
         return $user;
@@ -158,6 +160,7 @@ class UserFormHandler extends FormHandler
         $user = $this->setDefaults($form, $user);
 
         $user->setEmail($form['email']->getData());
+        $user->setNickname($form['nickname']->getData());
         $user->setTheme($user::DEFAULT_THEME);
 
         return $user;
@@ -179,6 +182,7 @@ class UserFormHandler extends FormHandler
         $user = $this->setDefaults($form, $user);
 
         $user->setEmail($form['email']->getData());
+        $user->setNickname($form['nickname']->getData());
         $user->setTheme($user::DEFAULT_THEME);
 
         return $user;

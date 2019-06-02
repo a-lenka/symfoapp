@@ -28,7 +28,7 @@
     <h5>{{- "No users selected"|trans -}}</h5>
 {% elseif user is defined %}
     <div class="modal-header">
-        <h5>{{- 'User'|trans ~ ' "' ~ user.email ~ '" ' ~ '(he)will be deleted permanently'|trans -}}</h5>
+        <h5>{{- 'User'|trans ~ ' "' ~ user.nickname ~ '" ' ~ '(he)will be deleted permanently'|trans -}}</h5>
     </div>
 
     <div class="modal-body">
@@ -38,6 +38,7 @@
 
                 <div>
                     <span class="title">{{- user.id -}}</span>
+                    <p>{{- user.nickname -}}</p>
                     <p>{{- user.email -}}</p>
                     <p>{{- user.roles|join(', ') -}}</p>
                 </div>

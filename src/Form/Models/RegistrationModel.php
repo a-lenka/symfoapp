@@ -17,6 +17,9 @@ class RegistrationModel implements FormDataModelInterface
     private $password;
 
     /** @var string */
+    private $nickname;
+
+    /** @var string */
     private $avatar;
 
     /** @var string */
@@ -34,6 +37,7 @@ class RegistrationModel implements FormDataModelInterface
     {
         $this->email         = $user->getEmail();
         $this->password      = $user->getPassword();
+        $this->nickname      = $user->getNickname();
         $this->theme         = $user->getTheme();
         $this->termsAccepted = false;
         $this->avatar        = $user->getAvatar();
@@ -55,6 +59,24 @@ class RegistrationModel implements FormDataModelInterface
     final public function setEmail(string $email): void
     {
         $this->email = $email;
+    }
+
+
+    /**
+     * @return string
+     */
+    final public function getNickname(): ?string
+    {
+        return $this->nickname;
+    }
+
+
+    /**
+     * @param string $nickname
+     */
+    final public function setNickname(string $nickname): void
+    {
+        $this->nickname = $nickname;
     }
 
 

@@ -132,14 +132,14 @@
 
                 {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
                     <a href="{{ path('account') }}">
-                        <span class="white-text name">{{ app.user.email }}</span>
+                        <span class="white-text name">{{ app.user.nickname }}</span>
                         <span class="white-text email">{{ "Account"|trans }}</span>
                     </a>
                 {% else %}
                     <a href="{{ path('login') }}" class="modal-trigger"
                        data-target="materialize-modal">
-                        <span class="white-text name">{{ "Guest"|trans }}</span>
-                        <span class="white-text email has-no-events">{{ "Login"|trans }}</span>
+                        <span class="white-text name">{{ default_nickname|trans }}</span>
+                        <span class="white-text email">{{ "Not registered"|trans }}</span>
                     </a>
                 {% endif %}
             </div>

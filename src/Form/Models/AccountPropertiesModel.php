@@ -14,6 +14,9 @@ class AccountPropertiesModel implements FormDataModelInterface
     private $avatar;
 
     /** @var string */
+    private $nickname;
+
+    /** @var string */
     private $theme;
 
     /** @var string */
@@ -26,6 +29,7 @@ class AccountPropertiesModel implements FormDataModelInterface
      */
     public function __construct(User $user)
     {
+        $this->nickname = $user->getNickname();
         $this->avatar   = $user->getAvatar();
         $this->theme    = $user->getTheme();
         $this->password = $user->getPassword();
@@ -47,6 +51,24 @@ class AccountPropertiesModel implements FormDataModelInterface
     final public function setAvatar(string $avatar): void
     {
         $this->avatar = $avatar;
+    }
+
+
+    /**
+     * @return string
+     */
+    final public function getNickname(): ?string
+    {
+        return $this->nickname;
+    }
+
+
+    /**
+     * @param string $nickname
+     */
+    final public function setNickname(string $nickname): void
+    {
+        $this->theme = $nickname;
     }
 
 

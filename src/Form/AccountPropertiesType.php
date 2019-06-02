@@ -9,6 +9,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
@@ -53,6 +54,19 @@ class AccountPropertiesType extends AbstractType
             ])
         ;
 
+        $nicknameConstraints = [
+            new NotNull([
+                'message' => 'Please choose the nickname',
+            ])
+        ];
+
+
+        if(!$isEdit || !$model->getNickname()) {
+            $nicknameConstraints[] = new NotNull([
+                'message' => 'Please upload an icon',
+            ]);
+        }
+
         $imageConstraints = [
             new Image([
                 'maxSize' => '5M'
@@ -60,7 +74,7 @@ class AccountPropertiesType extends AbstractType
         ];
 
 
-        if (!$isEdit || !$model->getTheme()) {
+        if(!$isEdit || !$model->getTheme()) {
             $imageConstraints[] = new NotNull([
                 'message' => 'Please upload an icon',
             ]);
@@ -73,6 +87,11 @@ class AccountPropertiesType extends AbstractType
                 'mapped'   => false,
                 'required' => false,
                 'constraints' => $imageConstraints
+            ])
+            ->add('nickname', TextType::class, [
+                'constraints' => $nicknameConstraints,
+                'help'  => 'Your nickname',
+                'label' => 'Your nickname',
             ])
         ;
     }

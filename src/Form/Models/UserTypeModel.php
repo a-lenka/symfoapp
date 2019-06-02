@@ -12,6 +12,9 @@ use App\Entity\User;
 class UserTypeModel
 {
     /** @var string */
+    private $nickname;
+
+    /** @var string */
     private $email;
 
     /** @var array */
@@ -30,10 +33,29 @@ class UserTypeModel
      */
     public function __construct(User $user)
     {
+        $this->nickname = $user->getNickname();
         $this->email    = $user->getEmail();
         $this->roles    = $user->getRoles();
         $this->password = $user->getPassword();
         $this->avatar   = $user->getAvatar();
+    }
+
+
+    /**
+     * @return string
+     */
+    final public function getNickname(): ?string
+    {
+        return $this->nickname;
+    }
+
+
+    /**
+     * @param string $nickname
+     */
+    final public function setNickname(string $nickname): void
+    {
+        $this->nickname = $nickname;
     }
 
 

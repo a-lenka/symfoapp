@@ -101,7 +101,7 @@ class UserController extends AbstractController
      *     defaults={"_locale"="%default_locale%"},
      *     requirements={
      *          "_locale": "%app_locales%",
-     *          "sort_property"="id|email|roles|tasks",
+     *          "sort_property"="id|nickname|email|roles|tasks",
      *          "sort_order"="asc|desc|default"
      *      },
      * )

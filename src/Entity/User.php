@@ -19,6 +19,9 @@ class User implements UserInterface
     /** @const string DEFAULT_THEME */
     public const DEFAULT_THEME = 'red lighten-2';
 
+    /** @const string DEFAULT_NICKNAME */
+    public const DEFAULT_NICKNAME = 'Guest';
+
     /** @var array THEMES */
     public const THEMES = [
         'Default' => 'red lighten-2',
@@ -50,13 +53,12 @@ class User implements UserInterface
     private $email;
 
     /**
-     * @var array $roles - User roles
-     *
      * @ORM\Column(
-     *     type="json"
+     *     type="string",
+     *     length=20
      * )
      */
-    private $roles = [];
+    private $nickname;
 
     /**
      * @var string|null $password - The hashed password
@@ -66,6 +68,15 @@ class User implements UserInterface
      * )
      */
     private $password;
+
+    /**
+     * @var array $roles - User roles
+     *
+     * @ORM\Column(
+     *     type="json"
+     * )
+     */
+    private $roles = [];
 
     /**
      * @var string|null $avatar - User avatar
@@ -78,6 +89,14 @@ class User implements UserInterface
     private $avatar;
 
     /**
+     * @ORM\Column(
+     *     type="string",
+     *     length=30
+     * )
+     */
+    private $theme;
+
+    /**
      * @ORM\OneToMany(
      *     targetEntity="App\Entity\Task",
      *     mappedBy="owner",
@@ -85,14 +104,6 @@ class User implements UserInterface
      * )
      */
     private $tasks;
-
-    /**
-     * @ORM\Column(
-     *     type="string",
-     *     length=30
-     * )
-     */
-    private $theme;
 
 
     /**
@@ -146,27 +157,21 @@ class User implements UserInterface
 
 
     /**
-     * @return array - User roles
-     * @see UserInterface
+     * @return string|null
      */
-    final public function getRoles(): array
+    final public function getNickname(): ?string
     {
-        $roles = $this->roles;
-        // Guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
-
-        return array_unique($roles);
+        return $this->nickname;
     }
 
 
     /**
-     * @param array $roles - User roles
-     *
+     * @param string $nickname
      * @return User
      */
-    final public function setRoles(array $roles): self
+    final public function setNickname(string $nickname): self
     {
-        $this->roles = $roles;
+        $this->nickname = $nickname;
 
         return $this;
     }
@@ -196,22 +201,29 @@ class User implements UserInterface
 
 
     /**
+     * @return array - User roles
      * @see UserInterface
      */
-    final public function getSalt(): void
+    final public function getRoles(): array
     {
-        // Not needed when using the "bcrypt" algorithm in `security.yaml`
+        $roles = $this->roles;
+        // Guarantee every user at least has ROLE_USER
+        $roles[] = 'ROLE_USER';
+
+        return array_unique($roles);
     }
 
 
     /**
-     * @see UserInterface
+     * @param array $roles - User roles
+     *
+     * @return User
      */
-    final public function eraseCredentials(): void
+    final public function setRoles(array $roles): self
     {
-        // If you store any temporary, sensitive data on the user,
-        // clear it here.
-        // $this->plainPassword = null;
+        $this->roles = $roles;
+
+        return $this;
     }
 
 
@@ -234,6 +246,28 @@ class User implements UserInterface
     final public function getAvatar(): ?string
     {
         return PathKeeper::UPLOADED_AVATARS_DIR.'/'.$this->avatar;
+    }
+
+
+    /**
+     * @return string|null
+     */
+    final public function getTheme(): ?string
+    {
+        return $this->theme;
+    }
+
+
+    /**
+     * @param string $theme
+     *
+     * @return User
+     */
+    final public function setTheme(string $theme): self
+    {
+        $this->theme = $theme;
+
+        return $this;
     }
 
 
@@ -283,24 +317,21 @@ class User implements UserInterface
 
 
     /**
-     * @return string|null
+     * @see UserInterface
      */
-    final public function getTheme(): ?string
+    final public function getSalt(): void
     {
-        return $this->theme;
+        // Not needed when using the "bcrypt" algorithm in `security.yaml`
     }
 
 
     /**
-     * @param string $theme
-     *
-     * @return User
+     * @see UserInterface
      */
-    final public function setTheme(string $theme): self
+    final public function eraseCredentials(): void
     {
-        $this->theme = $theme;
-
-        return $this;
+        // If you store any temporary, sensitive data on the user,
+        // clear it here.
+        // $this->plainPassword = null;
     }
-
 }
