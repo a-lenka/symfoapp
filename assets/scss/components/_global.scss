@@ -438,6 +438,12 @@ table {
     border-collapse: collapse;
     border-spacing: 0;
 
+    // To fit Avatar and other cells height
+    & tr th:first-child,
+    & tr td:first-child {
+        min-height: 80px;
+    }
+
     & th i {
         vertical-align: middle;
     }
