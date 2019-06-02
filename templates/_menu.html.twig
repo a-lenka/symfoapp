@@ -1,10 +1,10 @@
 {# Start Top Menu #}
-<nav class="{{ app.user.theme|default('red lighten-2') }}">
+<nav class="{{ app.user.theme|default(default_theme) }}">
     {# Top Menu #}
     <div class="nav-wrapper z-depth-2">
         {# Logo #}
         <div>
-            <a href="{{ path('home_index') }}" class="brand-logo">Logo</a>
+            <a href="{{ path('home_index') }}" class="brand-logo">{{ app_name }}</a>
         </div>
 
         {# SideNav trigger #}
