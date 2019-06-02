@@ -89,9 +89,10 @@ class UserFixtures extends AbstractFixture implements OrderedFixtureInterface, O
 
         // Root
         $root = new User();
+        $root->setNickname('Root');
         $root->setAvatar($this->uploadDummyAvatars('root.png'));
         $root->setEmail('root@mail.ru');
-        $root->setTheme('red lighten-2');
+        $root->setTheme(User::THEMES['Indigo']);
         $root->setRoles(['ROLE_ROOT']);
         $root->setPassword($this->passwordEncoder->encodePassword(
             $root, 'kitten'
@@ -99,47 +100,12 @@ class UserFixtures extends AbstractFixture implements OrderedFixtureInterface, O
 
         $objectManager->persist($root);
 
-        // Admin
-        $admin = new User();
-        $admin->setAvatar($this->uploadDummyAvatars('admin.png'));
-        $admin->setEmail('admin@mail.ru');
-        $admin->setTheme('red lighten-2');
-        $admin->setRoles(['ROLE_ADMIN']);
-        $admin->setPassword($this->passwordEncoder->encodePassword(
-            $admin, 'kitten'
-        ));
-
-        $objectManager->persist($admin);
-
-        // User
-        $user = new User();
-        $user->setAvatar($this->uploadDummyAvatars('user.png'));
-        $user->setEmail('user@mail.ru');
-        $user->setTheme('red lighten-2');
-        $user->setRoles([]);
-        $user->setPassword($this->passwordEncoder->encodePassword(
-            $user, 'kitten'
-        ));
-
-        $objectManager->persist($user);
-
-        // Anonymous
-        $anonymous = new User();
-        $anonymous->setAvatar($this->uploadDummyAvatars('anonymous.png'));
-        $anonymous->setEmail('anonymous@mail.ru');
-        $anonymous->setTheme('red lighten-2');
-        $anonymous->setRoles([]);
-        $anonymous->setPassword($this->passwordEncoder->encodePassword(
-            $anonymous, 'kitten'
-        ));
-
-        $objectManager->persist($anonymous);
-
         // Manager
         $manager = new User();
+        $manager->setNickname('Manager');
         $manager->setAvatar($this->uploadDummyAvatars('manager.png'));
         $manager->setEmail('manager@mail.ru');
-        $manager->setTheme('red lighten-2');
+        $manager->setTheme(User::THEMES['Black']);
         $manager->setRoles([]);
         $manager->setPassword($this->passwordEncoder->encodePassword(
             $manager, 'kitten'
@@ -149,9 +115,10 @@ class UserFixtures extends AbstractFixture implements OrderedFixtureInterface, O
 
         // Housewife
         $housewife = new User();
+        $housewife->setNickname('Housewife');
         $housewife->setAvatar($this->uploadDummyAvatars('housewife.jpeg'));
         $housewife->setEmail('housewife@mail.ru');
-        $housewife->setTheme('red lighten-2');
+        $housewife->setTheme(User::THEMES['Purple']);
         $housewife->setRoles([]);
         $housewife->setPassword($this->passwordEncoder->encodePassword(
             $housewife, 'kitten'
@@ -161,9 +128,10 @@ class UserFixtures extends AbstractFixture implements OrderedFixtureInterface, O
 
         // Student
         $student = new User();
+        $student->setNickname('Student');
         $student->setAvatar($this->uploadDummyAvatars('student.jpeg'));
         $student->setEmail('student@mail.ru');
-        $student->setTheme('red lighten-2');
+        $student->setTheme(User::THEMES['Purple']);
         $student->setRoles([]);
         $student->setPassword($this->passwordEncoder->encodePassword(
             $student, 'kitten'
@@ -173,10 +141,6 @@ class UserFixtures extends AbstractFixture implements OrderedFixtureInterface, O
 
         $objectManager->flush();
 
-        $this->addReference('root', $root);
-        $this->addReference('admin', $admin);
-        $this->addReference('user', $user);
-        $this->addReference('anonymous', $anonymous);
         $this->addReference('manager', $manager);
         $this->addReference('housewife', $housewife);
         $this->addReference('student', $student);
