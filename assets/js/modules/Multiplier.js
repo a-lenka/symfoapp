@@ -71,6 +71,16 @@ let Multiplier = function() {
                     if(!btn) { throw new Error('Checkbox button not found'); }
                     return btn;
                 },
+
+                setState() {
+                    let btn = eventManager.triggers.checkboxButton.elem;
+
+                    if(TableList.table.rows.length > 0) {
+                        btn.removeAttribute('disabled');
+                    } else {
+                        btn.setAttribute('disabled', true);
+                    }
+                },
             },
 
             confirmButton: {
@@ -83,7 +93,10 @@ let Multiplier = function() {
 
                 activate: function() {
                     let btn = eventManager.triggers.confirmButton.elem;
-                    btn.removeAttribute('disabled');
+
+                    if(TableList.checkbox.elems.length > 0) {
+                        btn.removeAttribute('disabled');
+                    }
                 },
 
                 deactivate: function() {
@@ -92,7 +105,6 @@ let Multiplier = function() {
                     if(TableList.checkbox.elems.length === 0) {
                         btn.setAttribute('disabled', true);
                     }
-
                 },
             },
 
@@ -110,8 +122,24 @@ let Multiplier = function() {
 
                 get elem() {
                     return document.querySelectorAll(eventManager.triggers.switchPerformedTasksButton.selector)[0];
-                }
-            }
+                },
+
+                init() {
+                    if(eventManager.triggers.switchPerformedTasksButton.elem) {
+                        eventManager.triggers.switchPerformedTasksButton.setState();
+                    }
+                },
+
+                setState() {
+                    let btn = eventManager.triggers.switchPerformedTasksButton.elem;
+
+                    if(TableList.table.getRowsWithPerformedTasks().length > 0) {
+                        btn.removeAttribute('disabled');
+                    } else {
+                        btn.setAttribute('disabled', true);
+                    }
+                },
+            },
         },
 
         listeners: {
@@ -123,6 +151,11 @@ let Multiplier = function() {
         },
 
         setMultiplyListeners: function() {
+            if(TableList.table.elem) {
+                eventManager.triggers.switchPerformedTasksButton.init();
+                eventManager.triggers.checkboxButton.setState();
+            }
+
             if(TableList.table.elem) {
                 eventManager.listeners.chooseItems.elem.addEventListener('click', switchCheckboxes);
                 eventManager.listeners.chooseItems.elem.addEventListener('click', requestCheckedItems);
@@ -166,15 +199,20 @@ let Multiplier = function() {
         if(checker.confirmHidePerformedEvent(event)) {
             event.preventDefault();
 
-            TableList.table.rows.forEach(r => {
-                if(r.innerText.includes('Done') || r.innerText.includes('Готово')) {
-                    r.classList.toggle('hide');
-                }
-            });
+            let rows = TableList.table.getRowsWithPerformedTasks();
 
-            let icon = eventManager.triggers.switchPerformedTasksButton.elem.children[0];
-            if(icon.innerText === 'radio_button_checked') { icon.innerText = 'radio_button_unchecked'; }
-            else { icon.innerText = 'radio_button_checked' }
+            rows.forEach(
+                r => { r.classList.toggle('hide') }
+            );
+
+            let icon      = eventManager.triggers.switchPerformedTasksButton.elem.children[0];
+            let performed = TableList.table.getRowsWithPerformedTasks();
+
+            if(icon.innerText === 'radio_button_checked') {
+                icon.innerText = 'radio_button_unchecked';
+            } else {
+                icon.innerText = 'radio_button_checked'
+            }
         }
     };
 

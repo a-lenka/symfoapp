@@ -42,6 +42,12 @@ let TableList = function() {
             return tbodyRows;
         },
 
+        getRowsWithPerformedTasks() {
+            return Array.from(table.rows).filter(
+                r => r.innerText.includes('Done') || r.innerText.includes('Готово')
+            );
+        },
+
         getIdCellsArray() {
             return Array.from(table.rows, r => r.children[0]);
         },
@@ -65,11 +71,9 @@ let TableList = function() {
         },
 
         showPerformedTasks: function() {
-            table.rows.forEach(r => {
-                if(r.innerText.includes('Done') || r.innerText.includes('Готово')) {
-                    r.classList.remove('hide');
-                }
-            });
+            let rows = table.getRowsWithPerformedTasks();
+
+            rows.forEach(r => r.classList.remove('hide'));
         },
     };
 
