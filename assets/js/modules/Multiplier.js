@@ -22,7 +22,7 @@ let Multiplier = function() {
                 eventManager.triggers.confirmButton.activate();
             } else {
                 rows.forEach(function(row) {
-                    let idCell     = row.children[0];
+                    let idCell     = row.children[1];
                     let actionCell = row.children[row.children.length - 1];
                     let actionLink = actionCell.children[0];
 

@@ -67,7 +67,7 @@ let TableList = function() {
         },
 
         replaceIdsWithCheckboxes: function() {
-            table.rows.forEach(function(r) { r.children[0].innerHTML = checkbox.html; });
+            table.rows.forEach(function(r) { r.children[1].innerHTML = checkbox.html; });
         },
 
         showPerformedTasks: function() {
