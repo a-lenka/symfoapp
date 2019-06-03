@@ -40,16 +40,44 @@ class CustomExceptionController extends ExceptionController
         FlattenException     $exception,
         DebugLoggerInterface $logger = null
     ): Response {
-        $currentContent = $this->getAndCleanOutputBuffering($request->headers->get('X-Php-Ob-Level', -1));
+        $currentContent = $this->getAndCleanOutputBuffering(
+            $request->headers->get('X-Php-Ob-Level', -1)
+        );
         $showException  = $request->attributes->get('showException', $this->debug);
         $code           = $exception->getStatusCode();
 
-        if($code === 403 && $request->isXmlHttpRequest()) {
-            $template = 'security/_form-login.html.twig';
+        if($request->isXmlHttpRequest()) {
+            if($code === 403) {
+                $template = 'security/_form-login.html.twig';
 
-            $response = new Response($this->twig->render($template, [
-                'forbidden_message' => 'We are sorry, but you do not have access to this page. Please, login',
-            ]), 200, ['Content-Type' => $request->getMimeType($request->getRequestFormat()) ?: 'text/html']);
+                $response = new Response($this->twig->render($template, [
+                    'forbidden_message' => 'We are sorry, but you do not have access to this page. Please, login',
+                ]), 200, [
+                    'Content-Type' => $request->getMimeType($request->getRequestFormat())
+                        ?: 'text/html'
+                ]);
+            }
+
+            if($code === 500 && stripos($request->getPathInfo(), 'register')) {
+                $template = 'bundles/TwigBundle/Exception/_error.html.twig';
+                //$template = 'security/_form-register.html.twig';
+
+                $response = new Response($this->twig->render($template, [
+                    'error_message' => 'We are sorry, but something went wrong. Please, reload the page and try again with another credentials',
+                ]), 200, [
+                    'Content-Type' => $request->getMimeType($request->getRequestFormat())
+                        ?: 'text/html'
+                ]);
+            } else {
+                $template = 'bundles/TwigBundle/Exception/_error.html.twig';
+
+                $response = new Response($this->twig->render($template, [
+                    'error_message' => 'We are sorry, but something went wrong. Please reload the page and try again',
+                ]), 200, [
+                    'Content-Type' => $request->getMimeType($request->getRequestFormat())
+                        ?: 'text/html'
+                ]);
+            }
         } else {
             $response = new Response($this->twig->render(
                 (string) $this->findTemplate($request, $request->getRequestFormat(), $code, $showException),

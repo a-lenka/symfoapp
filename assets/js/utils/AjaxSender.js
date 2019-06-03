@@ -30,8 +30,9 @@ let AjaxSender = function() {
 
             if(xhr.readyState === 4
                 && xhr.status === 200
-                || xhr.status === 403) {
-
+                || xhr.status === 403
+                || xhr.status === 500
+            ) {
                 Logger.logXhrData(xhr);
 
                 let path = xhr.getResponseHeader('X-Target-URL');
