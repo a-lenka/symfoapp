@@ -45,6 +45,7 @@
 'It looks like you have no tasks yet': 'Похоже, у вас еще нет задач'
 'It seems there are no tasks found': 'Такие задачи не найдены'
 'It seems there are no users found': 'Таких пользователей нет'
+"It's simple and FREE": "Это легко и бесплатно"
 'Login': 'Вход'
 'Logout': 'Выход'
 'My name is Lena, and I am the creator of this application. I am glad that you decided to try it and really hope that Symfoapp will help you to plan your personal and working time more efficiently':
@@ -86,6 +87,7 @@
 'Time': 'Время'
 'Title': 'Задача'
 'Try again, please': 'Попробуйте еще раз, пожалуйста'
+'Try it': 'Начни прямо сейчас'
 'Update': 'Обновить'
 'Update user': 'Обновить пользователя'
 'Update task': 'Обновить задачу'

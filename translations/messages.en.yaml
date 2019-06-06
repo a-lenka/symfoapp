@@ -47,6 +47,7 @@
 'It looks like you have no users yet': 'It looks like you have no users yet'
 'It seems there are no tasks found': 'It seems there are no tasks found'
 'It seems there are no users found': 'It seems there are no users found'
+"It's simple and FREE": "It's simple and FREE"
 'Login': 'Login'
 'Logout': 'Logout'
 'My name is Lena, and I am the creator of this application. I am glad that you decided to try it and really hope that Symfoapp will help you to plan your personal and working time more efficiently':
@@ -88,6 +89,7 @@
 "This value should be the user's current password.": "This value should be the user's current password"
 'Time': 'Time'
 'Title': 'Title'
+'Try it': 'Try it'
 'Try again, please': 'Try again, please'
 'Update': 'Update'
 'Update user': 'Update user'
