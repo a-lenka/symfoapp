@@ -1,0 +1,42 @@
+{# Colors #}
+{% set done_color_class = 'green lighten-2' %}
+{% set done_color_code  = '#81c784' %}
+
+{% set in_progress_color_class = 'indigo lighten-2' %}
+{% set in_progress_color_code  = '#7986cb' %}
+
+{# Widget #}
+<div class="card">
+    <div class="material-grad"></div>
+
+    <div class="card-content" style="background-color: white;">
+        <span class="card-title center-align">{{ "Done"|trans }}</span>
+
+        <div class="pie" style="background: conic-gradient(
+            {{ done_color_code }} 0% {{ done_tasks_part }}%,
+            {{ in_progress_color_code }} {{ done_tasks_part }}% 100%
+        )"></div>
+
+        <div>
+            <p>
+                <span class="color-preview {{ done_color_class }}">
+                    {{- done_tasks|length -}}
+                </span>
+                {{- "Done tasks"|trans -}}
+            </p>
+
+            <p>
+                <span class="color-preview {{ in_progress_color_class }}">
+                    {{- in_progress_tasks|length -}}
+                </span>
+                {{- "In progress tasks"|trans -}}
+            </p>
+        </div>
+    </div>
+
+    <div class="card-action" style="background-color: white;">
+        <a href="{{ path('task_list_all') }}">
+            {{- "View tasks"|trans -}}
+        </a>
+    </div>
+</div>

@@ -1,0 +1,15 @@
+<h4>{{ 'User'|trans }}: {{ user.email }}</h4>
+
+<table class="responsive-table highlight">
+    <thead>
+        <tr>
+            {{ include('user/_table-headers.html.twig') }}
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr>
+            {{ include('user/_table-row.html.twig') }}
+        </tr>
+    </tbody>
+</table>

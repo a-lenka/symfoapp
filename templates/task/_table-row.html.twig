@@ -1,0 +1,8 @@
+<td class="center-align">
+    <img class="avatar-icon small" src="{{- uploaded_asset(task.icon) -}}">
+</td>
+
+<td>{{- task.id -}}</td>
+<td>{{- task.title -}}</td>
+<td>{{- task.dateDeadline|date('d-m-Y') -}}</td>
+<td>{{- task.state|trans -}}</td>

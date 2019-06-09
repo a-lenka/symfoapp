@@ -1,0 +1,19 @@
+/** @see https://developer.mozilla.org/en-US/docs/Web/CSS/::-webkit-scrollbar */
+::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 3px;
+    background: $scroll-bar-bg-color;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: $secondary-color;
+}
+
+::-webkit-scrollbar-thumb:window-inactive {
+    background: $scroll-bar-bg-color;
+}

@@ -1,0 +1,118 @@
+{%- if user is defined -%}
+    <th scope="col" class="center-align">{{- 'Avatar'|trans -}}</th>
+    <th scope="col" class="center-align">{{- 'ID'|trans -}}</th>
+    <th scope="col">{{- 'Nickname'|trans -}}</th>
+    <th scope="col">{{- 'Email'|trans -}}</th>
+    <th scope="col">{{- 'Roles'|trans -}}</th>
+{%- elseif users is defined and sort_property is not defined and sort_order is not defined -%}
+    <th scope="col" class="center-align">{{- 'Avatar'|trans -}}</th>
+    <th scope="col" class="center-align">{{- 'ID'|trans -}}</th>
+    <th scope="col">{{- 'Nickname'|trans -}}</th>
+    <th scope="col">{{- 'Email'|trans -}}</th>
+    <th scope="col">{{- 'Roles'|trans -}}</th>
+    <th scope="col" class="center-align">{{- 'Tasks'|trans -}}</th>
+{%- elseif users is defined and sort_property is defined and sort_order is defined -%}
+    <th scope="col" class="center-align">
+        {{- 'Avatar'|trans -}}
+    </th>
+
+    <th scope="col" class="center-align">
+        {%- if sort_property == 'id' and sort_order == 'asc' -%}
+            <a href="{{ path('user_list_sorted', {'sort_property': 'id', 'sort_order': 'desc' }) }}"
+               class="active">
+                <i class="material-icons">arrow_drop_down</i>
+            </a>
+        {%- elseif sort_property == 'id' and sort_order == 'desc' -%}
+            <a href="{{ path('user_list_sorted', {'sort_property': 'id', 'sort_order': 'asc' }) }}"
+               class="active">
+                <i class="material-icons">arrow_drop_up</i>
+            </a>
+        {%- elseif sort_property != 'id' or sort_order == 'default' -%}
+            <a href="{{ path('user_list_sorted', {'sort_property': 'id', 'sort_order': 'desc' }) }}">
+                <i class="material-icons">arrow_drop_down</i>
+            </a>
+        {%- endif -%}
+
+        {{- 'ID'|trans -}}
+    </th>
+
+    <th scope="col">
+        {%- if sort_property == 'nickname' and sort_order == 'asc' -%}
+            <a href="{{ path('user_list_sorted', {'sort_property': 'nickname', 'sort_order': 'desc' }) }}"
+               class="active">
+                <i class="material-icons">arrow_drop_down</i>
+            </a>
+        {%- elseif sort_property == 'nickname' and sort_order == 'desc' -%}
+            <a href="{{ path('user_list_sorted', {'sort_property': 'nickname', 'sort_order': 'asc' }) }}"
+               class="active">
+                <i class="material-icons">arrow_drop_up</i>
+            </a>
+        {%- elseif sort_property != 'nickname' or sort_order == 'default' -%}
+            <a href="{{ path('user_list_sorted', {'sort_property': 'nickname', 'sort_order': 'desc' }) }}">
+                <i class="material-icons">arrow_drop_down</i>
+            </a>
+        {%- endif -%}
+
+        {{- 'Nickname'|trans -}}
+    </th>
+
+    <th scope="col">
+        {%- if sort_property == 'email' and sort_order == 'asc' -%}
+            <a href="{{ path('user_list_sorted', {'sort_property': 'email', 'sort_order': 'desc' }) }}"
+               class="active">
+                <i class="material-icons">arrow_drop_down</i>
+            </a>
+        {%- elseif sort_property == 'email' and sort_order == 'desc' -%}
+            <a href="{{ path('user_list_sorted', {'sort_property': 'email', 'sort_order': 'asc' }) }}"
+               class="active">
+                <i class="material-icons">arrow_drop_up</i>
+            </a>
+        {%- elseif sort_property != 'email' or sort_order == 'default' -%}
+            <a href="{{ path('user_list_sorted', {'sort_property': 'email', 'sort_order': 'desc' }) }}">
+                <i class="material-icons">arrow_drop_down</i>
+            </a>
+        {%- endif -%}
+
+        {{- 'Email'|trans -}}
+    </th>
+
+    <th scope="col">
+        {%- if sort_property == 'roles' and sort_order == 'asc' -%}
+            <a href="{{ path('user_list_sorted', {'sort_property': 'roles', 'sort_order': 'desc' }) }}"
+               class="active">
+                <i class="material-icons">arrow_drop_down</i>
+            </a>
+        {%- elseif sort_property == 'roles' and sort_order == 'desc' -%}
+            <a href="{{ path('user_list_sorted', {'sort_property': 'roles', 'sort_order': 'asc' }) }}"
+               class="active">
+                <i class="material-icons">arrow_drop_up</i>
+            </a>
+        {%- elseif sort_property != 'roles' or sort_order == 'default' -%}
+            <a href="{{ path('user_list_sorted', {'sort_property': 'roles', 'sort_order': 'desc' }) }}">
+                <i class="material-icons">arrow_drop_down</i>
+            </a>
+        {%- endif -%}
+
+        {{- 'Roles'|trans -}}
+    </th>
+
+    <th scope="col">
+        {%- if sort_property == 'tasks' and sort_order == 'asc' -%}
+            <a href="{{ path('user_list_sorted', {'sort_property': 'tasks', 'sort_order': 'desc' }) }}"
+               class="active">
+                <i class="material-icons">arrow_drop_down</i>
+            </a>
+        {%- elseif sort_property == 'tasks' and sort_order == 'desc' -%}
+            <a href="{{ path('user_list_sorted', {'sort_property': 'tasks', 'sort_order': 'asc' }) }}"
+               class="active">
+                <i class="material-icons">arrow_drop_up</i>
+            </a>
+        {%- elseif sort_property != 'tasks' or sort_order == 'default' -%}
+            <a href="{{ path('user_list_sorted', {'sort_property': 'tasks', 'sort_order': 'desc' }) }}">
+                <i class="material-icons">arrow_drop_down</i>
+            </a>
+        {%- endif -%}
+
+        {{- 'Tasks'|trans -}}
+    </th>
+{%- endif -%}

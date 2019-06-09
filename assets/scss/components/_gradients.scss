@@ -1,0 +1,15 @@
+@mixin material-gradient($height) {
+    height: $height;
+
+    @extend .z-depth-1;
+
+    background:
+            linear-gradient(70deg, $secondary-color 30%, rgba(0,0,0,0)  30%),
+            linear-gradient(30deg, $primary-color   70%, $warning-color 70%);
+}
+
+
+// Usage
+.material-grad {
+    @include material-gradient(40px);
+}

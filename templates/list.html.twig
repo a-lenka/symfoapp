@@ -1,0 +1,11 @@
+{% extends ['base.html.twig', '_menu.html.twig'] %}
+
+{% block title %}{{ title|trans }}{% endblock title %}
+
+{% block content %}
+    {% set list_part = part %}
+
+    <div class="row">
+        {% include list_part %}
+    </div>
+{% endblock content %}

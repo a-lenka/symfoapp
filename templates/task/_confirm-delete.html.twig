@@ -1,0 +1,52 @@
+{% if tasks is defined and tasks|length > 0 %}
+    <div class="modal-body">
+        <table class="responsive-table highlight">
+            <thead>
+                <tr>
+                    {{ include('task/_table-headers.html.twig') }}
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for task in tasks %}
+                    <tr>
+                        {{ include('task/_table-row.html.twig') }}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="modal-footer">
+        <a href="{{ path('task_list_delete') }}"
+           class="btn waves-effect waves-light red">
+            {{ 'Delete permanently'|trans }}
+            <i class="material-icons right">delete_forever</i>
+        </a>
+    </div>
+{% elseif tasks is defined and tasks|length == 0 %}
+    <h5>{{- "No tasks selected"|trans -}}</h5>
+{% elseif task is defined %}
+    <div class="modal-header">
+        <h5>{{ 'Task'|trans ~ ' "' ~ task.title ~ '" ' ~ '(she)will be deleted permanently'|trans }}</h5>
+    </div>
+
+    <div class="modal-body">
+        <ul class="collection">
+            <li class="collection-item avatar">
+                <img class="circle" src="{{- uploaded_asset(task.icon) -}}">
+
+                <div>
+                    <span class="title">{{- task.id -}}</span>
+                    <p>{{- task.title -}}</p>
+                    <p>{{- task.dateDeadline|date('d-m-Y') -}}</p>
+                    <p>{{- task.state|trans -}}</p>
+                </div>
+
+                <a href="{{ path('task_delete', {'id': task.id}) }}" class="secondary-content">
+                    <i class="material-icons small-md red-text darken-1 right-align">delete_forever</i>
+                </a>
+            </li>
+        </ul>
+    </div>
+{% endif %}

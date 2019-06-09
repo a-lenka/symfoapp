@@ -1,0 +1,76 @@
+<h1>{{- title|trans -}}</h1>
+
+<table class="responsive-table highlight">
+    <thead>
+        <tr>
+            {{ include('task/_table-headers.html.twig') }}
+
+            <th scope="col" class="center-align">{{ 'Actions'|trans }}</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for task in tasks %}
+            <tr {% if task.state == 'Done' or task.state == 'Готово' %} class="hide"{% endif %}>
+                {{ include('task/_table-row.html.twig') }}
+
+                {# Task actions field #}
+                <td class="center-align">
+                    <a href="{{ path('task_details', {'id': task.id }) }}"
+                       class="modal-trigger" data-target="materialize-modal">
+                        <i class="material-icons">info_outline</i>
+                    </a>
+
+                    <a href="{{ path('task_update', {'id': task.id }) }}"
+                       class="modal-trigger" data-target="materialize-modal">
+                        <i class="material-icons">refresh</i>
+                    </a>
+
+                    <a href="{{ path('task_delete_confirm', {'id': task.id }) }}"
+                       class="modal-trigger" data-target="materialize-modal">
+                        <i class="material-icons">remove_circle_outline</i>
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+{# Fixed Actions Button #}
+<div class="fixed-action-btn">
+    <a class="btn-floating btn-large">
+        <i class="large material-icons">more_vert</i>
+    </a>
+
+    <ul>
+        <li>
+            <a href="{{ path('task_create') }}"
+               class="btn-floating green darken-1 modal-trigger"
+               data-target="materialize-modal">
+                <i class="material-icons">add</i>
+            </a>
+        </li>
+
+        <li>
+            <a href="{{ path('task_create') }}"
+               class="btn-floating indigo darken-1">
+                <i class="material-icons">radio_button_unchecked</i>
+            </a>
+        </li>
+
+        <li>
+            <a href="{{ path('task_list_confirm', {'tasks': tasks}) }}"
+               class="btn-floating red darken-1 modal-trigger"
+               data-target="materialize-modal" disabled>
+                <i class="material-icons">delete_forever</i>
+            </a>
+        </li>
+
+        <li>
+            <a href="#" class="btn-floating orange darken-1">
+                <i class="material-icons">playlist_add_check</i>
+            </a>
+        </li>
+    </ul>
+</div>

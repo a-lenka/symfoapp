@@ -1,0 +1,23 @@
+.flash-container {
+    display: none;
+}
+
+.notice {
+    background-color: $info-color;
+}
+
+.message-box {
+    border-radius: $message-box-radius;
+
+    &.inline-message {
+        padding: $inline-padding;
+    }
+
+    &.error {
+        background-color: $error-color-light;
+    }
+
+    &.success {
+        background-color: $success-color-light;
+    }
+}

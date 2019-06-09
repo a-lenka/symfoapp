@@ -1,0 +1,23 @@
+{# templates/bundles/TwigBundle/Exception/error.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block content %}
+    <div style="display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 70vh;">
+        <div>
+            <p class="center-align teal-text" style="font-size: 15rem; line-height: 155px; margin: 30px;">
+                {{- status_code -}}
+            </p>
+
+            <p class="center-align blue-grey-text" style="font-size: 5rem; line-height: 50px;">
+                {{- "Oops"|trans -}}...
+            </p>
+
+            <p class="center-align teal-text" style="font-size: 3rem; line-height: 50px;">
+                {{- status_text|trans -}}
+            </p>
+        </div>
+    </div>
+{% endblock content %}

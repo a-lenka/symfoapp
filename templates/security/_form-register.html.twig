@@ -1,0 +1,20 @@
+{% form_theme form 'themes/materialize-fields.html.twig' %}
+
+<div class="modal-header">
+    <h4>{{ 'Registration'|trans }}</h4>
+</div>
+
+{{ form_start(form, {'action': path('register')}) }}
+    <div class="modal-body">
+        <div class="modal-body">
+            {{ form_row(form.email) }}
+            {{ form_row(form.password) }}
+            {{ form_row(form.avatar) }}
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        {{ form_row(form.termsAccepted) }}
+        {{ form_row(form.submit) }}
+    </div>
+{{ form_end(form) }}

@@ -1,0 +1,33 @@
+# Codeception Test Suite Configuration
+#
+# Suite for acceptance tests.
+# Perform tests in browser using the WebDriver or PhpBrowser.
+# If you need both WebDriver and PHPBrowser tests - create a separate suite.
+
+actor: AcceptanceTester
+
+modules:
+    enabled:
+        - WebDriver:
+            url: 'http://symfoapp'
+            browser: chrome
+
+        - Symfony:
+              part: SERVICES
+              app_path: 'src'
+              var_path: 'var'
+              environment: 'test'
+
+        - Doctrine2:
+             depends: Symfony
+             cleanup: true
+
+        - Db:
+             dsn: 'mysql: host=symfony;dbname=symfoapp'
+             user: 'root'
+             password: 'ytqnhbyj'
+             dump: tests/_data/symfoapp.sql
+             populate: true
+             cleanup: true
+
+        - \App\Tests\Helper\Acceptance

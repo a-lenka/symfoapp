@@ -1,0 +1,27 @@
+{# templates/bundles/TwigBundle/Exception/error500.html.twig #}
+
+{% block content %}
+    <div style="display: flex;
+            align-items: center;
+            justify-content: center;">
+        <div>
+            <div class="modal-body">
+                <p class="center-align blue-grey-text" style="font-size: 5rem; line-height: 50px;">
+                    {{- "Oops"|trans -}}...
+                </p>
+
+                <p class="center-align teal-text" style="font-size: 1.5rem;">
+                    {{- error_message|trans -}}
+                </p>
+            </div>
+
+            <div class="modal-footer">
+                <a href="{{ path('home_index') }}"
+                   class="btn waves-effect waves-light teal">
+                    {{ 'Reload'|trans }}
+                    <i class="material-icons right">refresh</i>
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

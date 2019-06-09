@@ -1,0 +1,37 @@
+// Remove Focus Boxes
+select:focus {
+    outline: $select-focus;
+}
+
+button:focus {
+    outline: none;
+    background-color: $button-background-focus;
+}
+
+label {
+    font-size: $label-font-size;
+    color: $input-border-color;
+}
+
+
+/**
+ * Animation to init select element after appearance on the page
+ * ========================================================================== */
+
+@keyframes selectWasInserted {
+    from { opacity: 0.99; }
+    to { opacity: 1; }
+}
+
+form {
+    animation-duration: 0.001s;
+    animation-name: selectWasInserted;
+}
+
+@import 'input-fields';
+@import '~materialize-css/sass/components/forms/radio-buttons';
+@import 'checkboxes';
+@import '~materialize-css/sass/components/forms/switches';
+@import 'select';
+@import '~materialize-css/sass/components/forms/file-input';
+@import '~materialize-css/sass/components/forms/range';

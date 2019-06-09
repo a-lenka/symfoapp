@@ -1,0 +1,52 @@
+{% if users is defined and users|length > 0 %}
+    <div class="modal-body">
+        <table class="responsive-table highlight">
+            <thead>
+                <tr>
+                    {{ include('user/_table-headers.html.twig') }}
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for user in users %}
+                    <tr>
+                        {{ include('user/_table-row.html.twig') }}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="modal-footer">
+        <a href="{{ path('user_list_delete') }}"
+           class="btn waves-effect waves-light red">
+            {{ 'Delete permanently'|trans }}
+            <i class="material-icons right">delete_forever</i>
+        </a>
+    </div>
+{% elseif users is defined and users|length == 0 %}
+    <h5>{{- "No users selected"|trans -}}</h5>
+{% elseif user is defined %}
+    <div class="modal-header">
+        <h5>{{- 'User'|trans ~ ' "' ~ user.nickname ~ '" ' ~ '(he)will be deleted permanently'|trans -}}</h5>
+    </div>
+
+    <div class="modal-body">
+        <ul class="collection">
+            <li class="collection-item avatar valign-wrapper">
+                <img class="circle" src="{{- uploaded_asset(user.avatar) -}}">
+
+                <div>
+                    <span class="title">{{- user.id -}}</span>
+                    <p>{{- user.nickname -}}</p>
+                    <p>{{- user.email -}}</p>
+                    <p>{{- user.roles|join(', ') -}}</p>
+                </div>
+
+                <a href="{{ path('user_delete', {'id': user.id }) }}" class="secondary-content">
+                    <i class="material-icons small-md red-text darken-1">delete_forever</i>
+                </a>
+            </li>
+        </ul>
+    </div>
+{% endif %}

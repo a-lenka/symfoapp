@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block content %}
+    {% set confirm_part = part %}
+
+    <thead>
+        <tr>
+            {{ include('user/_table-headers.html.twig') }}
+
+            <th scope="col" class="center-align">{{ 'Actions'|trans }}</th>
+        </tr>
+    </thead>
+
+    <div class="row">
+        {% include confirm_part %}
+    </div>
+{% endblock content %}

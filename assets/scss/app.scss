@@ -1,0 +1,50 @@
+@charset "UTF-8";
+
+/**
+ * Materialize CSS Components
+ */
+
+// Color
+@import "components/color-variables";
+@import "components/color-classes";
+
+// Variables;
+@import "components/variables";
+
+// Reset
+@import "components/normalize";
+
+// Components
+@import "components/global";
+@import "components/media";
+@import "components/badges";
+@import "components/icons-material-design";
+@import "components/grid";
+@import "components/navbar";
+@import "components/typography";
+@import "components/gradients";
+@import "~materialize-css/sass/components/transitions";
+@import "components/cards";
+@import "~materialize-css/sass/components/toast";
+@import "~materialize-css/sass/components/tabs";
+@import "~materialize-css/sass/components/tooltip";
+@import "~materialize-css/sass/components/buttons";
+@import "components/dropdown";
+@import "~materialize-css/sass/components/waves";
+@import "components/modal";
+@import "~materialize-css/sass/components/collapsible";
+@import "~materialize-css/sass/components/chips";
+@import "~materialize-css/sass/components/materialbox";
+@import "components/forms/forms";
+@import "~materialize-css/sass/components/table_of_contents";
+@import "~materialize-css/sass/components/sidenav";
+@import "~materialize-css/sass/components/preloader";
+@import "~materialize-css/sass/components/slider";
+@import "~materialize-css/sass/components/carousel";
+@import "~materialize-css/sass/components/tapTarget";
+@import "~materialize-css/sass/components/pulse";
+@import "components/datepicker";
+@import "components/timepicker";
+@import "components/messages";
+@import "components/scrollbar";
+@import "components/widget";

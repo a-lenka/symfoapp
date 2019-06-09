@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% form_theme form 'themes/materialize-fields.html.twig' %}
+
+{% block title %}{{ "Account"|trans}}{% endblock %}
+
+{% block content %}
+    <h1>{{ app.user.nickname }}</h1>
+
+    <div class="row">
+        {% include('_flash-messages.html.twig') %}
+
+        <div class = "col s12 m5">
+            {{ form_start(form) }}
+                <div>
+                    {{ form_row(form.avatar) }}
+                    {{ form_row(form.nickname) }}
+                    {{ form_row(form.theme) }}
+                    {{ form_row(form.password) }}
+                </div>
+
+                <div class="modal-footer">
+                    {{ form_row(form.submit) }}
+                </div>
+            {{ form_end(form) }}
+        </div>
+
+        {% if app.user.tasks|length > 0 %}
+            <div class="col s12 m3 offset-m1">
+                {{ render(controller(
+                    'App\\Controller\\TaskWidgetController::renderDoneTasksPieChart'
+                )) }}
+            </div>
+
+            <div class="col s12 m3">
+                {{ render(controller(
+                    'App\\Controller\\TaskWidgetController::renderOverdueTasksDonutChart'
+                )) }}
+            </div>
+        {% endif %}
+    </div>
+{% endblock content %}
+
+
+{# App Scripts #}
+{% block javascripts %}
+    {{ parent() }}
+
+    {{ encore_entry_script_tags('conic_gradient') }}
+{% endblock javascripts %}

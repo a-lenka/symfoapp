@@ -1,0 +1,16 @@
+.color-preview {
+    display:inline-block;
+    width: 1.2rem;
+    line-height: 100%;
+    margin-right: .5rem;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.pie,
+.donut {
+    width: 100px;
+    height: 100px;
+    margin: 1rem auto;
+    border-radius: 50%;
+}

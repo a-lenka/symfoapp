@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block content %}
+    {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+        <h1>{{ "Home page"|trans }}</h1>
+    {% else %}
+        <div class="col2-flex-layout">
+            <div class="left-flex-column">
+                <div class="center-align">
+                    <header class="top-second-header">
+                        <h2 class="">{{ "Try it"|trans }}!</h2>
+                        <h3 class="">{{ "It's simple and FREE"| trans }}</h3>
+                    </header>
+
+                    <a href="{{ path('register') }}"
+                       class="btn-floating btn-large teal lighten-2 pulse modal-trigger"
+                       data-target="materialize-modal">
+                        <i class="material-icons">wb_sunny</i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="right-flex-column">
+                <div>
+                    <img src="{{ asset('build/images/home/themes.png') }}"
+                         class="themes-preview"  alt="themes">
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock content %}

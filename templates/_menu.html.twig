@@ -1,0 +1,178 @@
+{# Start Top Menu #}
+<nav class="{{ app.user.theme|default(default_theme) }}">
+    {# Top Menu #}
+    <div class="nav-wrapper z-depth-2">
+        {# Logo #}
+        <div>
+            <a href="{{ path('home_index') }}" class="brand-logo">{{ app_name }}</a>
+        </div>
+
+        {# SideNav trigger #}
+        <div>
+            <a href="#" data-target="sidenav-content" class="sidenav-trigger">
+                <i class="material-icons">menu</i>
+            </a>
+        </div>
+
+        {# Locale Switcher trigger must be here to not hide on small screens #}
+        <div class="right">
+            <a href="" class="dropdown-trigger" data-target="dropdown-locales">
+                <i class="material-icons">language</i>
+            </a>
+        </div>
+
+        {# Security Actions trigger #}
+        <div class="right">
+            <a href="#" class="dropdown-trigger" data-target="dropdown-security">
+                {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+                    <i class="material-icons">person</i>
+                {% else %}
+                    <i class="material-icons">person_outline</i>
+                {% endif %}
+            </a>
+        </div>
+
+        {# Top Menu content #}
+        <div>
+            {# Hide on small screens #}
+            <ul class="right hide-on-med-and-down right">
+                <li>
+                    <a href="{{ path('home_index') }}">{{ 'Home'|trans }}</a>
+                </li>
+
+                {% if is_granted('ROLE_ROOT') %}
+                    <li>
+                        <a href="{{ path('user_list_all') }}">{{ 'Users'|trans }}</a>
+                    </li>
+                {% endif %}
+
+                {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+                    <li>
+                        <a href="{{ path('task_list_all') }}">{{ 'Tasks'|trans }}</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+{# End Top Menu #}
+
+{# Top Menu content #}
+
+
+{# Start Locale Switcher content #}
+<ul id="dropdown-locales" class="dropdown-content">
+    {% if app.request.attributes.get('_route_params') %}
+        {% set route        = app.request.attributes.get('_route') %}
+        {% set route_params = app.request.attributes.get('_route_params') %}
+        {% set params       = route_params|merge(app.request.query.all) %}
+
+        {% for locale in locales() %}
+            <li>
+                <a href="{{ path(route, params|merge({ _locale: locale.code })) }}">
+                    {{ locale.name|capitalize }}
+                </a>
+            </li>
+        {% endfor %}
+    {% endif %}
+</ul>
+{# End Locale Switcher content #}
+
+{# Start Dropdown Security content #}
+<ul id="dropdown-security" class="dropdown-content">
+    {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+        <li>
+            <a href="{{ path('account') }}">{{ 'Account'|trans }}</a>
+        </li>
+
+        <li>
+            <a href="{{ path('logout') }}">{{ 'Logout'|trans }}</a>
+        </li>
+
+        <li>
+            <a href="{{ path('reset') }}" class="modal-trigger"
+               data-target="materialize-modal">
+                {{ 'Reset password'|trans }}
+            </a>
+        </li>
+    {% else %}
+        <li>
+            <a href="{{ path('login') }}" class="modal-trigger"
+               data-target="materialize-modal">
+                {{ 'Login'|trans }}
+            </a>
+        </li>
+
+        <li>
+            <a href="{{ path('register') }}" class="modal-trigger"
+               data-target="materialize-modal">
+                {{ 'Register'|trans }}
+            </a>
+        </li>
+    {% endif %}
+</ul>
+{# End Dropdown Security content #}
+
+{# Start SideNav content #}
+<div>
+    <ul id="sidenav-content" class="sidenav">
+        <li>
+            <div class="user-view">
+                <div class="background">
+                    <img src="{{ asset('build/images/menu_bg.png') }}" style="width: 100%">
+                </div>
+
+                <a href="#">
+                    {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+                        <img class="circle" src="{{- uploaded_asset(app.user.avatar) -}}">
+                    {% else %}
+                        <img class="circle" src="{{- asset('build/images/anonymous.png') -}}">
+                    {% endif %}
+                </a>
+
+                {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+                    <a href="{{ path('account') }}">
+                        <span class="white-text name">{{ app.user.nickname }}</span>
+                        <span class="white-text email">{{ "Account"|trans }}</span>
+                    </a>
+                {% else %}
+                    <a href="{{ path('login') }}" class="modal-trigger"
+                       data-target="materialize-modal">
+                        <span class="white-text name">{{ default_nickname|trans }}</span>
+                        <span class="white-text email">{{ "Not registered"|trans }}</span>
+                    </a>
+                {% endif %}
+            </div>
+        </li>
+
+        {% if 'list' in app.request.uri %}
+            {% include('_sidenav-search.html.twig') %}
+        {% endif %}
+
+        <li>
+            <a href="{{ path('home_index') }}" class="waves-effect">
+                <i class="material-icons">home</i>
+                {{ 'Home'|trans }}
+            </a>
+        </li>
+
+        {% if is_granted('ROLE_ROOT') %}
+            <li>
+                <a href="{{ path('user_list_all') }}">
+                    <i class="material-icons">list</i>
+                    {{ 'Users'|trans }}
+                </a>
+            </li>
+        {% endif %}
+
+        {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+            <li>
+                <a href="{{ path('task_list_all') }}">
+                    <i class="material-icons">list</i>
+                    {{ 'Tasks'|trans }}
+                </a>
+            </li>
+        {% endif %}
+    </ul>
+</div>
+{# End SideNav content #}

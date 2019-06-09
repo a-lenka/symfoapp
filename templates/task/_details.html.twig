@@ -1,0 +1,15 @@
+<h4>{{ 'Task'|trans }}: {{ task.title }}</h4>
+
+<table class="responsive-table highlight">
+    <thead>
+        <tr>
+            {{ include('task/_table-headers.html.twig') }}
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr>
+            {{ include('task/_table-row.html.twig') }}
+        </tr>
+    </tbody>
+</table>
