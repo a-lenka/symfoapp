@@ -1,4 +1,7 @@
 doctrine:
+    dbal:
+        url: "%env(JAWSDB_URL)%"
+
     orm:
         auto_generate_proxy_classes: false
 
