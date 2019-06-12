@@ -9,7 +9,10 @@ monolog:
                 - ^/
         nested:
             type: stream
-            path: "%kernel.logs_dir%/%kernel.environment%.log"
+            # Was in Symfony
+            # path: "%kernel.logs_dir%/%kernel.environment%.log"
+            # For Heroku
+            path: "php://stderr"
             level: debug
 
         console:

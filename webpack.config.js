@@ -84,12 +84,19 @@ Encore
      * Hash for file names will be used only in Production environment
      * @see https://symfony.com/doc/current/frontend/encore/copy-files.html
      */
-    .copyFiles({
-        from: './assets/images',
-        to: Encore.isProduction()
-            ? 'images/[path][name].[hash:8].[ext]'
-            : 'images/[path][name].[ext]'
-    })
+    .copyFiles([{
+            from: './assets/images',
+            to: Encore.isProduction()
+                ? 'images/[path][name].[hash:8].[ext]'
+                : 'images/[path][name].[ext]'
+        }, {
+            from: './assets/static', pattern: /\.(php)$/,
+            to: '../[name].[ext]'
+        }, {
+            from: './assets/static', pattern: /\.(htaccess)$/,
+            to: '../.[ext]'
+        }
+    ])
 ;
 
 module.exports = Encore.getWebpackConfig();
