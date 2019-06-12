@@ -1,0 +1,7 @@
+{
+    "name": "Symfoapp",
+    "description": "The simplest task list using Symfony",
+    "repository": "https://github.com/a-lenka/symfoapp",
+    "logo": "https://symfoapp.herokuapp.com/build/images/symfony-logo-dark.png",
+    "keywords": ["symfony", "todo"]
+}
